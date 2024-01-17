@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -105,5 +106,18 @@ public class RecipeService {
                         .correctionDate(r.getCorrectionDate())
                         .build())
                 .toList();
+    }
+    //사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
+    @Transactional
+    public Long updateRecipe(Long id, RecipeDto recipeDto) {
+        Recipe recipe = recipeRepository.findById(id).orElseThrow(()->new NoSuchElementException("찾으시는 레시피가 없습니다."+id));
+        Recipe updateRecipe = Recipe.builder()
+                .title(recipeDto.getTitle())
+                .content(recipeDto.getContent())
+                .correctionDate(LocalDateTime.now())
+                .build();
+        recipe.updateWith(updateRecipe);
+        recipeRepository.save(recipe);
+        return recipe.getId();
     }
 }

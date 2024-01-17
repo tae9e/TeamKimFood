@@ -59,6 +59,21 @@ public class Recipe {
         this.writeDate = writeDate;
         this.correctionDate = correctionDate;
     }
+    //update용
+    public void updateWith(Recipe updatedRecipe) {
+        if (updatedRecipe.getTitle() != null) {
+            this.title = updatedRecipe.getTitle();
+        }
+
+        if (updatedRecipe.getContent() != null) {
+            this.content = updatedRecipe.getContent();
+        }
+
+        if (updatedRecipe.getCorrectionDate() != null) {
+            this.correctionDate = updatedRecipe.getCorrectionDate();
+        }
+        // 원하는 엔티티의 필드에 대해 업데이트 로직을 추가
+    }
     //+생성 메서드
     public Recipe createRecipe(List<RecipeDetail> recipeDetail, Member member, RecipeCategory recipeCategory) {
         Recipe recipe = new Recipe();
