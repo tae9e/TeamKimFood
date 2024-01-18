@@ -112,6 +112,5 @@ class RecipeServiceTest {
         //then
         assertNotNull(id1, "값이 있습니다.");
         assertEquals(id1,id2,id3);//값이 같다.
-
     }
 }
