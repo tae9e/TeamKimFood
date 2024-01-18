@@ -2,8 +2,6 @@ package com.tkf.teamkimfood.dto;
 
 import com.tkf.teamkimfood.domain.FoodImg;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 public class FoodImgDto {

@@ -1,20 +1,34 @@
 package com.tkf.teamkimfood.repository.query;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.tkf.teamkimfood.domain.QFoodImg;
+import com.tkf.teamkimfood.domain.QMember;
+import com.tkf.teamkimfood.domain.QRecipe;
 import com.tkf.teamkimfood.domain.Recipe;
 import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
+import com.tkf.teamkimfood.dto.MainpageRecipeDto;
+import com.tkf.teamkimfood.dto.QMainpageRecipeDto;
+import com.tkf.teamkimfood.dto.RecipeSearchDto;
+import com.tkf.teamkimfood.repository.recipe.RecipeCustomRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.List;
 
 @Repository
-public class RecipeQueryRepository {
+public class RecipeQueryRepository implements RecipeCustomRepository{
     @PersistenceContext
     EntityManager em;
+
+    private JPAQueryFactory queryFactory;
 
     //회원이 자기가 쓴 글 조회
     public List<Recipe> findAllWhereMemberId(Long id) {
@@ -61,5 +75,40 @@ public class RecipeQueryRepository {
             // 해당하는 결과가 없을 경우 예외 처리
             return null;
         }
+    }
+    private BooleanExpression recipeTitleLike(String searchQuery){
+        return searchQuery == null ? null : QRecipe.recipe.title.like("%" + searchQuery + "%");
+    }
+    //의도치않게 서치를 해버렸습니다...
+    @Override
+    public Page<MainpageRecipeDto> getMainRecipePage(RecipeSearchDto recipeSearchDto, Pageable pageable) {
+        QRecipe recipe = QRecipe.recipe;
+        QFoodImg foodImg = QFoodImg.foodImg;
+        QMember member = QMember.member;
+        List<MainpageRecipeDto> content = queryFactory.select(
+                        new QMainpageRecipeDto(
+                                recipe.title,
+                                recipe.viewCount,
+                                foodImg.imgUrl,
+                                member.nickname)
+                )
+                .from(foodImg)
+                .join(foodImg.recipe, recipe)
+                .where(foodImg.repImgYn.eq("Y"))
+                .where(recipeTitleLike(recipeSearchDto.getSearchByLike()))
+                .orderBy(recipe.writeDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = queryFactory
+                .select(Wildcard.count)
+                .from(foodImg)
+                .join(foodImg.recipe, recipe)
+                .where(foodImg.repImgYn.eq("Y"))
+                .where(recipeTitleLike(recipeSearchDto.getSearchByLike()))
+                .fetchOne();
+        //조회된 결과(content), 페이징 정보(pageable), 총 결과의 개수(total)를 이용하여 Page<MainpageRecipeDto>를 반환
+        return new PageImpl<>(content, pageable, total);
     }
 }

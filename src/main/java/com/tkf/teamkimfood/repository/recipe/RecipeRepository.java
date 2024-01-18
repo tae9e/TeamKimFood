@@ -1,4 +1,4 @@
-package com.tkf.teamkimfood.repository;
+package com.tkf.teamkimfood.repository.recipe;
 
 import com.tkf.teamkimfood.domain.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;

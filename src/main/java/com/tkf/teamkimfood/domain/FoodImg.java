@@ -32,6 +32,10 @@ public class FoodImg {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Builder
     public void updateItemImg(String imgName, String originImgName, String imgUrl) {
         this.imgName = imgName;
@@ -50,5 +54,9 @@ public class FoodImg {
     public void setRecipe(Recipe recipe){
         this.recipe = recipe;
         recipe.getFoodImgs().add(this);
+    }
+    public void setMember(Member member) {
+        this.member = member;
+        member.getFoodImgs().add(this);
     }
 }

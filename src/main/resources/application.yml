@@ -27,4 +27,4 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
-
+recipeImgLocation: c:/recipe/images
