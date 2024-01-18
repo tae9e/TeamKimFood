@@ -1,5 +1,6 @@
 package com.tkf.teamkimfood.domain;
 
+import com.tkf.teamkimfood.domain.oauth.OAuthProvider;
 import com.tkf.teamkimfood.domain.prefer.MemberPreference;
 import com.tkf.teamkimfood.domain.status.MemberRole;
 import jakarta.persistence.*;
@@ -64,10 +65,13 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Recipe> recipes = new ArrayList<>();
 
-    //여기를 통해 데이터 넣으세용 id는 멤버가 아직 만들어지기 전이라 임시로 넣었습니다. 추후 프론트랑 연결시 삭제하겠습니다.
+    //Oauth
+    private OAuthProvider oAuthProvider;
+
+
+    //여기를 통해 데이터 넣으세용(id는 테스트 중에 멤버가 없을시 넣어서 해주시고 완료시 제거해주세요 테스트용으로)
     @Builder
-    public Member(Long id, String name, String password, String email, String nickname, String phoneNumber, MemberRole memberRole, LocalDateTime joinedDate, MemberPreference memberPreference) {
-        this.id = id;
+    public Member(String name, String password, String email, String nickname, String phoneNumber, MemberRole memberRole, LocalDateTime joinedDate, MemberPreference memberPreference, OAuthProvider oAuthProvider) {
         this.name = name;
         this.password = password;
         this.email = email;
@@ -76,8 +80,8 @@ public class Member {
         this.memberRole = memberRole;
         this.joinedDate = joinedDate;
         this.memberPreference = memberPreference;
+        this.oAuthProvider = oAuthProvider;
     }
-    //테스트용 테스트가 끝나면 주석처리하시거나 삭제 해주세요
 
     // 레시피 작성 횟수 관련 - 다른곳으로 뺄 예정
 
