@@ -62,9 +62,16 @@ public class RecipeService {
         recipeDetailRepository.saveAll(recipeDetails);
         return recipe.getId();
     }
-    //게시글 1개 보려고 선택시
-    public Recipe findOneById(Long id) {
-        return recipeRepository.findById(id).orElseThrow();
+    //게시글 1개 보려고 선택시 + 뷰카운트 올리기.
+    public RecipeDto findOneById(Long id) {
+        Recipe recipe = recipeRepository.findById(id).orElseThrow();
+        recipe.addViewCount();//조회수 1 증가
+        return RecipeDto.builder()
+                .title(recipe.getTitle())
+                .content(recipe.getContent())
+                .writeDate(recipe.getWriteDate())
+                .correctionDate(recipe.getCorrectionDate())
+                .build();
     }
 
     //일반적인 메뉴노출(전체, 잘 안쓸것같긴합니다.)
@@ -107,7 +114,7 @@ public class RecipeService {
                         .build())
                 .toList();
     }
-    //사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
+    //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
     @Transactional
     public Long updateRecipe(Long id, RecipeDto recipeDto) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(()->new NoSuchElementException("찾으시는 레시피가 없습니다."+id));
@@ -119,5 +126,16 @@ public class RecipeService {
         recipe.updateWith(updateRecipe);
         recipeRepository.save(recipe);
         return recipe.getId();
+    }
+    //조회수 기준으로 조회요청시
+    public List<RecipeDto> findAllOrderByViewCount() {
+        return recipeQueryRepository.findAllOrderByViewCount().stream()
+                .map(r->RecipeDto.builder()
+                        .title(r.getTitle())
+                        .content(r.getContent())
+                        .writeDate(r.getWriteDate())
+                        .correctionDate(r.getCorrectionDate())
+                        .build())
+                .toList();
     }
 }

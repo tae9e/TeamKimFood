@@ -23,8 +23,7 @@ public class Recipe {
     private String title;
     private String content;
 
-    @ColumnDefault("0")
-    private int viewCount;
+    private int viewCount;//디폴트를 지웠습니다.
 
     @ColumnDefault("0")
     private long score;
@@ -84,6 +83,12 @@ public class Recipe {
         recipe.recipeCategory = recipeCategory;
         return recipe;
     }
+    //조회수 증가
+    public void addViewCount() {
+        int addCount = 1;
+        this.viewCount += addCount;
+    }
+
     //연관관계
     public void setMember(Member member) {
         this.member = member;
@@ -93,8 +98,5 @@ public class Recipe {
         this.recipeCategory = recipeCategory;
     }
 
-    public void addRecipeDetails(RecipeDetail recipeDetail) {
-
-    }
 
 }
