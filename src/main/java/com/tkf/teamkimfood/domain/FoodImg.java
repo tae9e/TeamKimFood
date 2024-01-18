@@ -2,6 +2,7 @@ package com.tkf.teamkimfood.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,11 @@ public class FoodImg {
 
     @Id @Column(name = "foodimg_id")
     private Long id;
+
+    private String imgName;
+    private String originImgName;
+    private String imgUrl;
+    private String repImgYn;//대표 이미지 여부
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "foodfile_id")
@@ -26,6 +32,16 @@ public class FoodImg {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @Builder
+    public void updateItemImg(String imgName, String originImgName, String imgUrl) {
+        this.imgName = imgName;
+        this.originImgName = originImgName;
+        this.imgUrl = imgUrl;
+    }
     //연관관계
     public void setFoodFile(FoodFile foodFile){
         this.foodFile = foodFile;
@@ -38,5 +54,9 @@ public class FoodImg {
     public void setRecipe(Recipe recipe){
         this.recipe = recipe;
         recipe.getFoodImgs().add(this);
+    }
+    public void setMember(Member member) {
+        this.member = member;
+        member.getFoodImgs().add(this);
     }
 }

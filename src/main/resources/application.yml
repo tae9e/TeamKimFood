@@ -35,11 +35,12 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+recipeImgLocation: c:/recipe/images
 
-  server:
-    servlet:
-      encoding:
-        charset: UTF-8
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
 
 jwt:
   secret_key: B1kt5JCu4ccayt2zYtmVB0XjUsZdV6jzFVB8RircuMJF9e09uO3vlqnlctxcLMVMjH
