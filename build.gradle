@@ -43,6 +43,11 @@ dependencies {
 
 	//oauth2 의존성 설정
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	//springSecurity 관련 설정
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 }
 
 tasks.named('test') {

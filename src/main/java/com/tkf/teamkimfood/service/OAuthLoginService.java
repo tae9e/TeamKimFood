@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OAuthLoginService {
     private final MemberRepository memberRepository;
-    private final AuthTokensGenerator authTokensGeneratorT;
-    private final RequestOAuthInfoService requestOAuthInfoServiceT;
+    private final AuthTokensGenerator authTokensGenerator;
+    private final RequestOAuthInfoService requestOAuthInfoService;
 
     public AuthTokens login(OAuthLoginParams params){
-        OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoServiceT.request(params);
+        OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
         Long memberId = findOrCreateMember(oAuthInfoResponse);
-        return authTokensGeneratorT.generate(memberId);
+        return authTokensGenerator.generate(memberId);
     }
 
     private Long findOrCreateMember(OAuthInfoResponse oAuthInfoResponse){
