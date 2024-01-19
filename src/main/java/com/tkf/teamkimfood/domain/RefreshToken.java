@@ -14,14 +14,16 @@ public class RefreshToken {
     @Column(name = "id",updatable = false)
     private Long id;
 
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name="userId")
     @Column(name = "user_id",nullable = false,unique = true)
-    private Long userId;
+    private Member member;
 
     @Column(name="refresh_token",nullable = false)
     private String refreshToken;
 
-    public RefreshToken(Long userId, String refreshToken) {
-        this.userId = userId;
+    public RefreshToken(Member member, String refreshToken) {
+        this.member = member;
         this.refreshToken = refreshToken;
     }
 
