@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tkf.teamkimfood.domain.*;
 import com.tkf.teamkimfood.domain.prefer.QRecipeCategory;
 import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
+import com.tkf.teamkimfood.dto.CategoryPreferenceDto;
 import com.tkf.teamkimfood.dto.MainpageRecipeDto;
 import com.tkf.teamkimfood.dto.QMainpageRecipeDto;
 import com.tkf.teamkimfood.dto.RecipeSearchDto;
@@ -33,16 +34,6 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
 
     private JPAQueryFactory queryFactory;
 
-    //회원이 자기가 쓴 글 조회
-    public List<Recipe> findAllWhereMemberId(Long id) {
-        return em.createQuery(
-                "select r "+
-                        "from Recipe r "+
-                        "where r.member = :id "+
-                        "order by r.writeDate desc "
-        , Recipe.class).setParameter("id", id)
-                .getResultList();
-    }
     //레시피 카테고리 받아온것 별로 조회
     public List<Recipe> findAllWhereRecipeCategoryOrderByWriteDateDesc(RecipeCategory recipeCategory) {
         return em.createQuery(
@@ -57,14 +48,7 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 .setParameter("foodNationType", recipeCategory.getFoodNationType())
                 .getResultList();
     }
-    //조회수 순으로 출력
-    public List<Recipe> findAllOrderByViewCount(){
-        return em.createQuery(
-                "select r " +
-                        "from Recipe r " +
-                        "order by r.viewCount desc", Recipe.class
-        ).getResultList();
-    }
+
     //받아온 멤버아이디와 레시피아이디가 일치하는 레시피
     public Recipe findOneWhereMemberIdAndRecipeId(Long memberId, Long recipeId) {
         TypedQuery<Recipe> query = em.createQuery(
@@ -218,9 +202,48 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 .join(recipe.member, member).fetchJoin()
                 .where(foodImg.repImgYn.eq("Y"))
                 .orderBy(recipe.viewCount.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         long total = queryFactory
+                .select(Wildcard.count)
+                .from(foodImg)
+                .join(foodImg.recipe, recipe)
+                .where(foodImg.repImgYn.eq("Y"))
+                .fetchOne();
+        return new PageImpl<>(mainpageRecipeDtos, pageable, total);
+    }
+    //추천레시피 띄우기 로그인한 회원용 메인페이지
+    public Page<MainpageRecipeDto> getAllWhereTypesOrderByWriteDay(CategoryPreferenceDto categoryPreferenceDto, RecipeSearchDto recipeSearchDto, Pageable pageable) {
+        QRecipe recipe = QRecipe.recipe;
+        QFoodImg foodImg = QFoodImg.foodImg;
+        QMember member = QMember.member;
+        QRecipeCategory recipeCategory = QRecipeCategory.recipeCategory;
+        List<MainpageRecipeDto> mainpageRecipeDtos = queryFactory.selectDistinct(
+                        new QMainpageRecipeDto(
+                                recipe.id,
+                                recipe.title,
+                                recipe.viewCount,
+                                foodImg.imgUrl,
+                                member.nickname
+                        )
+                )
+                .from(recipe)
+                .join(recipe.member, member).fetchJoin()
+                .join(recipe.foodImgs, foodImg)
+                .join(recipe.recipeCategory, recipeCategory)
+                .where(foodImg.repImgYn.eq("Y"))
+                .where(recipeTitleLike(recipeSearchDto.getSearchByLike()))
+                .where(recipeCategory.Situation.eq(categoryPreferenceDto.getSituation())
+                        .or(recipeCategory.foodStuff.eq(categoryPreferenceDto.getFoodStuff())
+                                .or(recipeCategory.foodNationType.eq(categoryPreferenceDto.getFoodNationType()))))
+                .orderBy(recipe.writeDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
                 .select(Wildcard.count)
                 .from(foodImg)
                 .join(foodImg.recipe, recipe)

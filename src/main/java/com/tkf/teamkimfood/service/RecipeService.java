@@ -143,21 +143,24 @@ public class RecipeService {
         return recipeQueryRepository.getRecipesWriteByMemberId(memberId, pageable);
     }
     //추천 레시피 띄우기 멤버가 설성한 선호타입을 정해진 값으로 받고 찾는다.
-    public List<RecipeDto> findAllWhereRecipeCategoryOrderByWriteDateDesc(MemberPreference memberPreference) {
-        RecipeCategory recipeCategory = RecipeCategory.builder()
-                .situation(memberPreference.getSituation())
-                .foodStuff(memberPreference.getFoodStuff())
-                .foodNationType(memberPreference.getFoodNationType())
-                .build();
-       return recipeQueryRepository.findAllWhereRecipeCategoryOrderByWriteDateDesc(recipeCategory)
-                .stream()
-                .map(r -> RecipeDto.builder()
-                        .title(r.getTitle())
-                        .content(r.getContent())
-                        .writeDate(r.getWriteDate())
-                        .correctionDate(r.getCorrectionDate())
-                        .build())
-                .toList();
+//    public List<RecipeDto> findAllWhereRecipeCategoryOrderByWriteDateDesc(MemberPreference memberPreference) {
+//        RecipeCategory recipeCategory = RecipeCategory.builder()
+//                .situation(memberPreference.getSituation())
+//                .foodStuff(memberPreference.getFoodStuff())
+//                .foodNationType(memberPreference.getFoodNationType())
+//                .build();
+//       return recipeQueryRepository.findAllWhereRecipeCategoryOrderByWriteDateDesc(recipeCategory)
+//                .stream()
+//                .map(r -> RecipeDto.builder()
+//                        .title(r.getTitle())
+//                        .content(r.getContent())
+//                        .writeDate(r.getWriteDate())
+//                        .correctionDate(r.getCorrectionDate())
+//                        .build())
+//                .toList();
+//    }
+    public Page<MainpageRecipeDto> getMainForMember(CategoryPreferenceDto categoryPreferenceDto, RecipeSearchDto recipeSearchDto, Pageable pageable) {
+        return recipeQueryRepository.getAllWhereTypesOrderByWriteDay(categoryPreferenceDto, recipeSearchDto, pageable);
     }
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
     @Transactional
@@ -205,4 +208,7 @@ public class RecipeService {
             throw new NoAuthorityException("해당 레시피의 작성자가 아닙니다.");
         }
     }
+    //추천수 올려주기
+
+    //추천수기반 조회
 }
