@@ -3,6 +3,9 @@ package com.tkf.teamkimfood.dto;
 import com.tkf.teamkimfood.domain.FoodImg;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class FoodImgDto {
 
@@ -10,15 +13,14 @@ public class FoodImgDto {
     private String originImgName;
     private String imgUrl;
     private String repImgYn;//대표 이미지 여부
+    private List<Long> foodImgIds = new ArrayList<>();
 
-
-    //ModelMapper - 화면 DTO<=>entity 엔티티를 화면DTO로 바꿔주는 역할
-    public FoodImgDto imgToDto (FoodImg itemImg) {
+    public static FoodImgDto imgToDto (FoodImg foodImg) {
         FoodImgDto foodImgDto = new FoodImgDto();
-        foodImgDto.imgName = itemImg.getImgName();
-        foodImgDto.originImgName = itemImg.getOriginImgName();
-        foodImgDto.imgUrl = itemImg.getImgUrl();
-        foodImgDto.repImgYn = itemImg.getRepImgYn();
+        foodImgDto.imgName = foodImg.getImgName();
+        foodImgDto.originImgName = foodImg.getOriginImgName();
+        foodImgDto.imgUrl = foodImg.getImgUrl();
+        foodImgDto.repImgYn = foodImg.getRepImgYn();
         return foodImgDto;
     }
 

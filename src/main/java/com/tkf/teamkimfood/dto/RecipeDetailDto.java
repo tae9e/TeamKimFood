@@ -18,4 +18,9 @@ public class RecipeDetailDto {
                 .map(RecipeDetailListDto::toEntity)
                 .collect(Collectors.toList());
     }
+    public List<RecipeDetailListDto> EntityToListDto(List<RecipeDetail> recipeDetails) {
+        return recipeDetails.stream()
+                .map(RecipeDetailListDto::toDto)
+                .collect(Collectors.toList());
+    }
 }

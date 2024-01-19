@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
 @Table(name = "foodimg")
 public class FoodImg {
@@ -42,6 +42,11 @@ public class FoodImg {
         this.originImgName = originImgName;
         this.imgUrl = imgUrl;
     }
+    //이미지 대표사진 추가하기용
+    public void setRepImgYn(String repImgYn) {
+        this.repImgYn = repImgYn;
+    }
+
     //연관관계
     public void setFoodFile(FoodFile foodFile){
         this.foodFile = foodFile;
