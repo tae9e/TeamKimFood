@@ -24,17 +24,13 @@ import java.util.Map;
 @RequestMapping("/public")
 public class OauthController {
 
-    @GetMapping("/login")
-    public String auth(){
-        return "main";
-    }
-
-
     @GetMapping("/auth/loginForm")
     public String KakaoOauth(){
 
         return "logintest/kakaoLogin";
     }
+
+
 
 
    @GetMapping("/auth/kakao/callback")

@@ -9,9 +9,10 @@ import com.tkf.teamkimfood.dto.CategoryPreferenceDto;
 import com.tkf.teamkimfood.dto.RecipeDetailDto;
 import com.tkf.teamkimfood.dto.RecipeDetailListDto;
 import com.tkf.teamkimfood.dto.RecipeDto;
-import com.tkf.teamkimfood.repository.RecipeCategoryRepository;
-import com.tkf.teamkimfood.repository.RecipeDetailRepository;
-import com.tkf.teamkimfood.repository.RecipeRepository;
+import com.tkf.teamkimfood.exception.NoAuthorityException;
+import com.tkf.teamkimfood.repository.recipe.RecipeCategoryRepository;
+import com.tkf.teamkimfood.repository.recipe.RecipeDetailRepository;
+import com.tkf.teamkimfood.repository.recipe.RecipeRepository;
 import com.tkf.teamkimfood.repository.query.MemberQueryRepository;
 import com.tkf.teamkimfood.repository.query.RecipeQueryRepository;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -74,8 +74,8 @@ public class RecipeService {
                 .build();
     }
 
-    //일반적인 메뉴노출(전체, 잘 안쓸것같긴합니다.)
-    public List<RecipeDto> findAll() {
+    //일반적인 메뉴노출(비회원 접속시)
+    public List<RecipeDto> anyoneFindAll() {
         return recipeRepository.findAllByOrderByWriteDateDesc().stream()
                 .map(r-> RecipeDto.builder()
                         .title(r.getTitle())
@@ -116,8 +116,8 @@ public class RecipeService {
     }
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
     @Transactional
-    public Long updateRecipe(Long id, RecipeDto recipeDto) {
-        Recipe recipe = recipeRepository.findById(id).orElseThrow(()->new NoSuchElementException("찾으시는 레시피가 없습니다."+id));
+    public Long updateRecipe(Long memberId ,Long recipeId, RecipeDto recipeDto) {
+        Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(memberId, recipeId);
         Recipe updateRecipe = Recipe.builder()
                 .title(recipeDto.getTitle())
                 .content(recipeDto.getContent())
@@ -137,5 +137,15 @@ public class RecipeService {
                         .correctionDate(r.getCorrectionDate())
                         .build())
                 .toList();
+    }
+    //레시피 삭제
+    public void deleteRecipe(Long memberId, Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow();
+        if (memberId.equals(recipe.getMember().getId())) {
+            recipeRepository.delete(recipe);
+        } else {
+            //권한 관련 예외문
+            throw new NoAuthorityException("해당 레시피의 작성자가 아닙니다.");
+        }
     }
 }

@@ -24,7 +24,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class WebOauthSecurityConfig {
     private final OAuthLoginService oAuthLoginService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenRespository refreshTokenRepository;
+   // private final RefreshTokenRespository refreshTokenRepository;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -33,31 +33,19 @@ public class WebOauthSecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/public/**").permitAll() // 특정 경로에 대한 접근 허용
                                 .anyRequest().authenticated() // 다른 모든 요청은 인증 필요
-
-                );
-               // .oauth2Login();
-
-               // .formLogin(formLogincustomizer->formLogincustomizer // 로그인 페이지 및 로그인 처리 URL 설정
-               // .loginPage("/login") // 로그인 페이지 경로
-                //.loginProcessingUrl("/perform_login") // 로그인 처리 URL 경로
-               // .defaultSuccessUrl("/dashboard") // 로그인 성공 후 이동할 페이지
-               // .permitAll()) // 로그인 페이지는 누구나 접근 가능
-               // .logout(formLogoutcustomizer->formLogoutcustomizer // 로그아웃 설정
-              //  .logoutUrl("/perform_logout") // 로그아웃 처리 URL 경로
-               // .logoutSuccessUrl("/login") // 로그아웃 성공 후 이동할 페이지
-              //  .permitAll()); // 로그아웃 페이지는 누구나 접근 가능
-
-
+                )
+                .formLogin(formLogincustomizer->formLogincustomizer // 로그인 페이지 및 로그인 처리 URL 설정
+                .loginPage("/login") // 로그인 페이지 경로
+                .loginProcessingUrl("/perform_login") // 로그인 처리 URL 경로
+                .defaultSuccessUrl("/dashboard") // 로그인 성공 후 이동할 페이지
+                .permitAll()) // 로그인 페이지는 누구나 접근 가능
+                .logout(formLogoutcustomizer->formLogoutcustomizer // 로그아웃 설정
+                .logoutUrl("/perform_logout") // 로그아웃 처리 URL 경로
+                .logoutSuccessUrl("/login") // 로그아웃 성공 후 이동할 페이지
+                .permitAll()); // 로그아웃 페이지는 누구나 접근 가능
 
         return http.build();
     }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer(){
-        return(web) -> web.ignoring().requestMatchers("/auth/kakao","/auth/kakao/**");
-    }
-
-
 }
 
 //    @Bean
