@@ -19,6 +19,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,11 +30,17 @@ import java.util.Collections;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class RecipeQueryRepository implements RecipeCustomRepository{
     @PersistenceContext
     EntityManager em;
 
-    private JPAQueryFactory queryFactory;
+    private final JPAQueryFactory queryFactory;
+
+    @Autowired
+    public RecipeQueryRepository(EntityManager entityManager) {
+        this.queryFactory = new JPAQueryFactory(entityManager);
+    }
 
     //레시피 카테고리 받아온것 별로 조회
     public List<Recipe> findAllWhereRecipeCategoryOrderByWriteDateDesc(RecipeCategory recipeCategory) {
@@ -86,7 +94,7 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                         )
                 )
                 .from(recipe)
-                .join(recipe.member, member).fetchJoin()//N:1 문제 발생가능성 있음 그래서 fetchJoin을 붙여 페이징이 가능하면서 Eager로 가져옴
+                .join(recipe.member, member)//N:1 문제 발생가능성 있음 그래서 Entity에 BatchSize(size=?)을 붙이거나 yml에 관련내용을 넣어 페이징처리
                 .join(recipe.foodImgs, foodImg)//1:n이라 페이징 하면 됌
                 .where(foodImg.repImgYn.eq("Y"))
                 .where(recipeTitleLike(recipeSearchDto.getSearchByLike()))//null이면 실행하지 않음
@@ -130,7 +138,7 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                         )
                 )
                 .from(recipe)
-                .join(recipe.member, member).fetchJoin()
+                .join(recipe.member, member)
                 .join(recipe.foodImgs, foodImg)
                 .join(recipe.recipeDetails, recipeDetail)
                 .join(recipe.recipeCategory, recipeCategory)
@@ -163,7 +171,7 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                         )
                 )
                 .from(recipe)
-                .join(recipe.member, member).fetchJoin()
+                .join(recipe.member, member)
                 .join(recipe.foodImgs, foodImg)
                 .where(recipe.member.id.eq(memberId))
                 .where(foodImg.repImgYn.eq("Y"))
@@ -199,7 +207,7 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 )
                 .from(recipe)
                 .join(recipe.foodImgs, foodImg)
-                .join(recipe.member, member).fetchJoin()
+                .join(recipe.member, member)
                 .where(foodImg.repImgYn.eq("Y"))
                 .orderBy(recipe.viewCount.desc())
                 .offset(pageable.getOffset())
@@ -230,7 +238,7 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                         )
                 )
                 .from(recipe)
-                .join(recipe.member, member).fetchJoin()
+                .join(recipe.member, member)
                 .join(recipe.foodImgs, foodImg)
                 .join(recipe.recipeCategory, recipeCategory)
                 .where(foodImg.repImgYn.eq("Y"))

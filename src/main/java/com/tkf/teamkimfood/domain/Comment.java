@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 
@@ -22,10 +23,12 @@ public class Comment {
     private LocalDateTime commentDate;
     private LocalDateTime correctionDate;
 
+    @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;

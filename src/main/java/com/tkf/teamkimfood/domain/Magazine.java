@@ -2,6 +2,7 @@ package com.tkf.teamkimfood.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,10 +23,12 @@ public class Magazine {
     private LocalDateTime writeDate;
     private LocalDateTime correctionDate;
 
+    @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "magazine", cascade = CascadeType.ALL)
     private List<FoodImg> foodImgs = new ArrayList<>();
 

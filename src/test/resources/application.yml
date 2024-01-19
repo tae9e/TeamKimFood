@@ -17,3 +17,18 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+
+recipeImgLocation: c:/recipe/images
+oauth:
+  kakao:
+    client-id: 69445a05dee5a6928649b416c9df1964
+    client-secret: hxEg8JGhjQm7Np8bMd18vQWZhVOjcPm0
+    redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+    oauth-url: https://kauth.kakao.com
+    api-url: https://kapi.kakao.com
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+jwt:
+  secret_key: B1kt5JCu4ccayt2zYtmVB0XjUsZdV6jzFVB8RircuMJF9e09uO3vlqnlctxcLMVMjH

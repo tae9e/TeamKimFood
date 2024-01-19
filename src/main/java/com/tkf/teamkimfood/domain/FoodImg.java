@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @NoArgsConstructor
@@ -20,18 +21,22 @@ public class FoodImg {
     private String imgUrl;
     private String repImgYn;//대표 이미지 여부
 
+    @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "foodfile_id")
     private FoodFile foodFile;
 
+    @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "magazines_id")
     private Magazine magazine;
 
+    @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
+    @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
