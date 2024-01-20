@@ -54,5 +54,7 @@ public class RankService {
         rankRepository.save(rank);
         return rankQueryRepository.recommendationTotal(rank.getId());
     }
-    //A가 B를 추천하는 상황.
+    //멤버랭킹 추천수 총합으로
+    //개인 추천수 총합
+
 }
