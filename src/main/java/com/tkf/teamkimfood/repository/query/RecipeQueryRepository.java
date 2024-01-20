@@ -114,7 +114,7 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
         return new PageImpl<>(content, pageable, total);
     }
     //1개 조회
-    public Page<OneRecipeDto> getOne(Long recipeId,Pageable pageable) {
+    public OneRecipeDto getOne(Long recipeId) {
         QRecipe recipe = QRecipe.recipe;
         QFoodImg foodImg = QFoodImg.foodImg;
         QMember member = QMember.member;
@@ -143,17 +143,8 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 .join(recipe.recipeDetails, recipeDetail)
                 .join(recipe.recipeCategory, recipeCategory)
                 .where(recipe.id.eq(recipeId))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetchOne();
-
-        if (oneRecipeDto != null) {
-            // 데이터가 존재하는 경우 Page 객체 생성
-            return new PageImpl<>(Collections.singletonList(oneRecipeDto), pageable, 1);
-        } else {
-            // 데이터가 없는 경우 빈 Page 객체 생성
-            return Page.empty();
-        }
+        return oneRecipeDto;
     }
 
     //내가 쓴 글 조회

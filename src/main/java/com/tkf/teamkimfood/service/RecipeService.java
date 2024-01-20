@@ -112,13 +112,14 @@ public class RecipeService {
 //                .foodImgDtos(foodImgDtos)
 //                .build();
 //    }
-    public Page<OneRecipeDto> viewOne(Long recipeId,Pageable pageable) {
-        OneRecipeDto recipeDto = (OneRecipeDto) recipeQueryRepository.getOne(recipeId, pageable);
+    public OneRecipeDto viewOne(Long recipeId) {
+        OneRecipeDto recipeDto = recipeQueryRepository.getOne(recipeId);
         if (recipeDto != null) {
-            recipeRepository.addViewCount(recipeId);
-            return new PageImpl<>(Collections.singletonList(recipeDto), pageable, 1);
+            Recipe recipe = recipeRepository.addViewCount(recipeId);
+            recipeDto.setViewCount(recipe.getViewCount());
+            return recipeDto;
         } else {
-            return Page.empty();
+            return null;
         }
     }
 

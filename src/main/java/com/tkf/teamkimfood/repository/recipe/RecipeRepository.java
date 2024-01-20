@@ -11,5 +11,5 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
 
     @Query("UPDATE Recipe r SET r.viewCount = r.viewCount + 1 WHERE r.id = :recipeId")
-   public void addViewCount(@Param("recipeId") Long recipeId);
+   public Recipe addViewCount(@Param("recipeId") Long recipeId);
 }
