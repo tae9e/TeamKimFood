@@ -3,6 +3,7 @@ package com.tkf.teamkimfood.service;
 import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.domain.Rank;
 import com.tkf.teamkimfood.domain.Recipe;
+import com.tkf.teamkimfood.dto.MemberScoreTotalDto;
 import com.tkf.teamkimfood.dto.ranks.RankDto;
 import com.tkf.teamkimfood.repository.MemberRepository;
 import com.tkf.teamkimfood.repository.rank.RankQueryRepository;
@@ -12,6 +13,8 @@ import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -56,5 +59,7 @@ public class RankService {
     }
     //멤버랭킹 추천수 총합으로
     //개인 추천수 총합
-
+    public List<MemberScoreTotalDto> memberScoreTotal() {
+        return rankQueryRepository.memberScoreTotal();
+    }
 }
