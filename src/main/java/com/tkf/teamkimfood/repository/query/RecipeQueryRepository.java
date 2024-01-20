@@ -6,10 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tkf.teamkimfood.domain.*;
 import com.tkf.teamkimfood.domain.prefer.QRecipeCategory;
 import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
-import com.tkf.teamkimfood.dto.CategoryPreferenceDto;
-import com.tkf.teamkimfood.dto.MainpageRecipeDto;
-import com.tkf.teamkimfood.dto.QMainpageRecipeDto;
-import com.tkf.teamkimfood.dto.RecipeSearchDto;
+import com.tkf.teamkimfood.dto.*;
 import com.tkf.teamkimfood.dto.aboutrecipe.MemberWriteRecipeDto;
 import com.tkf.teamkimfood.dto.aboutrecipe.OneRecipeDto;
 import com.tkf.teamkimfood.dto.aboutrecipe.QMemberWriteRecipeDto;
@@ -238,6 +235,38 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                         .or(recipeCategory.foodStuff.eq(categoryPreferenceDto.getFoodStuff())
                                 .or(recipeCategory.foodNationType.eq(categoryPreferenceDto.getFoodNationType()))))
                 .orderBy(recipe.writeDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
+                .select(Wildcard.count)
+                .from(foodImg)
+                .join(foodImg.recipe, recipe)
+                .where(foodImg.repImgYn.eq("Y"))
+                .fetchOne();
+        return new PageImpl<>(mainpageRecipeDtos, pageable, total);
+    }
+        public Page<MainpageRecipeDto> getAllOrderByRankPoint(Pageable pageable) {
+        QRecipe recipe = QRecipe.recipe;
+        QMember member = QMember.member;
+        QFoodImg foodImg = QFoodImg.foodImg;
+        QRank rank = QRank.rank;
+        List<MainpageRecipeDto> mainpageRecipeDtos = queryFactory.select(
+                        new QMainpageRecipeDto(
+                                recipe.id,
+                                recipe.title,
+                                recipe.viewCount,
+                                foodImg.imgUrl,
+                                member.nickname
+                        )
+                )
+                .from(recipe)
+                .join(recipe.member, member)
+                .join(recipe.foodImgs, foodImg)
+                .join(recipe.rank, rank)
+                .where(foodImg.repImgYn.eq("Y"))
+                .orderBy(rank.recipeRecoTotal.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

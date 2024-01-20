@@ -125,7 +125,7 @@ class RankServiceTest {
         rankDto.setRecipeRecommendation(true);
         rank.recipeRecommend(rankDto);
         rankRepository.save(rank);
-        Long total = rankQueryRepository.recommendationTotal();
+        Long total = rankQueryRepository.recommendationTotal(recipe.getId());
 
         assertNotNull(total);
         assertTrue(rankDto.isRecipeRecommendation());

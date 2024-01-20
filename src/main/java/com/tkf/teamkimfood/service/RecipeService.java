@@ -13,6 +13,8 @@ import com.tkf.teamkimfood.exception.NoAuthorityException;
 import com.tkf.teamkimfood.repository.FoodImgRepository;
 import com.tkf.teamkimfood.repository.query.MemberQueryRepository;
 import com.tkf.teamkimfood.repository.query.RecipeQueryRepository;
+import com.tkf.teamkimfood.repository.rank.RankQueryRepository;
+import com.tkf.teamkimfood.repository.rank.RankRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeCategoryRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeDetailRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeRepository;
@@ -26,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +44,7 @@ public class RecipeService {
     private final MemberQueryRepository memberRepository;
     private final RecipeDetailRepository recipeDetailRepository;
     private final RecipeCategoryRepository recipeCategoryRepository;
+    private final RankQueryRepository rankQueryRepository;
 
     //레시피 저장...
     @Transactional
@@ -209,7 +213,8 @@ public class RecipeService {
             throw new NoAuthorityException("해당 레시피의 작성자가 아닙니다.");
         }
     }
-    //추천수 올려주기
-
     //추천수기반 조회
+    public Page<MainpageRecipeDto> getAllOrderByRankPoint(Pageable pageable) {
+        return recipeQueryRepository.getAllOrderByRankPoint(pageable);
+    }
 }

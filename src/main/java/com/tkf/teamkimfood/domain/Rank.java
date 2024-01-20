@@ -37,6 +37,11 @@ public class Rank {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
+    private long recipeRecoTotal;
+    private long memberRecoTotal;
+
+
+
     //검색관련 데이터주입
 
     //연관관계 메서드
@@ -49,11 +54,24 @@ public class Rank {
         recipe.getRank().add(this);
     }
 
+    //레시피 추천수 저장
     public void recipeRecommend(RankDto rankDto) {
         this.recipeRecommendation = rankDto.isRecipeRecommendation();
+        if (rankDto.isRecipeRecommendation()) {
+            this.recipeRecoTotal += 1;
+        } else {
+            this.recipeRecoTotal -= 1;
+        }
     }
+    //멤버 추천수 저장
     public void memberRecommend(RankDto rankDto) {
         this.userRecommendation = rankDto.isUserRecommendation();
+        if (rankDto.isUserRecommendation()){
+            this.memberRecoTotal += 1;
+        }else {
+            this.memberRecoTotal -= 1;
+        }
+
     }
 
     @Builder
