@@ -47,15 +47,12 @@ public class RankService {
         //추천을 주기 위해서
         if (rankDto.isRecipeRecommendation()) {
             rankDto.setRecipeRecommendation(true);
-            rank.recipeRecommend(rankDto);//추천수 1 넣음
-            rankRepository.save(rank);
-            return rankQueryRepository.recommendationTotal(rank.getId());
         } else {
             rankDto.setRecipeRecommendation(false);
-            rank.recipeRecommend(rankDto);//추천수 1 뺌
-            rankRepository.save(rank);
-            return rankQueryRepository.recommendationTotal(rank.getId());
         }
+        rank.recipeRecommend(rankDto);//추천수 증감시킴
+        rankRepository.save(rank);
+        return rankQueryRepository.recommendationTotal(rank.getId());
     }
     //A가 B를 추천하는 상황.
 }
