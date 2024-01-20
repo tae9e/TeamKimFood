@@ -20,6 +20,8 @@ public class Rank {
     @Enumerated(EnumType.STRING)
     private RankSearchStatus rankSearchStatus;
 
+    private boolean recommendation = false;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
