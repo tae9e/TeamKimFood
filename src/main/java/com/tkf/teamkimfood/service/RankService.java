@@ -1,5 +1,14 @@
 package com.tkf.teamkimfood.service;
 
+import com.tkf.teamkimfood.domain.Member;
+import com.tkf.teamkimfood.domain.Rank;
+import com.tkf.teamkimfood.domain.Recipe;
+import com.tkf.teamkimfood.dto.ranks.RankDto;
+import com.tkf.teamkimfood.repository.MemberRepository;
+import com.tkf.teamkimfood.repository.rank.RankQueryRepository;
+import com.tkf.teamkimfood.repository.rank.RankRepository;
+import com.tkf.teamkimfood.repository.recipe.RecipeRepository;
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,4 +25,36 @@ public class RankService {
     //레시피, 멤버와는 1:N이 될 것(생성될 엔티티가)
     //멤버는 여러 게시글에 추천을 줄 수 있다. 한 게시글엔 1개의 추천만 줄 수 있다. 레시피는 여러명의 멤버에게 추천을 받을 수 있다.
     //랭킹 엔티티엔 boolean으로 추천 1개만 넣고, 추천수는 Wildcard.count, .where(entity.active.eq(isActive))로 하면 될 것.
+
+    private final RankRepository rankRepository;
+    private final RankQueryRepository rankQueryRepository;
+    private final MemberRepository memberRepository;
+    private final RecipeRepository recipeRepository;
+
+    //랭크 생성후 추천
+    public Long recommVariation(Long memberId, Long recipeId, Rank rank) {
+        Member member = memberRepository.findById(memberId).orElseThrow(NullPointerException::new);
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(NullPointerException::new);
+
+        rank.setMember(member);
+        rank.setRecipe(recipe);
+        Rank saved = rankRepository.save(rank);
+        RankDto rankDto = new RankDto();
+        rankDto.setId(saved.getId());
+        rankDto.setRecipeRecommendation(saved.isRecipeRecommendation());
+        rankDto.setUserRecommendation(saved.isUserRecommendation());
+
+        //추천을 주기 위해서
+        if (rankDto.isRecipeRecommendation()) {
+            rankDto.setRecipeRecommendation(true);
+            rank.recipeRecommend(rankDto);
+            rankRepository.save(rank);
+            return rankQueryRepository.recommendationTotal();
+        } else {
+            rankDto.setRecipeRecommendation(false);
+            rank.recipeRecommend(rankDto);
+            rankRepository.save(rank);
+            return rankQueryRepository.recommendationTotal();
+        }
+    }
 }
