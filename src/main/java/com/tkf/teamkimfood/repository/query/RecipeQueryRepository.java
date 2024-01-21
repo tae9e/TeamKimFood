@@ -126,6 +126,7 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                                 recipe.writeDate,
                                 recipe.correctionDate,
                                 foodImg.imgUrl,
+                                foodImg.explain,
                                 member.nickname,
                                 recipeDetail.ingredients,
                                 recipeDetail.dosage,
