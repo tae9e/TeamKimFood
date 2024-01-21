@@ -35,10 +35,13 @@ public class FoodImgService {
         foodImgRepository.save(foodImg);
     }
 
-    public void updateFoodImg(Long foodImgId, MultipartFile foodImgFile) throws IOException {
+    public void updateFoodImg(Long foodImgId, String explain ,MultipartFile foodImgFile) throws IOException {
         if (!foodImgFile.isEmpty()) {
             FoodImg savedFoodImg = foodImgRepository.findById(foodImgId)
                     .orElseThrow(EntityExistsException::new);
+            if (!savedFoodImg.getExplain().equals(explain)) {
+                savedFoodImg.updateExplain(explain);
+            }
             //기존이미지파일 삭제
             if (!savedFoodImg.getImgName().isEmpty()){
                 fileService.deleteFile(recipeImgLocation+"/"+savedFoodImg.getImgName());

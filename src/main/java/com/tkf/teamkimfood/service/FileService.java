@@ -12,7 +12,7 @@ import java.util.UUID;
 @Slf4j
 public class FileService {
     public String uploadFile(String uploadPath, String originalFileName, byte[] fileData) throws IOException {
-        //범용 공용 식별자, 랜덤으로 붙는거 쓸기요~
+        //범용 공용 식별자, 랜덤으로 붙는거 쓰겠다.
         UUID uuid = UUID.randomUUID();
         String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
         String savedFileName = uuid.toString()+extension;

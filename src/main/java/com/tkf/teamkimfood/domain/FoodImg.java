@@ -20,6 +20,7 @@ public class FoodImg {
     private String originImgName;
     private String imgUrl;
     private String repImgYn;//대표 이미지 여부
+    private String explain;
 
     @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -46,6 +47,10 @@ public class FoodImg {
         this.imgName = imgName;
         this.originImgName = originImgName;
         this.imgUrl = imgUrl;
+    }
+
+    public void updateExplain(String explain) {
+        this.explain = explain;
     }
     //이미지 대표사진 추가하기용
     public void setRepImgYn(String repImgYn) {

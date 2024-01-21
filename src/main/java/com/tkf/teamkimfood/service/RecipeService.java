@@ -182,7 +182,7 @@ public class RecipeService {
             List<Long> foodImgIds = foodImgDto.getFoodImgIds();
             //이미지수정
             for (int i = 0; i < foodImgFileList.size(); i++) {
-                foodImgService.updateFoodImg(foodImgIds.get(i), foodImgFileList.get(i));
+                foodImgService.updateFoodImg(foodImgIds.get(i), foodImgDto.getExplain() ,foodImgFileList.get(i));
             }
         }
         recipeRepository.save(recipe);
