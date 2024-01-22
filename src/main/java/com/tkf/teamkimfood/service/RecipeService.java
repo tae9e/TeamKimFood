@@ -6,8 +6,7 @@ import com.tkf.teamkimfood.domain.Recipe;
 import com.tkf.teamkimfood.domain.RecipeDetail;
 import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
 import com.tkf.teamkimfood.dto.*;
-import com.tkf.teamkimfood.dto.aboutrecipe.MemberWriteRecipeDto;
-import com.tkf.teamkimfood.dto.aboutrecipe.OneRecipeDto;
+import com.tkf.teamkimfood.dto.aboutrecipe.*;
 import com.tkf.teamkimfood.exception.NoAuthorityException;
 import com.tkf.teamkimfood.repository.query.MemberQueryRepository;
 import com.tkf.teamkimfood.repository.query.RecipeQueryRepository;
@@ -165,7 +164,7 @@ public class RecipeService {
     }
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
     @Transactional
-    public Long updateRecipe(Long memberId ,Long recipeId, FoodImgDto foodImgDto,List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
+    public Long updateRecipe(Long memberId , Long recipeId, FoodImgDto foodImgDto, List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
         Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(memberId, recipeId);
         Recipe updateRecipe = Recipe.builder()
                 .title(recipeDto.getTitle())

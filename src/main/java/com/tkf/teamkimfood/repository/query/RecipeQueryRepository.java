@@ -7,10 +7,7 @@ import com.tkf.teamkimfood.domain.*;
 import com.tkf.teamkimfood.domain.prefer.QRecipeCategory;
 import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
 import com.tkf.teamkimfood.dto.*;
-import com.tkf.teamkimfood.dto.aboutrecipe.MemberWriteRecipeDto;
-import com.tkf.teamkimfood.dto.aboutrecipe.OneRecipeDto;
-import com.tkf.teamkimfood.dto.aboutrecipe.QMemberWriteRecipeDto;
-import com.tkf.teamkimfood.dto.aboutrecipe.QOneRecipeDto;
+import com.tkf.teamkimfood.dto.aboutrecipe.*;
 import com.tkf.teamkimfood.repository.recipe.RecipeCustomRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -23,7 +20,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
 import java.util.List;
 
 @Repository

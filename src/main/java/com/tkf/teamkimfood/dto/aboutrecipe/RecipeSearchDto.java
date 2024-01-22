@@ -1,4 +1,4 @@
-package com.tkf.teamkimfood.dto;
+package com.tkf.teamkimfood.dto.aboutrecipe;
 
 import lombok.Data;
 

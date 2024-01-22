@@ -1,15 +1,14 @@
 package com.tkf.teamkimfood.controller;
 
-import com.tkf.teamkimfood.dto.CategoryPreferenceDto;
+import com.tkf.teamkimfood.dto.aboutrecipe.CategoryPreferenceDto;
 import com.tkf.teamkimfood.dto.MainpageRecipeDto;
-import com.tkf.teamkimfood.dto.RecipeRequestVo;
-import com.tkf.teamkimfood.dto.RecipeSearchDto;
+import com.tkf.teamkimfood.dto.aboutrecipe.RecipeRequestVo;
+import com.tkf.teamkimfood.dto.aboutrecipe.RecipeSearchDto;
 import com.tkf.teamkimfood.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,5 +55,8 @@ public class RecipeController {
             return recipeService.getMain(recipeSearchDto, pageable);
         }
     }
+    //세부조회(댓글 필요)
+    //수정(댓글 필요)
+    //삭제(댓글 필요)
 
 }
