@@ -1,4 +1,4 @@
-package com.tkf.teamkimfood.domain.oauth;
+package com.tkf.teamkimfood.config.oauth;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;

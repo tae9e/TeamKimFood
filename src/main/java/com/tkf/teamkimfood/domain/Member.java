@@ -1,14 +1,14 @@
 package com.tkf.teamkimfood.domain;
 
-import com.tkf.teamkimfood.domain.oauth.OAuthProvider;
+import com.tkf.teamkimfood.config.oauth.OAuthProvider;
+import com.tkf.teamkimfood.constant.Role;
 import com.tkf.teamkimfood.domain.prefer.MemberPreference;
 import com.tkf.teamkimfood.domain.status.MemberRole;
+import com.tkf.teamkimfood.dto.MemberFormDto;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member")
 public class Member {
@@ -23,6 +24,10 @@ public class Member {
     @Id @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL, mappedBy = "member")
+    private RefreshToken refreshToken;
+
     private String name;
     private String password;
 
@@ -68,11 +73,15 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<FoodImg> foodImgs = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     //Oauth
     private OAuthProvider oAuthProvider;
     //여기를 통해 데이터 넣으세용 id는 멤버가 아직 만들어지기 전이라 임시로 넣었습니다. 추후 프론트랑 연결시 삭제하겠습니다.
     @Builder
-    public Member(Long id, String name, String password, String email, String nickname, String phoneNumber, MemberRole memberRole, LocalDateTime joinedDate, MemberPreference memberPreference, OAuthProvider oAuthProvider) {
+    public Member(Long id, String name, String password, String email, String nickname, String phoneNumber, MemberRole memberRole, LocalDateTime joinedDate,
+                  MemberPreference memberPreference, OAuthProvider oAuthProvider) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -87,6 +96,19 @@ public class Member {
     //테스트용 테스트가 끝나면 주석처리하시거나 삭제 해주세요
 
     // 레시피 작성 횟수 관련 - 다른곳으로 뺄 예정
+
+    public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder){
+        Member member = new Member();
+        member.setName(memberFormDto.getName());
+        String password = passwordEncoder.encode(memberFormDto.getPassword());
+        member.setPassword(password);
+        member.setEmail(memberFormDto.getEmail());
+        member.setNickname(memberFormDto.getNickname());
+        member.setPhoneNumber(memberFormDto.getPhoneNumber());
+        member.setRole(Role.USER);
+        return member;
+    }
+
 
 
 }

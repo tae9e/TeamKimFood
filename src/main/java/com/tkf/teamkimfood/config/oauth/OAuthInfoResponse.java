@@ -1,4 +1,4 @@
-package com.tkf.teamkimfood.domain.oauth;
+package com.tkf.teamkimfood.config.oauth;
 
 public interface OAuthInfoResponse {
     String getEmail();

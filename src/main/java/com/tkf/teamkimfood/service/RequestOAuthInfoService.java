@@ -1,9 +1,9 @@
 package com.tkf.teamkimfood.service;
 
-import com.tkf.teamkimfood.domain.oauth.OAuthInfoResponse;
-import com.tkf.teamkimfood.domain.oauth.OAuthLoginParams;
-import com.tkf.teamkimfood.domain.oauth.OAuthProvider;
-import com.tkf.teamkimfood.domain.oauth.OauthApiClient;
+import com.tkf.teamkimfood.config.oauth.OAuthInfoResponse;
+import com.tkf.teamkimfood.config.oauth.OAuthLoginParams;
+import com.tkf.teamkimfood.config.oauth.OAuthProvider;
+import com.tkf.teamkimfood.config.oauth.OauthApiClient;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

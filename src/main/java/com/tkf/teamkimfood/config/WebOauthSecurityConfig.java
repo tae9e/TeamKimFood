@@ -1,6 +1,7 @@
 package com.tkf.teamkimfood.config;
 
 import com.tkf.teamkimfood.config.jwt.JwtTokenProvider;
+import com.tkf.teamkimfood.config.oauth.OAuth2SuccessHandler;
 import com.tkf.teamkimfood.repository.query.RefreshTokenRespository;
 import com.tkf.teamkimfood.service.OAuthLoginService;
 import lombok.RequiredArgsConstructor;
@@ -10,21 +11,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Log4j2
 public class WebOauthSecurityConfig {
-    private final OAuthLoginService oAuthLoginService;
+
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtTokenProvider jwtTokenProvider;
-   // private final RefreshTokenRespository refreshTokenRepository;
+//    private final RefreshTokenRespository refreshTokenRepository;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
