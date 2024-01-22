@@ -1,19 +1,29 @@
-import React, {useEffect, useState} from "react";
-import axios from "axios";
+import React, { Component } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import Main from './component/Main';
+import LoginForm from './component/LoginForm';
+import Header from './component/Header/Header';
+import Footer from './component/Footer/Footer';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './component/Css/Layout.css';
 
-function App() {
-  const [data, setData] = useState('')
+class App extends Component {
 
-  useEffect(()=>{
-    axios.get('/api/data')
-        .then(res=> setData(res.data))
-        .catch(err=>console.log(err))
-  },[]);
-  return (
-    <div>
-      결과 : {data}
-    </div>
-  );
+    render() {
+        return(
+            <div className="App">
+                <Header />
+
+                <Routes>
+                    <Route exact path='/' Component={ Main } />
+                    <Route path='/login' Component={ LoginForm } />
+
+                </Routes>
+
+                <Footer />
+            </div>
+        )
+    }
 }
 
 export default App;
