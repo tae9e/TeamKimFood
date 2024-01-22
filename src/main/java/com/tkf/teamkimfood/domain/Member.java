@@ -1,7 +1,6 @@
 package com.tkf.teamkimfood.domain;
 
 import com.tkf.teamkimfood.config.oauth.OAuthProvider;
-import com.tkf.teamkimfood.constant.Role;
 import com.tkf.teamkimfood.domain.prefer.MemberPreference;
 import com.tkf.teamkimfood.domain.status.MemberRole;
 import com.tkf.teamkimfood.dto.MemberFormDto;
@@ -73,11 +72,10 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<FoodImg> foodImgs = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
 
     //Oauth
     private OAuthProvider oAuthProvider;
+
     //여기를 통해 데이터 넣으세용 id는 멤버가 아직 만들어지기 전이라 임시로 넣었습니다. 추후 프론트랑 연결시 삭제하겠습니다.
     @Builder
     public Member(Long id, String name, String password, String email, String nickname, String phoneNumber, MemberRole memberRole, LocalDateTime joinedDate,
@@ -105,7 +103,8 @@ public class Member {
         member.setEmail(memberFormDto.getEmail());
         member.setNickname(memberFormDto.getNickname());
         member.setPhoneNumber(memberFormDto.getPhoneNumber());
-        member.setRole(Role.USER);
+        member.setMemberRole(MemberRole.USER);
+        //member.setRole(MemberRole.ADMIN);
         return member;
     }
 

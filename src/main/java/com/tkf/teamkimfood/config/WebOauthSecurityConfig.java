@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -46,7 +48,7 @@ public class WebOauthSecurityConfig {
 
         return http.build();
     }
-}
+
 
 //    @Bean
 //    public OAuth2SuccessHandler oAuth2SuccessHandler() {
@@ -65,4 +67,10 @@ public class WebOauthSecurityConfig {
 //    public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository() {
 //        return new OAuth2AuthorizationRequestBasedOnCookieRepository();
 //    }
+@Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+}
+}
+
 
