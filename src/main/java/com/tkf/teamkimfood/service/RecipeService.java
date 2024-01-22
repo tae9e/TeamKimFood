@@ -48,7 +48,7 @@ public class RecipeService {
 
     //레시피 저장...
     @Transactional
-    public Long saveRecipe(Long memberId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto, List<MultipartFile> foodImgFileList) throws IOException {
+    public Long saveRecipe(Long memberId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto, List<String> explains, List<MultipartFile> foodImgFileList) throws IOException {
         Member member = memberRepository.findOne(memberId);
         Recipe recipe = Recipe.builder()
                 .title(recipeDto.getTitle())
@@ -82,7 +82,7 @@ public class RecipeService {
             } else {
                 foodImg.setRepImgYn("N");
             }
-            foodImgService.saveFoodImg(foodImg, foodImgFileList.get(i));
+            foodImgService.saveFoodImg(foodImg, explains.get(i), foodImgFileList.get(i));
         }
         return recipe.getId();
     }
@@ -182,7 +182,7 @@ public class RecipeService {
             List<Long> foodImgIds = foodImgDto.getFoodImgIds();
             //이미지수정
             for (int i = 0; i < foodImgFileList.size(); i++) {
-                foodImgService.updateFoodImg(foodImgIds.get(i), foodImgDto.getExplain() ,foodImgFileList.get(i));
+                foodImgService.updateFoodImg(foodImgIds.get(i), foodImgDto.getExplains().get(i) ,foodImgFileList.get(i));
             }
         }
         recipeRepository.save(recipe);

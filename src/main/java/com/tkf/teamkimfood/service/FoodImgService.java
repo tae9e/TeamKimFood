@@ -21,7 +21,7 @@ public class FoodImgService {
     private final FileService fileService;
     private final FoodImgRepository foodImgRepository;
 
-    public void saveFoodImg(FoodImg foodImg, MultipartFile foodImgFile) throws IOException {
+    public void saveFoodImg(FoodImg foodImg, String explain, MultipartFile foodImgFile) throws IOException {
         String originImgName = foodImgFile.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";
@@ -30,7 +30,8 @@ public class FoodImgService {
             imgName = fileService.uploadFile(recipeImgLocation, originImgName, foodImgFile.getBytes());
             imgUrl = "/images/recipe/"+imgName;
         }
-        //립력받은 상품 이미지 정보 저장
+        //입력받은 상품 이미지 정보 저장
+        foodImg.updateExplain(explain);
         foodImg.updateItemImg(imgName, originImgName,imgUrl);
         foodImgRepository.save(foodImg);
     }

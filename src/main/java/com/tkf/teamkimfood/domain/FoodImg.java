@@ -48,7 +48,7 @@ public class FoodImg {
         this.originImgName = originImgName;
         this.imgUrl = imgUrl;
     }
-
+    //설명 추가용
     public void updateExplain(String explain) {
         this.explain = explain;
     }
