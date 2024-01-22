@@ -1,7 +1,7 @@
 package com.tkf.teamkimfood.service;
 
 
-import com.tkf.teamkimfood.constant.Role;
+
 import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.domain.status.MemberRole;
 import com.tkf.teamkimfood.repository.MemberRepository;
