@@ -4,23 +4,18 @@ import com.tkf.teamkimfood.domain.FoodImg;
 import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.domain.Recipe;
 import com.tkf.teamkimfood.domain.RecipeDetail;
-import com.tkf.teamkimfood.domain.prefer.MemberPreference;
 import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
 import com.tkf.teamkimfood.dto.*;
 import com.tkf.teamkimfood.dto.aboutrecipe.MemberWriteRecipeDto;
 import com.tkf.teamkimfood.dto.aboutrecipe.OneRecipeDto;
 import com.tkf.teamkimfood.exception.NoAuthorityException;
-import com.tkf.teamkimfood.repository.FoodImgRepository;
 import com.tkf.teamkimfood.repository.query.MemberQueryRepository;
 import com.tkf.teamkimfood.repository.query.RecipeQueryRepository;
-import com.tkf.teamkimfood.repository.rank.RankQueryRepository;
-import com.tkf.teamkimfood.repository.rank.RankRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeCategoryRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeDetailRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -38,17 +31,16 @@ import java.util.List;
 public class RecipeService {
 
     private final FoodImgService foodImgService;
-    private final FoodImgRepository foodImgRepository;
     private final RecipeRepository recipeRepository;
     private final RecipeQueryRepository recipeQueryRepository;
     private final MemberQueryRepository memberRepository;
     private final RecipeDetailRepository recipeDetailRepository;
     private final RecipeCategoryRepository recipeCategoryRepository;
-    private final RankQueryRepository rankQueryRepository;
+
 
     //레시피 저장...
     @Transactional
-    public Long saveRecipe(Long memberId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto, List<String> explains, List<MultipartFile> foodImgFileList) throws IOException {
+    public Long saveRecipe(Long memberId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto, List<MultipartFile> foodImgFileList) throws IOException {
         Member member = memberRepository.findOne(memberId);
         Recipe recipe = Recipe.builder()
                 .title(recipeDto.getTitle())
@@ -82,7 +74,7 @@ public class RecipeService {
             } else {
                 foodImg.setRepImgYn("N");
             }
-            foodImgService.saveFoodImg(foodImg, explains.get(i), foodImgFileList.get(i));
+            foodImgService.saveFoodImg(foodImg, recipeDto.getFoodImgDtos().get(i).getExplains().get(i), foodImgFileList.get(i));
         }
         return recipe.getId();
     }
@@ -165,6 +157,10 @@ public class RecipeService {
 //                .toList();
 //    }
     public Page<MainpageRecipeDto> getMainForMember(CategoryPreferenceDto categoryPreferenceDto, RecipeSearchDto recipeSearchDto, Pageable pageable) {
+        Member member = memberRepository.findOne(categoryPreferenceDto.getId());
+        categoryPreferenceDto.setSituation(member.getMemberPreference().getSituation());
+        categoryPreferenceDto.setFoodStuff(member.getMemberPreference().getFoodStuff());
+        categoryPreferenceDto.setFoodNationType(member.getMemberPreference().getFoodNationType());
         return recipeQueryRepository.getAllWhereTypesOrderByWriteDay(categoryPreferenceDto, recipeSearchDto, pageable);
     }
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
