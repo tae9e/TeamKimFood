@@ -2,18 +2,24 @@ package com.tkf.teamkimfood.config;
 
 import com.tkf.teamkimfood.config.jwt.JwtTokenProvider;
 import com.tkf.teamkimfood.config.oauth.OAuth2SuccessHandler;
+import com.tkf.teamkimfood.repository.query.RefreshTokenRespository;
+import com.tkf.teamkimfood.service.OAuthLoginService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
+@Log4j2
 public class WebOauthSecurityConfig {
 
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
