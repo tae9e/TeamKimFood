@@ -1,7 +1,7 @@
 package com.tkf.teamkimfood.infra;
 
-import com.tkf.teamkimfood.domain.oauth.OAuthLoginParams;
-import com.tkf.teamkimfood.domain.oauth.OAuthProvider;
+import com.tkf.teamkimfood.config.oauth.OAuthLoginParams;
+import com.tkf.teamkimfood.config.oauth.OAuthProvider;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 

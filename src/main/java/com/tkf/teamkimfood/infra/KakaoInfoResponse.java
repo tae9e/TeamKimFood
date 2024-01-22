@@ -2,8 +2,8 @@ package com.tkf.teamkimfood.infra;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tkf.teamkimfood.domain.oauth.OAuthInfoResponse;
-import com.tkf.teamkimfood.domain.oauth.OAuthProvider;
+import com.tkf.teamkimfood.config.oauth.OAuthInfoResponse;
+import com.tkf.teamkimfood.config.oauth.OAuthProvider;
 import lombok.Getter;
 //현재 로그인한 사용자 정보 불러오기
 public class KakaoInfoResponse implements OAuthInfoResponse {

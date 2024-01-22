@@ -13,7 +13,7 @@ public class AuthTokensGenerator {
         private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // Access Token 유효 기간 30분
         private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // Refrech Token 유효 기간 7일
 
-        private final JwtTokenProvider jwtTokenProviderT;
+        private final JwtTokenProvider jwtTokenProvider;
 
         public AuthTokens generate(Long memberId) {
             long now = (new Date()).getTime();
@@ -21,14 +21,14 @@ public class AuthTokensGenerator {
             Date refreshTokenExpiredAt = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
 
             String subject = memberId.toString();
-            String accessToken = jwtTokenProviderT.generate(subject, accessTokenExpiredAt);
-            String refreshToken = jwtTokenProviderT.generate(subject, refreshTokenExpiredAt);
+            String accessToken = jwtTokenProvider.generate(subject, accessTokenExpiredAt);
+            String refreshToken = jwtTokenProvider.generate(subject, refreshTokenExpiredAt);
 
             return AuthTokens.of(accessToken, refreshToken, BEARER_TYPE, ACCESS_TOKEN_EXPIRE_TIME / 1000L);
         }
 
         public Long extractMemberId(String accessToken) {
-            return Long.valueOf(jwtTokenProviderT.extractSubject(accessToken));
+            return Long.valueOf(jwtTokenProvider.extractSubject(accessToken));
         }
     }
 

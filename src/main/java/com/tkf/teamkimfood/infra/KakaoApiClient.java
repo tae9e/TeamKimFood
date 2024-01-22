@@ -1,9 +1,9 @@
 package com.tkf.teamkimfood.infra;
 
-import com.tkf.teamkimfood.domain.oauth.OAuthInfoResponse;
-import com.tkf.teamkimfood.domain.oauth.OAuthLoginParams;
-import com.tkf.teamkimfood.domain.oauth.OAuthProvider;
-import com.tkf.teamkimfood.domain.oauth.OauthApiClient;
+import com.tkf.teamkimfood.config.oauth.OAuthInfoResponse;
+import com.tkf.teamkimfood.config.oauth.OAuthLoginParams;
+import com.tkf.teamkimfood.config.oauth.OAuthProvider;
+import com.tkf.teamkimfood.config.oauth.OauthApiClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
