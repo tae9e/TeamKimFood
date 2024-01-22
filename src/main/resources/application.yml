@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 #spring:
 #  datasource:
-#    url: jdbc:mysql://awt??/db??????useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+#    url: jdbc:mysql://database-1.cnnqb3glnnoa.ap-northeast-2.rds.amazonaws.com/teamkimfood
 #    username: admin
 #    password: admin1234
 #    driver-class-name: com.mysql.cj.jdbc.Driver
@@ -35,6 +35,7 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+
 recipeImgLocation: c:/recipe/images
 
 server:
