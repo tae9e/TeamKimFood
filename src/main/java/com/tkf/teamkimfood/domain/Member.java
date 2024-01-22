@@ -23,8 +23,6 @@ public class Member {
 
     @Id @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL, mappedBy = "member")
-    private RefreshToken refreshToken;
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL, mappedBy = "member")
