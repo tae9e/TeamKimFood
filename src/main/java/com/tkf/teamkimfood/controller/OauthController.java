@@ -24,6 +24,7 @@ public class OauthController {
     private final OAuthLoginService oAuthLoginService;
 
     public OauthController(OAuthLoginService oAuthLoginService) {
+
         this.oAuthLoginService = oAuthLoginService;
     }
 

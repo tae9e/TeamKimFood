@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+//RefreshToken 저장, 관리
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity

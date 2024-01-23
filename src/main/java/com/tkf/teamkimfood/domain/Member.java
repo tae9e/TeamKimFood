@@ -20,6 +20,7 @@ import java.util.List;
 @Table(name = "member")
 public class Member {
 
+
     @Id @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -74,6 +75,7 @@ public class Member {
 
     //Oauth
     private OAuthProvider oAuthProvider;
+
 
     //여기를 통해 데이터 넣으세용 id는 멤버가 아직 만들어지기 전이라 임시로 넣었습니다. 추후 프론트랑 연결시 삭제하겠습니다.
     @Builder

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+//토큰 정보
 @Getter
 @NoArgsConstructor
 public class KakaoTokens {
