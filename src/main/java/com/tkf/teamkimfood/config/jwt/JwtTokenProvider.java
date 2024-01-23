@@ -21,7 +21,6 @@ import java.util.Set;
 
 
 @Component
-@RequiredArgsConstructor
 public class JwtTokenProvider {
     private final Key key;
     private final JwtProperties jwtProperties;

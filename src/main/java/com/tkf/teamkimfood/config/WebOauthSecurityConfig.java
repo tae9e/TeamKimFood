@@ -31,13 +31,14 @@ public class WebOauthSecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthTokensGenerator authTokensGenerator;
     private final OAuthLoginService oAuthLoginService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(customizer -> customizer.disable()) // CSRF 보호 비활성화
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/public/**","/login/**").permitAll() // 특정 경로에 대한 접근 허용
+                                .requestMatchers("/public/**", "/login/**").permitAll() // 특정 경로에 대한 접근 허용
                                 .anyRequest().authenticated() // 다른 모든 요청은 인증 필요
                 );
 //                .formLogin(formLogincustomizer->formLogincustomizer // 로그인 페이지 및 로그인 처리 URL 설정
@@ -72,10 +73,12 @@ public class WebOauthSecurityConfig {
     public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository() {
         return new OAuth2AuthorizationRequestBasedOnCookieRepository();
     }
-//@Bean
-//    public PasswordEncoder passwordEncoder(){
-//        return new BCryptPasswordEncoder();
-//}
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+
+    }
 }
 
 
