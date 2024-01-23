@@ -43,14 +43,13 @@ public class Member {
     @ColumnDefault("0")
     private int grade;
 
-//    private boolean memberRecommend = false; 추후 랭킹관련 추가 예정
-//    private boolean recipeRecommend = false; 추후 랭킹관련 추가 예정
+    private boolean memberRecommend = false;
+    private boolean recipeRecommend = false;
     //멤버 레시피 갯수->01.15 : 따로 저장 할 필요 없이 findAll이후 List.size()해버리면 된다.
 //    @ColumnDefault("0")
 //    private int stack;
 
     private LocalDateTime joinedDate;
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Magazine> magazines = new ArrayList<>();
 

@@ -25,14 +25,14 @@ public class LoginController {
     @GetMapping("/member")
     public String loginMember(Model model){
     model.addAttribute("memberFormDto",new MemberFormDto());
-    return "login/MemberLogin";
+    return "login/memberLogin";
     }
 
     @PostMapping("/member")
     public String createMember(@Valid MemberFormDto memberFormDto , BindingResult bindingResult, Model model){
 
         if(bindingResult.hasErrors()){
-            return "/member/memberLogin";
+            return "/login/memberLogin";
         }
 
         try{
@@ -40,7 +40,7 @@ public class LoginController {
             memberService.saveMember(member);
         }catch(IllegalStateException e){
             model.addAttribute("errorMessage",e.getMessage());
-            return "/member/memberLogin";
+            return "/login/memberLogin";
         }
 
         return "redirect:/";
