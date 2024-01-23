@@ -13,7 +13,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
       # 프로젝트 시작시 create로 두시고 진행중엔 none나 validate로 해주세요
     properties:
       hibernate:
@@ -27,7 +27,7 @@ oauth:
   kakao:
     client-id: 69445a05dee5a6928649b416c9df1964
     client-secret: hxEg8JGhjQm7Np8bMd18vQWZhVOjcPm0
-    redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+    redirect-uri: http://localhost:8080/auth/kakao/callback
     oauth-url: https://kauth.kakao.com
     api-url: https://kapi.kakao.com
 

@@ -14,6 +14,7 @@ public class KakaoLoginParams implements OAuthLoginParams {
         return OAuthProvider.KAKAO;
     }
 
+    //OAuth 인증 요청에 필요한 파라미터 생성
     @Override
         public MultiValueMap<String, String> makeBody() {
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();

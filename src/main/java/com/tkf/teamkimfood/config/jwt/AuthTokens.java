@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//토큰 인증 정보 저장
 public class AuthTokens {
     private String accessToken;
     private String refreshToken;

@@ -5,6 +5,7 @@ package com.tkf.teamkimfood.service;
 import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.domain.status.MemberRole;
 import com.tkf.teamkimfood.repository.MemberRepository;
+import com.tkf.teamkimfood.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +27,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
 
     public Member saveMember(Member member){
         validateDuplicateMember(member);
@@ -45,8 +47,8 @@ public class MemberService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-       Member member = memberRepository.findByEmail(email)
-               .orElseThrow(()->new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        com.tkf.teamkimfood.domain.User user = userRepository.findByMemberEmail(email)
+                .orElseThrow(()->new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
        //권한 부여 (필요에 따라 주석 처리해서 사용하세요)
         List<GrantedAuthority> authorityList = new ArrayList<>();
@@ -55,13 +57,14 @@ public class MemberService implements UserDetailsService {
 //            authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 //        }
 
-        if(member.getMemberRole().equals(MemberRole.USER)){
+        if(user.getMember().getMemberRole().equals(MemberRole.USER)){
             authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
-        }
+        }else if(user.getMember().getMemberRole().equals(MemberRole.ADMIN))
+            authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
            return User.builder()
-                   .username(member.getEmail())
-                   .password(member.getPassword())
+                   .username(user.getMember().getEmail())
+                   .password(user.getMember().getPassword())
                    .authorities(authorityList)
                    .build();
 

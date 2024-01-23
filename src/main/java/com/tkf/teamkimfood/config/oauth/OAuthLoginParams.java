@@ -7,6 +7,8 @@ import org.springframework.util.MultiValueMap;
 public interface OAuthLoginParams {
 
     OAuthProvider oAuthProvider();
+
+    //OAuth 로그인 요청을 위한 HTTP 요청 바디를 생성
     MultiValueMap<String, String> makeBody();
 
 }

@@ -20,6 +20,7 @@ import java.util.List;
 @Table(name = "member")
 public class Member {
 
+
     @Id @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,14 +44,13 @@ public class Member {
     @ColumnDefault("0")
     private int grade;
 
-//    private boolean memberRecommend = false; 추후 랭킹관련 추가 예정
-//    private boolean recipeRecommend = false; 추후 랭킹관련 추가 예정
+    private boolean memberRecommend = false;
+    private boolean recipeRecommend = false;
     //멤버 레시피 갯수->01.15 : 따로 저장 할 필요 없이 findAll이후 List.size()해버리면 된다.
 //    @ColumnDefault("0")
 //    private int stack;
 
     private LocalDateTime joinedDate;
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Magazine> magazines = new ArrayList<>();
 
@@ -75,6 +75,7 @@ public class Member {
 
     //Oauth
     private OAuthProvider oAuthProvider;
+
 
     //여기를 통해 데이터 넣으세용 id는 멤버가 아직 만들어지기 전이라 임시로 넣었습니다. 추후 프론트랑 연결시 삭제하겠습니다.
     @Builder

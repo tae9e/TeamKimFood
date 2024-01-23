@@ -28,4 +28,6 @@ public class MemberFormDto {
     @Pattern(regexp = "^010[.-]?(\\d{3}|\\d{4})[-]?(\\d{4})$",message = "전화번호는 000-0000-0000으로 작성해주세요. ")
     private String phoneNumber;
 
+
+
 }

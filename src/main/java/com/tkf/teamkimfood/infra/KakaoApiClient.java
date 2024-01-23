@@ -14,7 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-
+//Kakao Api와의 연결 및 요청 처리
 @Component
 @RequiredArgsConstructor
 public class KakaoApiClient implements OauthApiClient {
@@ -35,9 +35,11 @@ public class KakaoApiClient implements OauthApiClient {
 
     @Override
     public OAuthProvider oAuthProvider() {
+
         return OAuthProvider.KAKAO;
     }
 
+    //Kakao로부터 Access토큰 요청
     @Override
     public String requestAccessToken(OAuthLoginParams params) {
         String url = authUrl + "/oauth/token";
@@ -57,6 +59,7 @@ public class KakaoApiClient implements OauthApiClient {
         return response.getAccessToken();
     }
 
+    //액세스 토큰을 이용해 사용자 정보 요청
     @Override
     public OAuthInfoResponse requestOauthInfo(String accessToken) {
         String url = apiUrl + "/v2/user/me";

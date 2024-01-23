@@ -7,6 +7,7 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
+
 public class AuthTokensGenerator {
         //인증 타입으로 JWT 토큰 사용
         private static final String BEARER_TYPE = "Bearer";
@@ -15,6 +16,7 @@ public class AuthTokensGenerator {
 
         private final JwtTokenProvider jwtTokenProvider;
 
+        //Access토큰과 Refresh 토큰 생성
         public AuthTokens generate(Long memberId) {
             long now = (new Date()).getTime();
             Date accessTokenExpiredAt = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
@@ -27,6 +29,7 @@ public class AuthTokensGenerator {
             return AuthTokens.of(accessToken, refreshToken, BEARER_TYPE, ACCESS_TOKEN_EXPIRE_TIME / 1000L);
         }
 
+        //accessToken에서 회원 ID추출
         public Long extractMemberId(String accessToken) {
             return Long.valueOf(jwtTokenProvider.extractSubject(accessToken));
         }

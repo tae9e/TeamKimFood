@@ -3,15 +3,21 @@ package com.tkf.teamkimfood.config.oauth;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class OAuthInfoResponseImpl implements OAuthInfoResponse{
-    private final String email;
-    private final String nickName;
-    private final OAuthProvider oAuthProvider;
+public class OAuthInfoResponseImpl implements OAuthInfoResponse {
 
+    private String email;
+    private String nickName;
+    private OAuthProvider oAuthProvider;
+
+    public OAuthInfoResponseImpl(String email, String nickName, OAuthProvider oAuthProvider) {
+        this.email = email;
+        this.nickName = nickName;
+        this.oAuthProvider = oAuthProvider;
+    }
 
     @Override
     public String getEmail() {
-        return email;
+       return email;
     }
 
     @Override
