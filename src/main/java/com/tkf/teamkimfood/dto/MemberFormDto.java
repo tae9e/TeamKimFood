@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MemberFormDto {
-    @NotEmpty(message = "이름은 필수 입력값입니다.")
+    @NotEmpty(message = "이름을 입력해주세요.")
     private String name;
 
     @NotEmpty(message = "비밀번호는 필수 입력값입니다.")
@@ -27,5 +27,7 @@ public class MemberFormDto {
     @NotEmpty(message = "전화번호를 입력해주세요")
     @Pattern(regexp = "^010[.-]?(\\d{3}|\\d{4})[-]?(\\d{4})$",message = "전화번호는 000-0000-0000으로 작성해주세요. ")
     private String phoneNumber;
+
+
 
 }
