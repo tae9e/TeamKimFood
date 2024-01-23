@@ -1,9 +1,13 @@
 package com.tkf.teamkimfood.config;
 
+import com.tkf.teamkimfood.config.jwt.AuthTokensGenerator;
 import com.tkf.teamkimfood.config.jwt.JwtTokenProvider;
+import com.tkf.teamkimfood.config.oauth.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.tkf.teamkimfood.config.oauth.OAuth2SuccessHandler;
 import com.tkf.teamkimfood.repository.query.RefreshTokenRespository;
+import com.tkf.teamkimfood.service.OAuth2UserCustomService;
 import com.tkf.teamkimfood.service.OAuthLoginService;
+import com.tkf.teamkimfood.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -20,13 +24,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableWebSecurity
+//@EnableWebSecurity
 @Log4j2
 public class WebOauthSecurityConfig {
 
-    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtTokenProvider jwtTokenProvider;
-//    private final RefreshTokenRespository refreshTokenRepository;
+    private final AuthTokensGenerator authTokensGenerator;
+    private final OAuthLoginService oAuthLoginService;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -50,27 +54,28 @@ public class WebOauthSecurityConfig {
     }
 
 
-//    @Bean
-//    public OAuth2SuccessHandler oAuth2SuccessHandler() {
-//        return new OAuth2SuccessHandler(jwtTokenProvider,
-//                refreshTokenRepository,
-//                oAuth2AuthorizationRequestBasedOnCookieRepository(),
-//                userService);
-//    }
-//
-//    @Bean
-//    public TokenAuthenticationFilter tokenAuthenticationFilter() {
-//        return new TokenAuthenticationFilter(jwtTokenProvider);
-//    }
-//
-//    @Bean
-//    public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository() {
-//        return new OAuth2AuthorizationRequestBasedOnCookieRepository();
-//    }
-@Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-}
+    @Bean
+    public OAuth2SuccessHandler oAuth2SuccessHandler() {
+        return new OAuth2SuccessHandler(
+                oAuthLoginService,
+                authTokensGenerator,
+                oAuth2AuthorizationRequestBasedOnCookieRepository());
+    }
+
+
+    @Bean
+    public TokenAuthenticationFilter tokenAuthenticationFilter() {
+        return new TokenAuthenticationFilter(jwtTokenProvider);
+    }
+
+    @Bean
+    public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository() {
+        return new OAuth2AuthorizationRequestBasedOnCookieRepository();
+    }
+//@Bean
+//    public PasswordEncoder passwordEncoder(){
+//        return new BCryptPasswordEncoder();
+//}
 }
 
 
