@@ -62,11 +62,12 @@ public class RecipeController {
     }
     //세부조회(댓글 필요)
     @GetMapping("recipes/{id}")
-    public RecipeNCommentVo viewOne(@PathVariable("id")Long recipeId){
+    public ResponseEntity<RecipeNCommentVo> viewOne(@PathVariable("id")Long recipeId){
         OneRecipeDto oneRecipeDto = recipeService.viewOne(recipeId);
         //현재 댓글은 빈 객체 돌려줌
         CommentDto commentDto = new CommentDto();//코멘트 service 구현 완료시 수정예정.
-        return new RecipeNCommentVo(oneRecipeDto, commentDto);
+        RecipeNCommentVo recipeNCommentVo = new RecipeNCommentVo(oneRecipeDto, commentDto);
+        return ResponseEntity.ok(recipeNCommentVo);
     }
     //수정
     @PutMapping("recipes/{id}")
@@ -91,6 +92,17 @@ public class RecipeController {
             throw new RuntimeException("로그인이 확인되지 않습니다.");
         }
     }
-    //삭제(댓글 필요)
 
+    //삭제
+    @DeleteMapping("recipes/{id}/delete")
+    public ResponseEntity<String> deleteRecipe(@PathVariable("id")Long recipeId, @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = getUserId(userDetails);
+        Boolean success = recipeService.deleteRecipe(userId, recipeId);
+
+        if (success) {
+            return ResponseEntity.ok("성공적으로 삭제했습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("삭제에 실패했습니다. 본인이 작성한 레시피가 맞는지 확인 부탁드립니다.");
+        }
+    }
 }

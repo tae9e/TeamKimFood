@@ -204,10 +204,11 @@ public class RecipeService {
         return recipeQueryRepository.getAllOrderByViewCount(pageable);
     }
     //레시피 삭제
-    public void deleteRecipe(Long memberId, Long recipeId) {
+    public Boolean deleteRecipe(Long memberId, Long recipeId) {
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow();
         if (memberId.equals(recipe.getMember().getId())) {
             recipeRepository.delete(recipe);
+            return true;
         } else {
             //권한 관련 예외문
             throw new NoAuthorityException("해당 레시피의 작성자가 아닙니다.");
