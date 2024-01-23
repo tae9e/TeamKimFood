@@ -52,6 +52,7 @@ public class RecipeController {
         Pageable pageable = PageRequest.of(page, size);
         if (memberId != null) {
             // memberId가 존재하는 경우
+            //멤버가 따로 관심사 설정 안했을경우도 만들기.
             CategoryPreferenceDto categoryPreferenceDto = new CategoryPreferenceDto();
             categoryPreferenceDto.setId(memberId);
             return recipeService.getMainForMember(categoryPreferenceDto, recipeSearchDto, pageable);

@@ -13,14 +13,14 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       # 프로젝트 시작시 create로 두시고 진행중엔 none나 validate로 해주세요
     properties:
       hibernate:
         show_sql: true
         format_sql: true
         default_batch_fetch_size: 100
-        # 페이징을 100개씩 해줍니다 해당 설정이 없다면 나중에 여러개 저장되어있는 db정보를 쿼리 1개씩 날림
+        # 해당 설정이 없다면 나중에 여러개 저장되어있는 db정보를 쿼리 1개씩 날림
     database-platform: org.hibernate.dialect.MySQLDialect
 
 oauth:

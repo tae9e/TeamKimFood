@@ -13,7 +13,7 @@ public class FoodImgDto {
     private String originImgName;
     private String imgUrl;
     private String repImgYn;//대표 이미지 여부
-    private List<String> explains;
+    private List<String> explanations;
     private List<Long> foodImgIds = new ArrayList<>();
 
     public static FoodImgDto imgToDto (FoodImg foodImg) {
