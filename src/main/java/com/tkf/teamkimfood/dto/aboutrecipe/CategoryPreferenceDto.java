@@ -7,7 +7,7 @@ import lombok.Data;
 public class CategoryPreferenceDto {
 
     private Long id;
-    private String Situation;
+    private String situation;
     private String foodStuff;
     private String foodNationType;
 
@@ -17,7 +17,7 @@ public class CategoryPreferenceDto {
     @Builder
     public CategoryPreferenceDto(Long id,String situation, String foodStuff, String foodNationType) {
         this.id = id;
-        this.Situation = situation;
+        this.situation = situation;
         this.foodStuff = foodStuff;
         this.foodNationType = foodNationType;
     }
