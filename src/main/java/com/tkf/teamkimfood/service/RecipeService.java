@@ -165,23 +165,28 @@ public class RecipeService {
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
     @Transactional
     public Long updateRecipe(Long memberId , Long recipeId, FoodImgDto foodImgDto, List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
-        Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(memberId, recipeId);
-        Recipe updateRecipe = Recipe.builder()
-                .title(recipeDto.getTitle())
-                .content(recipeDto.getContent())
-                .correctionDate(LocalDateTime.now())
-                .build();
-        //레시피 수정 적용
-        recipe.updateWith(updateRecipe);
-        if (foodImgDto != null) {
-            List<Long> foodImgIds = foodImgDto.getFoodImgIds();
-            //이미지수정
-            for (int i = 0; i < foodImgFileList.size(); i++) {
-                foodImgService.updateFoodImg(foodImgIds.get(i), foodImgDto.getExplains().get(i) ,foodImgFileList.get(i));
+        Recipe checking = recipeRepository.findById(recipeId).orElseThrow();
+        if (checking.getMember().getId().equals(memberId)) {
+            Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(memberId, recipeId);
+            Recipe updateRecipe = Recipe.builder()
+                    .title(recipeDto.getTitle())
+                    .content(recipeDto.getContent())
+                    .correctionDate(LocalDateTime.now())
+                    .build();
+            //레시피 수정 적용
+            recipe.updateWith(updateRecipe);
+            if (foodImgDto != null) {
+                List<Long> foodImgIds = foodImgDto.getFoodImgIds();
+                //이미지수정
+                for (int i = 0; i < foodImgFileList.size(); i++) {
+                    foodImgService.updateFoodImg(foodImgIds.get(i), foodImgDto.getExplains().get(i), foodImgFileList.get(i));
+                }
             }
+            recipeRepository.save(recipe);
+            return recipe.getId();
+        }else {
+            return null;
         }
-        recipeRepository.save(recipe);
-        return recipe.getId();
     }
 
     //조회수 기준으로 조회요청시
