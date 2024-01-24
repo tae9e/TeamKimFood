@@ -1,13 +1,10 @@
 package com.tkf.teamkimfood.domain;
 
-import com.tkf.teamkimfood.dto.RecipeDetailDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @NoArgsConstructor
@@ -23,6 +20,7 @@ public class RecipeDetail {
     //용량
     private String dosage;
 
+    @BatchSize(size = 100)
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;

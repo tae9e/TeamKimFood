@@ -5,9 +5,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
 @Table(name = "foodimg")
 public class FoodImg {
@@ -19,19 +20,24 @@ public class FoodImg {
     private String originImgName;
     private String imgUrl;
     private String repImgYn;//대표 이미지 여부
+    private String explanation;
 
+    @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "foodfile_id")
     private FoodFile foodFile;
 
+    @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "magazines_id")
     private Magazine magazine;
 
+    @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
+    @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -42,6 +48,15 @@ public class FoodImg {
         this.originImgName = originImgName;
         this.imgUrl = imgUrl;
     }
+    //설명 추가용
+    public void updateExplain(String explanation) {
+        this.explanation = explanation;
+    }
+    //이미지 대표사진 추가하기용
+    public void setRepImgYn(String repImgYn) {
+        this.repImgYn = repImgYn;
+    }
+
     //연관관계
     public void setFoodFile(FoodFile foodFile){
         this.foodFile = foodFile;

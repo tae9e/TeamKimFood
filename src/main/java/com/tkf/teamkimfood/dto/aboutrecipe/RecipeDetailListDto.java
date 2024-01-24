@@ -1,6 +1,7 @@
-package com.tkf.teamkimfood.dto;
+package com.tkf.teamkimfood.dto.aboutrecipe;
 
 import com.tkf.teamkimfood.domain.RecipeDetail;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -17,10 +18,17 @@ public class RecipeDetailListDto {
                 .dosage(dosage)
                 .build();
     }
+    public static RecipeDetailListDto toDto(RecipeDetail recipeDetail) {
+        return  RecipeDetailListDto.builder()
+                .ingredients(recipeDetail.getIngredients())
+                .dosage(recipeDetail.getDosage())
+                .build();
+    }
 
     public RecipeDetailListDto() {
     }
 
+    @Builder
     public RecipeDetailListDto(String ingredients, String dosage) {
         this.ingredients = ingredients;
         this.dosage = dosage;

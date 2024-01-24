@@ -4,10 +4,12 @@ import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.domain.Recipe;
 import com.tkf.teamkimfood.domain.RecipeDetail;
 import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
-import com.tkf.teamkimfood.dto.CategoryPreferenceDto;
-import com.tkf.teamkimfood.dto.RecipeDetailDto;
-import com.tkf.teamkimfood.dto.RecipeDetailListDto;
-import com.tkf.teamkimfood.dto.RecipeDto;
+import com.tkf.teamkimfood.dto.aboutrecipe.CategoryPreferenceDto;
+import com.tkf.teamkimfood.dto.aboutrecipe.RecipeDetailDto;
+import com.tkf.teamkimfood.dto.aboutrecipe.RecipeDetailListDto;
+import com.tkf.teamkimfood.dto.aboutrecipe.RecipeDto;
+import com.tkf.teamkimfood.dto.aboutrecipe.MemberWriteRecipeDto;
+import com.tkf.teamkimfood.repository.query.RecipeQueryRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeCategoryRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeDetailRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeRepository;
@@ -17,6 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -40,11 +45,14 @@ class RecipeServiceTest {
     RecipeCategoryRepository recipeCategoryRepository;
     @Autowired
     RecipeDetailQueryRepository recipeDetailQueryRepository;
+    @Autowired
+    RecipeQueryRepository recipeQueryRepository;
 
     //아직 다른 엔티티들은 미구현이라 없음
     public Member createMember() {
         return Member.builder()
                 .id(1L)//테스트 하시기전에 생성자에 id도 넣어주세요
+                .nickname("test")
                 .build();
     }
     public CategoryPreferenceDto createCategoryPreferenceDto() {
@@ -112,5 +120,44 @@ class RecipeServiceTest {
         //then
         assertNotNull(id1, "값이 있습니다.");
         assertEquals(id1,id2,id3);//값이 같다.
+    }
+    @Test
+    void 레시피내가쓴거조회() throws Exception {
+        //given
+        Member member = createMember();
+        RecipeDto recipeDto = createRecipeDto();
+        CategoryPreferenceDto categoryPreferenceDto = createCategoryPreferenceDto();
+        List<RecipeDetailListDto> recipeDetailListDto = createRecipeDetailListDtos();
+        
+        //when
+        Recipe recipe = Recipe.builder()
+                .title(recipeDto.getTitle())
+                .content(recipeDto.getContent())
+                .writeDate(LocalDateTime.now())
+                .correctionDate(LocalDateTime.now())
+                .build();
+        RecipeCategory recipeCategory = RecipeCategory.builder()
+                .foodNationType(categoryPreferenceDto.getFoodNationType())
+                .foodStuff(categoryPreferenceDto.getFoodStuff())
+                .situation(categoryPreferenceDto.getSituation())
+                .build();
+        RecipeDetailDto recipeDetailDto = new RecipeDetailDto();
+        List<RecipeDetail> recipeDetails = recipeDetailDto.ListDtoToListEntity(recipeDetailListDto);
+
+        recipe.createRecipe(recipeDetails, member, recipeCategory);
+
+        recipeRepository.save(recipe);
+        recipeCategory.setRecipe(recipe);//연관관계 메소드 꼭 해줘야함. 아니면 NullPointException납니다.+JPA save시 레시피 아이디값이 안들어갑니다.
+        recipeCategoryRepository.save(recipeCategory);//레시피와
+        for (RecipeDetail recipeDetail : recipeDetails) {//꼭 해줘야함. 아니면 NullPointException납니다.
+            recipeDetail.setRecipe(recipe);//레시피와 같이 들어가서 여기서 해결
+        }
+        recipeDetailRepository.saveAll(recipeDetails);
+        Pageable pageable = PageRequest.of(0, 10); // 0번째 페이지, 페이지당 10개의 항목
+        Page<MemberWriteRecipeDto> recipesWriteByMemberId = recipeQueryRepository.getRecipesWriteByMemberId(1L, pageable);
+
+        //then
+        assertNotNull(recipesWriteByMemberId);
+        
     }
 }

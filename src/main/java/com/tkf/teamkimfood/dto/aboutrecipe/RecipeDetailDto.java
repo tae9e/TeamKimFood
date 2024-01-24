@@ -1,4 +1,4 @@
-package com.tkf.teamkimfood.dto;
+package com.tkf.teamkimfood.dto.aboutrecipe;
 
 import com.tkf.teamkimfood.domain.RecipeDetail;
 import lombok.Data;
@@ -16,6 +16,11 @@ public class RecipeDetailDto {
     public List<RecipeDetail> ListDtoToListEntity(List<RecipeDetailListDto> recipeDetailListDtos) {
         return recipeDetailListDtos.stream()
                 .map(RecipeDetailListDto::toEntity)
+                .collect(Collectors.toList());
+    }
+    public List<RecipeDetailListDto> EntityToListDto(List<RecipeDetail> recipeDetails) {
+        return recipeDetails.stream()
+                .map(RecipeDetailListDto::toDto)
                 .collect(Collectors.toList());
     }
 }

@@ -4,6 +4,7 @@ import com.tkf.teamkimfood.domain.FoodImg;
 import com.tkf.teamkimfood.repository.FoodImgRepository;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class FoodImgService {
     @Value("${recipeImgLocation}")
     private String recipeImgLocation;
@@ -21,7 +23,7 @@ public class FoodImgService {
     private final FileService fileService;
     private final FoodImgRepository foodImgRepository;
 
-    public void saveFoodImg(FoodImg foodImg, MultipartFile foodImgFile) throws IOException {
+    public void saveFoodImg(FoodImg foodImg, String explanation, MultipartFile foodImgFile) throws IOException {
         String originImgName = foodImgFile.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";
@@ -30,15 +32,19 @@ public class FoodImgService {
             imgName = fileService.uploadFile(recipeImgLocation, originImgName, foodImgFile.getBytes());
             imgUrl = "/images/recipe/"+imgName;
         }
-        //립력받은 상품 이미지 정보 저장
+        //입력받은 상품 이미지 정보 저장
+        foodImg.updateExplain(explanation);
         foodImg.updateItemImg(imgName, originImgName,imgUrl);
         foodImgRepository.save(foodImg);
     }
 
-    public void updateFoodImg(Long foodImgId, MultipartFile foodImgFile) throws IOException {
+    public void updateFoodImg(Long foodImgId, String explanation ,MultipartFile foodImgFile) throws IOException {
         if (!foodImgFile.isEmpty()) {
             FoodImg savedFoodImg = foodImgRepository.findById(foodImgId)
                     .orElseThrow(EntityExistsException::new);
+            if (!savedFoodImg.getExplanation().equals(explanation)) {
+                savedFoodImg.updateExplain(explanation);
+            }
             //기존이미지파일 삭제
             if (!savedFoodImg.getImgName().isEmpty()){
                 fileService.deleteFile(recipeImgLocation+"/"+savedFoodImg.getImgName());
