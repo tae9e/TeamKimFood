@@ -4,7 +4,6 @@ class Footer extends Component {
     render () {
         return (
             <footer className="footer">
-                <container className="footer-container">
                     <div className="ft_r">
                         <ul>
                             <li className="ft_li"><a href="#n">개인정보처리방침</a></li>
@@ -17,7 +16,6 @@ class Footer extends Component {
                         <span>Tel : 02-1234-5678</span>
                     </div>
                     <p>COPYRIGHT TeamKim, ALL RIGHTS RESERVED.{this.props.name}</p>
-                </container>
             </footer>
         );
     }

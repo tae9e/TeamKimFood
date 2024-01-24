@@ -12,7 +12,7 @@ function TopNav() {
     return (
         <header>
             <div className="hd_top">
-                <span className="logo"><a href="/main">My Recipe</a></span>
+                <span className="logo"><a href="/main">YoriJori</a></span>
                     <Form className="d-flex">
                         <Form.Control
                             type="search"
@@ -29,7 +29,7 @@ function TopNav() {
             </div>
 
             <Navbar expand="lg" className="bg-body-navbar">
-                <Container fluid id="contNav">
+                <Container fluid="true" id="contNav">
                     <Navbar.Toggle aria-controls="navbarScroll" />
                     <Navbar.Collapse id="navbarScroll">
                         <Nav
