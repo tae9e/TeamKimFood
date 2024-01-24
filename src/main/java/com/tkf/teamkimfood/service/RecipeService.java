@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,7 +40,7 @@ public class RecipeService {
 
     //레시피 저장...
     @Transactional
-    public Long saveRecipe(Long memberId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto, List<MultipartFile> foodImgFileList) throws IOException {
+    public Long saveRecipe(Long memberId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto,List<String> explanations, List<MultipartFile> foodImgFileList) throws IOException {
         Member member = memberRepository.findOne(memberId);
         Recipe recipe = Recipe.builder()
                 .title(recipeDto.getTitle())
@@ -53,29 +54,37 @@ public class RecipeService {
                 .situation(categoryPreferenceDto.getSituation())
                 .build();
         RecipeDetailDto recipeDetailDto = new RecipeDetailDto();
-        List<RecipeDetail> recipeDetails = recipeDetailDto.ListDtoToListEntity(recipeDetailListDto);
+//        List<RecipeDetail> recipeDetails = recipeDetailDto.ListDtoToListEntity(recipeDetailListDto);
+        List<RecipeDetail> recipeDetails = new ArrayList<>();
+        for (RecipeDetailListDto detailListDto : recipeDetailListDto) {
+            RecipeDetail build = RecipeDetail.builder()
+                    .ingredients(detailListDto.getIngredients())
+                    .dosage(detailListDto.getDosage())
+                    .build();
+            recipeDetails.add(build);
+        }
 
-        recipe.createRecipe(recipeDetails, member, recipeCategory);
+        Recipe savedRecipe = recipe.createRecipe(recipeDetails, member, recipeCategory);
 
-        recipeRepository.save(recipe);
-        recipeCategory.setRecipe(recipe);//연관관계 메소드 영속성 유지를 위해 꼭 해줘야함. 아니면 NullPointException납니다.+JPA save시 레시피 아이디값이 안들어갑니다.
+        recipeRepository.save(savedRecipe);
+        recipeCategory.setRecipe(savedRecipe);//연관관계 메소드 영속성 유지를 위해 꼭 해줘야함. 아니면 NullPointException납니다.+JPA save시 레시피 아이디값이 안들어갑니다.
         recipeCategoryRepository.save(recipeCategory);//레시피와 같이 들어가서 여기서 해결
         for (RecipeDetail recipeDetail : recipeDetails) {//영속성 유지를 위해 꼭 해줘야함. 아니면 NullPointException납니다.
-            recipeDetail.setRecipe(recipe);//레시피와 같이 들어가서 여기서 해결
+            recipeDetail.setRecipe(savedRecipe);//레시피와 같이 들어가서 여기서 해결
         }
         recipeDetailRepository.saveAll(recipeDetails);
         //이미지 저장
         for (int i = 0; i < foodImgFileList.size(); i++) {
             FoodImg foodImg = new FoodImg();
-            foodImg.setRecipe(recipe);
+            foodImg.setRecipe(savedRecipe);
             if (i == 0) {
                 foodImg.setRepImgYn("Y");
             } else {
                 foodImg.setRepImgYn("N");
             }
-            foodImgService.saveFoodImg(foodImg, recipeDto.getFoodImgDtos().get(i).getExplanations().get(i), foodImgFileList.get(i));
+            foodImgService.saveFoodImg(foodImg, explanations.get(i) , foodImgFileList.get(i));
         }
-        return recipe.getId();
+        return savedRecipe.getId();
     }
 
     //게시글 1개 보려고 선택시 + 뷰카운트 올리기.
@@ -164,7 +173,7 @@ public class RecipeService {
     }
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
     @Transactional
-    public Long updateRecipe(Long memberId , Long recipeId, FoodImgDto foodImgDto, List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
+    public Long updateRecipe(Long memberId , Long recipeId, FoodImgDto foodImgDto, List<String> explanations, List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
         Recipe checking = recipeRepository.findById(recipeId).orElseThrow();
         if (checking.getMember().getId().equals(memberId)) {
             Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(memberId, recipeId);
@@ -179,7 +188,7 @@ public class RecipeService {
                 List<Long> foodImgIds = foodImgDto.getFoodImgIds();
                 //이미지수정
                 for (int i = 0; i < foodImgFileList.size(); i++) {
-                    foodImgService.updateFoodImg(foodImgIds.get(i), foodImgDto.getExplanations().get(i), foodImgFileList.get(i));
+                    foodImgService.updateFoodImg(foodImgIds.get(i), explanations.get(i), foodImgFileList.get(i));
                 }
             }
             recipeRepository.save(recipe);

@@ -4,6 +4,7 @@ import com.tkf.teamkimfood.domain.FoodImg;
 import com.tkf.teamkimfood.repository.FoodImgRepository;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class FoodImgService {
     @Value("${recipeImgLocation}")
     private String recipeImgLocation;

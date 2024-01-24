@@ -16,6 +16,7 @@ public class FoodImgDto {
     private List<String> explanations;
     private List<Long> foodImgIds = new ArrayList<>();
 
+
     public static FoodImgDto imgToDto (FoodImg foodImg) {
         FoodImgDto foodImgDto = new FoodImgDto();
         foodImgDto.imgName = foodImg.getImgName();
