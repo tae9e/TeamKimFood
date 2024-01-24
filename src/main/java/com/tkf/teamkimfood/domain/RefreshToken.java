@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 //RefreshToken 저장, 관리
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+
 public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +28,8 @@ public class RefreshToken {
         this.member = member;
         this.refreshToken = refreshToken;
     }
+
+
 
     public RefreshToken update(String newRefreshToken){
         this.refreshToken=newRefreshToken;

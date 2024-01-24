@@ -5,6 +5,7 @@ import com.tkf.teamkimfood.config.oauth.OAuthLoginParams;
 import com.tkf.teamkimfood.config.oauth.OAuthProvider;
 import com.tkf.teamkimfood.config.oauth.OauthApiClient;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,11 +18,12 @@ import org.springframework.web.client.RestTemplate;
 //Kakao Api와의 연결 및 요청 처리
 @Component
 @RequiredArgsConstructor
+@Setter
 public class KakaoApiClient implements OauthApiClient {
 
     private static final String GRANT_TYPE="authorization_code";
 
-    @Value("${oauth.kakao.api-url")
+    @Value("${oauth.kakao.api-url}")
     private String apiUrl;
 
     @Value("${oauth.kakao.oauth-url}")
@@ -29,6 +31,9 @@ public class KakaoApiClient implements OauthApiClient {
 
     @Value("${oauth.kakao.client-id}")
     private String clientId;
+
+    @Value("${oauth.kakao.redirect-uri}")
+    private String redirectUrl;
 
     private final RestTemplate restTemplate;
 
@@ -50,6 +55,7 @@ public class KakaoApiClient implements OauthApiClient {
         MultiValueMap<String, String> body = params.makeBody();
         body.add("grant_type", GRANT_TYPE);
         body.add("client_id", clientId);
+        body.add("redirect_url",redirectUrl);
 
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 

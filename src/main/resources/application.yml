@@ -30,6 +30,10 @@ oauth:
     redirect-uri: http://localhost:8080/auth/kakao/callback
     oauth-url: https://kauth.kakao.com
     api-url: https://kapi.kakao.com
+    scope:
+     - profile_nickname
+     - account_email
+
 
 logging:
   level:

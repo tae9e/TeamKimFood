@@ -45,4 +45,9 @@ public class LoginController {
 
         return "redirect:/";
     }
+
+    @GetMapping("/hello")
+    public String test(){
+        return "login/hello";
+    }
 }

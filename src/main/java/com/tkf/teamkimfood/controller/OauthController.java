@@ -1,6 +1,9 @@
 package com.tkf.teamkimfood.controller;
 
 import com.tkf.teamkimfood.config.jwt.AuthTokens;
+import com.tkf.teamkimfood.config.oauth.OAuthInfoResponse;
+import com.tkf.teamkimfood.config.oauth.OAuthLoginParams;
+import com.tkf.teamkimfood.infra.KakaoApiClient;
 import com.tkf.teamkimfood.infra.KakaoLoginParams;
 import com.tkf.teamkimfood.service.OAuthLoginService;
 import lombok.extern.log4j.Log4j2;
@@ -22,9 +25,12 @@ import org.springframework.web.client.RestTemplate;
 public class OauthController {
 
     private final OAuthLoginService oAuthLoginService;
+    private final KakaoApiClient kakaoApiClient;
 
-    public OauthController(OAuthLoginService oAuthLoginService) {
 
+
+    public OauthController(OAuthLoginService oAuthLoginService,KakaoApiClient kakaoApiClient) {
+        this.kakaoApiClient=kakaoApiClient;
         this.oAuthLoginService = oAuthLoginService;
     }
 
@@ -40,27 +46,15 @@ public class OauthController {
     }
 
 
-    @GetMapping("/auth/kakao/callback")
-    public String kakaoCallback (@RequestParam String code){
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type", "application/x-www-form-urlencode;charset=utf-8");
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", "69445a05dee5a6928649b416c9df1964");
-        params.add("redirect_uri", "http://localhost:8080/auth/kakao/callback");
-        params.add("code", code);
+    @PostMapping("/auth/kakao/callback")
+    public String kakaoCallback(@RequestParam String code) {
+        KakaoLoginParams kakaoLoginParams=new KakaoLoginParams();
+        kakaoLoginParams.setAuthorizationCode(code);
 
-        log.info("토큰 요청" + code);
+        String accessToken = kakaoApiClient.requestAccessToken(kakaoLoginParams);
+        OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
 
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
-
-        ResponseEntity response = restTemplate.exchange("https://kauth.kakao.com/oauth/token,",
-                HttpMethod.POST,
-                kakaoTokenRequest,
-                String.class);
-        return "카카오 토큰 요청, 토큰 요청에 대한 응답" + response;
-
+        return "카카오 로그인 처리 완료";
     }
 
 }
