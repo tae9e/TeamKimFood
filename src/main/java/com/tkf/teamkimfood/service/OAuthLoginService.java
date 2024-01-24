@@ -30,6 +30,7 @@ public class OAuthLoginService {
                 .orElseGet(() -> newMember(oAuthInfoResponse));
     }
 
+    //새로운 사용자 생성
     private Long newMember(OAuthInfoResponse oAuthInfoResponse){
         Member member = Member.builder()
                 .email(oAuthInfoResponse.getEmail())

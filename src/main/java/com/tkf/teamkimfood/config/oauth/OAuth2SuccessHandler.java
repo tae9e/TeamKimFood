@@ -3,7 +3,7 @@ package com.tkf.teamkimfood.config.oauth;
 import com.tkf.teamkimfood.config.jwt.AuthTokens;
 import com.tkf.teamkimfood.config.jwt.AuthTokensGenerator;
 import com.tkf.teamkimfood.config.jwt.JwtTokenProvider;
-import com.tkf.teamkimfood.repository.query.RefreshTokenRespository;
+
 import com.tkf.teamkimfood.service.OAuthLoginService;
 import com.tkf.teamkimfood.service.UserService;
 import com.tkf.teamkimfood.util.CookieUtil;
@@ -53,7 +53,15 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         CookieUtil.addCookie(response,REFRESH_TOKEN_COOKIE_NAME,refreshToken,cookieMaxAge);
     }
 
+    //인증 요청과 관련된 속성 삭제
+//    private void clearAuthenticationAttributes(HttpServletRequest request,HttpServletResponse response){
+//        super.clearAuthenticationAttributes(request);
+//        authorizationRequestRepository.removeAuthorizationRequestCookies(request,response);
+//
+//    }
 
+
+    //리다이렉트할 url 생성
     private String getTargetUrl(String token){
         return UriComponentsBuilder.fromUriString(REDIRECT_PATH)
                 .queryParam("token",token)

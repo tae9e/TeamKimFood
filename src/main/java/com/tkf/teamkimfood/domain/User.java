@@ -14,6 +14,7 @@ import java.util.List;
 @Setter
 @RequiredArgsConstructor
 //Spring Security의 UserDetails 구현
+//사용자 인증 및 권한 부여 관리
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
