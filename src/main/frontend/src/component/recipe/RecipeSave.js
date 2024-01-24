@@ -98,15 +98,12 @@ const RecipeForm = () => {
         e.preventDefault();
 
         // API변수 변환
-        const formData = {
-            memberId: 1, // 나중에 실제 로그인한 멤버 아이디 불러오기
-
+        const formData = new FormData();
+        formData.append('recipeRequest', JSON.stringify({
+            memberId: 1, // 실제 로그인한 멤버 아이디로 대체
             recipeDto: {
                 title: recipeForm.title,
                 content: recipeForm.content,
-                foodImgDtos: recipeForm.recips.map(recip => ({
-                    explanations: recip.explanations
-                })),
             },
             categoryPreferenceDto: {
                 situation: recipeForm.situation,
@@ -117,12 +114,19 @@ const RecipeForm = () => {
                 ingredients: detail.ingredients,
                 dosage: detail.dosage,
             })),
-            foodImgFileList: recipeForm.details.map((detail) =>
-                detail.imgFiles[0]), // Fill this array with actual image files
-        };
-
+            explanations: recipeForm.recips.map((recip) => recip.explanations)
+        }));
+        recipeForm.recips.forEach((recip, index) => {
+            if (recip.imgFiles[0]) {
+                formData.append(`foodImgFileList`, recip.imgFiles[0]);
+            }
+        });
         try {
-            const response = await axios.post('/api/recipes/save', formData);
+            const response = await axios.post('/api/recipes/save', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
             if (response.status === 200) {
                 const data = response.data;
