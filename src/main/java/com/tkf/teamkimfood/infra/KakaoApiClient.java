@@ -23,7 +23,7 @@ public class KakaoApiClient implements OauthApiClient {
 
     private static final String GRANT_TYPE="authorization_code";
 
-    @Value("${oauth.kakao.api-url")
+    @Value("${oauth.kakao.api-url}")
     private String apiUrl;
 
     @Value("${oauth.kakao.oauth-url}")
@@ -31,6 +31,9 @@ public class KakaoApiClient implements OauthApiClient {
 
     @Value("${oauth.kakao.client-id}")
     private String clientId;
+
+    @Value("${oauth.kakao.redirect-uri}")
+    private String redirectUrl;
 
     private final RestTemplate restTemplate;
 
@@ -52,6 +55,7 @@ public class KakaoApiClient implements OauthApiClient {
         MultiValueMap<String, String> body = params.makeBody();
         body.add("grant_type", GRANT_TYPE);
         body.add("client_id", clientId);
+        body.add("redirect_url",redirectUrl);
 
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 

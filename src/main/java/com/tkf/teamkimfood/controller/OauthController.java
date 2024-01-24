@@ -28,6 +28,7 @@ public class OauthController {
     private final KakaoApiClient kakaoApiClient;
 
 
+
     public OauthController(OAuthLoginService oAuthLoginService,KakaoApiClient kakaoApiClient) {
         this.kakaoApiClient=kakaoApiClient;
         this.oAuthLoginService = oAuthLoginService;
@@ -47,10 +48,10 @@ public class OauthController {
 
     @PostMapping("/auth/kakao/callback")
     public String kakaoCallback(@RequestParam String code) {
-        OAuthLoginParams params = new KakaoLoginParams();
-        ((KakaoLoginParams) params).setCode(code); // 이 부분을 추가하여 code 값을 설정
+        KakaoLoginParams kakaoLoginParams=new KakaoLoginParams();
+        kakaoLoginParams.setAuthorizationCode(code);
 
-        String accessToken = kakaoApiClient.requestAccessToken(params);
+        String accessToken = kakaoApiClient.requestAccessToken(kakaoLoginParams);
         OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
 
         return "카카오 로그인 처리 완료";
