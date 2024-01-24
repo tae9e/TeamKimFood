@@ -2,11 +2,13 @@ package com.tkf.teamkimfood.infra;
 
 import com.tkf.teamkimfood.config.oauth.OAuthLoginParams;
 import com.tkf.teamkimfood.config.oauth.OAuthProvider;
+import lombok.Setter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
+@Setter
 public class KakaoLoginParams implements OAuthLoginParams {
         private String authorizationCode;
+        private String code;
 
     @Override
     public OAuthProvider oAuthProvider() {

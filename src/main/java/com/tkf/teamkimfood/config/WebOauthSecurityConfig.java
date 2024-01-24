@@ -70,7 +70,7 @@ public class WebOauthSecurityConfig {
                             authorizationEndpoint
                                     .baseUri("/oauth2/authorization");
                         })
-                        .successHandler(oAuth2SuccessHandler())
+ //                       .successHandler(oAuth2SuccessHandler())
                         .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserCustomService)
                 ));
         return http.build();
@@ -87,14 +87,6 @@ public class WebOauthSecurityConfig {
 //                .permitAll()); // 로그아웃 페이지는 누구나 접근 가능
 
 
-
-    @Bean
-    public OAuth2SuccessHandler oAuth2SuccessHandler() {
-        return new OAuth2SuccessHandler(
-                oAuthLoginService,
-                authTokensGenerator,
-                oAuth2AuthorizationRequestBasedOnCookieRepository());
-    }
 
 
     @Bean

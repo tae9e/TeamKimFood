@@ -5,6 +5,7 @@ import com.tkf.teamkimfood.config.oauth.OAuthLoginParams;
 import com.tkf.teamkimfood.config.oauth.OAuthProvider;
 import com.tkf.teamkimfood.config.oauth.OauthApiClient;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 //Kakao Api와의 연결 및 요청 처리
 @Component
 @RequiredArgsConstructor
+@Setter
 public class KakaoApiClient implements OauthApiClient {
 
     private static final String GRANT_TYPE="authorization_code";

@@ -1,5 +1,6 @@
 package com.tkf.teamkimfood.repository;
 
+import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.domain.RefreshToken;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,5 +13,9 @@ public interface RefreshTokenRespository extends JpaRepository<RefreshToken, Lon
 
     Optional<RefreshToken> findByMember_Id(Long memberId);
 
+    Optional<RefreshToken> findByMember(Member member);
+
     Page<RefreshToken> findByRefreshToken(String refreshToken,Pageable pageable);
+
+
 }
