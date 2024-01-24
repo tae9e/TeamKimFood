@@ -40,7 +40,7 @@ public class OauthController {
     }
 
 
-    @GetMapping("/auth/kakao/callback")
+    @PostMapping("/auth/kakao/callback")
     public String kakaoCallback (@RequestParam String code){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -53,13 +53,15 @@ public class OauthController {
 
         log.info("토큰 요청" + code);
 
+
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
 
-        ResponseEntity response = restTemplate.exchange("https://kauth.kakao.com/oauth/token,",
+        ResponseEntity response = restTemplate.exchange("https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST,
                 kakaoTokenRequest,
                 String.class);
-        return "카카오 토큰 요청, 토큰 요청에 대한 응답" + response;
+        log.info("토큰 응답: " + response.getBody());
+        return "카카오 토큰 요청, 토큰 요청에 대한 응답" + response.getBody();
 
     }
 
