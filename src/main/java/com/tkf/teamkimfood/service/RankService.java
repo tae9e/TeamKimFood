@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,14 +40,18 @@ public class RankService {
         Member member = memberRepository.findById(rankDto.getMemberId()).orElseThrow(NullPointerException::new);
         Recipe recipe = recipeRepository.findById(rankDto.getRecipeId()).orElseThrow(NullPointerException::new);
 
+        Optional<Rank> existingRank = rankRepository.findByMemberAndRecipe(member, recipe);
         Rank rank = Rank.builder().build();
         rank.setMember(member);
         rank.setRecipe(recipe);
-        Rank saved = rankRepository.save(rank);
-        rankDto.setId(saved.getId());
-        rankDto.setRecipeRecommendation(saved.isRecipeRecommendation());
-        rankDto.setUserRecommendation(saved.isUserRecommendation());
 
+        if (existingRank.isEmpty()) {
+
+            Rank saved = rankRepository.save(rank);
+            rankDto.setId(saved.getId());
+            rankDto.setRecipeRecommendation(saved.isRecipeRecommendation());
+            rankDto.setUserRecommendation(saved.isUserRecommendation());
+        }
         //추천을 주기 위해서
         if (rankDto.isRecipeRecommendation()) {
             rankDto.setRecipeRecommendation(true);
