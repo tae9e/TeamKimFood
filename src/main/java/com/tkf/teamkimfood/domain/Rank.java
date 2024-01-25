@@ -40,9 +40,11 @@ public class Rank {
     private long recipeRecoTotal;
     private long memberRecoTotal;
 
-
-
-    //검색관련 데이터주입
+    @Builder
+    public Rank(boolean recipeRecommendation, boolean userRecommendation) {
+        this.recipeRecommendation = recipeRecommendation;
+        this.userRecommendation = userRecommendation;
+    }
 
     //연관관계 메서드
     public void setMember(Member member) {

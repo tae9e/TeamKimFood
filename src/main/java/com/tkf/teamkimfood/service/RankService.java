@@ -35,14 +35,14 @@ public class RankService {
     private final RecipeRepository recipeRepository;
 
     //랭크 생성후 추천 증감시키는 로직
-    public Long recommRecipeVariation(Long memberId, Long recipeId, Rank rank) {
-        Member member = memberRepository.findById(memberId).orElseThrow(NullPointerException::new);
-        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(NullPointerException::new);
+    public Long recommRecipeVariation(RankDto rankDto) {
+        Member member = memberRepository.findById(rankDto.getMemberId()).orElseThrow(NullPointerException::new);
+        Recipe recipe = recipeRepository.findById(rankDto.getRecipeId()).orElseThrow(NullPointerException::new);
 
+        Rank rank = Rank.builder().build()
         rank.setMember(member);
         rank.setRecipe(recipe);
         Rank saved = rankRepository.save(rank);
-        RankDto rankDto = new RankDto();
         rankDto.setId(saved.getId());
         rankDto.setRecipeRecommendation(saved.isRecipeRecommendation());
         rankDto.setUserRecommendation(saved.isUserRecommendation());

@@ -5,6 +5,8 @@ import com.tkf.teamkimfood.dto.CommentDto;
 import com.tkf.teamkimfood.dto.RecipeNCommentVo;
 import com.tkf.teamkimfood.dto.aboutrecipe.*;
 import com.tkf.teamkimfood.dto.MainpageRecipeDto;
+import com.tkf.teamkimfood.dto.ranks.RankDto;
+import com.tkf.teamkimfood.service.RankService;
 import com.tkf.teamkimfood.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,7 @@ import java.util.List;
 public class RecipeController {
 
     private final RecipeService recipeService;
+    private final RankService rankService;
     //레시피 저장
 //    @PostMapping("/api/recipes/save")
 //    public ResponseEntity<Long> saveRecipe(@RequestBody RecipeRequestVo request) {
@@ -76,7 +79,7 @@ public class RecipeController {
         }
     }
     //메인화면 구성
-    @GetMapping("/api/boardlist")
+    @GetMapping("/api/recipes/boardList")
     public Page<MainpageRecipeDto> getMain(
             @RequestParam(required = false) Long memberId,
             RecipeSearchDto recipeSearchDto, @RequestParam(defaultValue = "0")int page,
@@ -103,7 +106,7 @@ public class RecipeController {
 //        return ResponseEntity.ok(recipeNCommentVo);
 //    }
     //수정
-    @PutMapping("/api/recipes/${recipeId}")
+    @PutMapping("/api/recipes/{recipeId}")
     public ResponseEntity<Long> updateRecipe(@AuthenticationPrincipal UserDetails userDetails,
                                              @PathVariable("recipeId") Long recipeId,
                                              @RequestParam("recipeRequest") String recipeRequest,
@@ -148,7 +151,7 @@ public class RecipeController {
     }
 
     //삭제
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/api/recipes/{id}/delete")
     public ResponseEntity<String> deleteRecipe(@PathVariable("id")Long recipeId, @AuthenticationPrincipal UserDetails userDetails) {
         Long userId = getUserId(userDetails);
         Boolean success = recipeService.deleteRecipe(userId, recipeId);
@@ -159,4 +162,18 @@ public class RecipeController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("삭제에 실패했습니다. 본인이 작성한 레시피가 맞는지 확인 부탁드립니다.");
         }
     }
+    //레시피 추천
+    @PostMapping("/api/recipes/{id}/recommend")
+    public ResponseEntity<?> recommendRecipe(@PathVariable("id")Long recipeId,
+                                             @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            Long userId = getUserId(userDetails);
+            RankDto rankDto = new RankDto(userId, recipeId);
+            Long totalRecommendation = rankService.recommRecipeVariation(rankDto);
+            return ResponseEntity.ok(totalRecommendation);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("추천 처리중 오류가 발생했습니다.");
+        }
+    }
+
 }
