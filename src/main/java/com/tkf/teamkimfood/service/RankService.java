@@ -39,7 +39,7 @@ public class RankService {
         Member member = memberRepository.findById(rankDto.getMemberId()).orElseThrow(NullPointerException::new);
         Recipe recipe = recipeRepository.findById(rankDto.getRecipeId()).orElseThrow(NullPointerException::new);
 
-        Rank rank = Rank.builder().build()
+        Rank rank = Rank.builder().build();
         rank.setMember(member);
         rank.setRecipe(recipe);
         Rank saved = rankRepository.save(rank);
