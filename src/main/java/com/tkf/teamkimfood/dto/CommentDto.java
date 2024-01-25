@@ -1,6 +1,7 @@
 package com.tkf.teamkimfood.dto;
 
 import lombok.Data;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +12,8 @@ public class CommentDto {
     private String content;
     private LocalDateTime commentDate;
     private LocalDateTime correctionDate;
+    private Long memberId;
+    private Long recipeId;
 
     public CommentDto() {
     }

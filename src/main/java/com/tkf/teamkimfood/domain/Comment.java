@@ -1,11 +1,14 @@
 package com.tkf.teamkimfood.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
@@ -19,8 +22,16 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    @Size(max = 300)
     private String content;
+
+    @Column
+    @CreatedDate
     private LocalDateTime commentDate;
+
+    @Column
+    @LastModifiedDate
     private LocalDateTime correctionDate;
 
     @BatchSize(size = 100)
