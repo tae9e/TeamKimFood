@@ -51,14 +51,14 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
     }
 
     //받아온 멤버아이디와 레시피아이디가 일치하는 레시피
-    public Recipe findOneWhereMemberIdAndRecipeId(Long memberId, Long recipeId) {
+    public Recipe findOneWhereMemberIdAndRecipeId(String email, Long recipeId) {
         TypedQuery<Recipe> query = em.createQuery(
                 "select r " +
                         "from Recipe r " +
-                        "where r.member.id = :memberId and r.id = :recipeId", Recipe.class
+                        "where r.member.email = :email and r.id = :recipeId", Recipe.class
         );
 
-        query.setParameter("memberId", memberId);
+        query.setParameter("email", email);
         query.setParameter("recipeId", recipeId);
 
         try {
@@ -131,7 +131,6 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 .from(recipe)
                 .join(recipe.member, member)
                 .join(recipe.foodImgs, foodImg)
-                .join(recipe.recipeDetails, recipeDetail)
                 .join(recipe.recipeCategory, recipeCategory)
                 .where(recipe.id.eq(recipeId))
                 .fetchOne();
@@ -295,6 +294,62 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 .where(foodImg.repImgYn.eq("Y"))
                 .fetchOne();
         return new PageImpl<>(mainpageRecipeDtos, pageable, total);
+    }
+    //수정전 데이터 불러오기용
+    public OneRecipeForUpdateVo findOneByEmail(Long recipeId, String email) {
+        QRecipe recipe = QRecipe.recipe;
+        QMember member = QMember.member;
+        QFoodImg foodImg = QFoodImg.foodImg;
+        QRecipeDetail recipeDetail = QRecipeDetail.recipeDetail;
+        QRecipeCategory recipeCategory = QRecipeCategory.recipeCategory;
+        OneRecipeForUpdateVo oneRecipeForUpdateVo = queryFactory.select(
+                        new QOneRecipeForUpdateVo(
+                                recipe.id,
+                                recipe.title,
+                                recipe.content,
+                                recipe.viewCount,
+                                recipe.writeDate,
+                                recipe.correctionDate,
+                                member.nickname,
+                                recipeCategory.Situation,
+                                recipeCategory.foodStuff,
+                                recipeCategory.foodNationType,
+                                member.id
+                        )
+                )
+                .from(recipe)
+                .join(recipe.member, member)
+                .join(recipe.foodImgs, foodImg)
+                .join(recipe.recipeCategory, recipeCategory)
+                .where(recipe.id.eq(recipeId))
+                .where(member.email.eq(email))
+                .fetchOne();
+        List<OneRecipeImgVo> addImgNExp = queryFactory.select(
+                        new QOneRecipeImgVo(
+                                foodImg.imgUrl,
+                                foodImg.explanation
+                        )
+                )
+                .from(recipe)
+                .join(recipe.foodImgs, foodImg)
+                .where(recipe.id.eq(recipeId))
+                .where(member.email.eq(email))
+                .fetch();
+        List<OneRecipeIngDoVo> oneRecipeIngDoVos = queryFactory.select(
+                        new QOneRecipeIngDoVo(
+                                recipeDetail.ingredients,
+                                recipeDetail.dosage
+                        )
+                )
+                .from(recipe)
+                .join(recipe.recipeDetails, recipeDetail)
+                .where(recipe.id.eq(recipeId))
+                .where(member.email.eq(email))
+                .fetch();
+        assert oneRecipeForUpdateVo != null;
+        oneRecipeForUpdateVo.insertRecipes(addImgNExp);
+        oneRecipeForUpdateVo.insertIngreDosage(oneRecipeIngDoVos);
+        return oneRecipeForUpdateVo;
     }
 
 }

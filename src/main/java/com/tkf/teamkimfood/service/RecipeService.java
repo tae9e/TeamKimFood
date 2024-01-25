@@ -116,16 +116,19 @@ public class RecipeService {
 //                .foodImgDtos(foodImgDtos)
 //                .build();
 //    }
-//    public OneRecipeDto viewOne(Long recipeId) {
-//        OneRecipeDto recipeDto = recipeQueryRepository.getOne(recipeId);
-//        if (recipeDto != null) {
-//            Recipe recipe = recipeRepository.addViewCount(recipeId);
-//            recipeDto.setViewCount(recipe.getViewCount());
-//            return recipeDto;
-//        } else {
-//            return null;
-//        }
-//    }
+    public OneRecipeDto viewOne(Long recipeId) {
+        OneRecipeDto recipeDto = recipeQueryRepository.getOne(recipeId);
+        if (recipeDto != null) {
+            Recipe recipe = recipeRepository.addViewCount(recipeId);
+            recipeDto.setViewCount(recipe.getViewCount());
+            return recipeDto;
+        } else {
+            return null;
+        }
+    }
+    public OneRecipeForUpdateVo findOneByEmail(Long recipeId, String email) {
+        return recipeQueryRepository.findOneByEmail(recipeId, email);
+    }
 
     //    일반적인 메뉴노출(비회원 접속시)
     public Page<MainpageRecipeDto> getMain(RecipeSearchDto recipeSearchDto, Pageable pageable) {
@@ -173,10 +176,10 @@ public class RecipeService {
     }
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
     @Transactional
-    public Long updateRecipe(Long memberId , Long recipeId, FoodImgDto foodImgDto, List<String> explanations, List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
+    public Long updateRecipe(String email , Long recipeId, FoodImgDto foodImgDto, List<String> explanations, List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
         Recipe checking = recipeRepository.findById(recipeId).orElseThrow();
-        if (checking.getMember().getId().equals(memberId)) {
-            Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(memberId, recipeId);
+        if (checking.getMember().getEmail().equals(email)) {
+            Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(email, recipeId);
             Recipe updateRecipe = Recipe.builder()
                     .title(recipeDto.getTitle())
                     .content(recipeDto.getContent())
@@ -227,4 +230,6 @@ public class RecipeService {
     public Page<MainpageRecipeDto> getAllOrderByRankPoint(Pageable pageable) {
         return recipeQueryRepository.getAllOrderByRankPoint(pageable);
     }
+
+    //레시피 자세히 보기
 }

@@ -16,5 +16,6 @@ public class RecipeRequestVo {
     private List<RecipeDetailListDto> recipeDetailListDto;
     private List<String> explanations;
     private List<MultipartFile> foodImgFileList;
+    private FoodImgDto foodImgDto;
 
 }

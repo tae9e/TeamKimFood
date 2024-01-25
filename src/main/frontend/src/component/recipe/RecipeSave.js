@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
+import {useParams} from "react-router-dom";
 
 const RecipeForm = () => {
     const [recipeForm, setRecipeForm] = useState({
@@ -12,6 +13,68 @@ const RecipeForm = () => {
         recips : [{explanations: [''], imgFiles: [null] }],
     });
 
+    const {recipeId} = useParams();//recipeId 파라미터에서 가져옴
+    const [newImages, setNewImages] = useState([]);
+    const [isEditMode, setIsEditMode] = useState(false);
+
+    useEffect(() => {
+        if (recipeId) {
+            setIsEditMode(true); // URL에 recipeId가 있으면 수정 모드로 설정
+            const RecipeData = async () => {
+                const authToken = localStorage.getItem('변수명합의보기');
+                try {
+                    const response = await axios.get(`/api/recipes/${recipeId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        }
+                    });
+                    const recipeData = response.data;
+                    setRecipeForm({
+                        title: recipeData.title,
+                        content: recipeData.content,
+                        situation: recipeData.situation,
+                        foodStuff: recipeData.foodStuff,
+                        foodNationType: recipeData.foodNationType,
+                        details: recipeData.details.map(detail => ({
+                            ingredients: detail.ingredients,
+                            dosage: detail.dosage
+                        })),
+                        recips: recipeData.recips.map(recip => ({
+                            explanations: recip.explanations,
+                            imgFiles: recip.imgFiles.map(imgFile => imgFile.imgUrl) // imgUrl을 사용
+                        }))
+                    });
+                } catch (error) {
+                    console.error("레시피 불러오기 실패", error);
+                }
+            };
+            RecipeData();
+        }
+    }, [recipeId]);
+    const handleNewImageChange = (e, pairIndex) => {
+        // 새 이미지 파일을 newImages 상태에 추가
+        const files = Array.from(e.target.files);
+        setNewImages((prev) => {
+            const updated = [...prev];
+            updated[pairIndex] = files;
+            return updated;
+        });
+    };
+    const handleImageChange = (e, pairIndex, index) => {
+        // 이미지 파일 처리 및 미리보기 업데이트
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (readEvent) => {
+                setRecipeForm(prevForm => {
+                    const updatedRecips = [...prevForm.recips];
+                    updatedRecips[pairIndex].imgFiles[index] = readEvent.target.result;
+                    return {...prevForm, recips: updatedRecips};
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setRecipeForm((prevForm) => ({
@@ -90,7 +153,6 @@ const RecipeForm = () => {
         e.preventDefault();
 
         //const email = localStorage.get???('email'); 이 변수 값을 memberid에 넣을 예정 로그인 후 사용자 로컬저장할 변수명을 ?에 쓸 예정 get???
-
         // API변수 변환
         const formData = new FormData();
         formData.append('recipeRequest', JSON.stringify({
@@ -115,6 +177,7 @@ const RecipeForm = () => {
                 formData.append(`foodImgFileList`, recip.imgFiles[0]);
             }
         });
+
         try {
             const response = await axios.post('/api/recipes/save', formData, {
                 headers: {
@@ -130,6 +193,48 @@ const RecipeForm = () => {
             }
         } catch (error) {
             console.error('에러가 발생했습니다.:', error);
+        }
+    };
+    const handleUpdate = async ()=>{
+        const formData = new FormData();
+        formData.append('recipeRequest', JSON.stringify({
+            recipeDto: {
+                title: recipeForm.title,
+                content: recipeForm.content,
+            },
+            categoryPreferenceDto: {
+                situation: recipeForm.situation,
+                foodStuff: recipeForm.foodStuff,
+                foodNationType: recipeForm.foodNationType,
+            },
+            recipeDetailListDto: recipeForm.details.map((detail) => ({
+                ingredients: detail.ingredients,
+                dosage: detail.dosage,
+            })),
+            explanations: recipeForm.recips.map((recip) => recip.explanations)
+        }));
+        //이미지 파일 추가
+        newImages.forEach((files, index) => {
+            files.forEach((file, fileIndex) => {
+                formData.append(`newFoodImgFileList[${index}][${fileIndex}]`, file);
+            });
+
+        });
+        try {
+            const response = await axios.put(`/api/recipes/${recipeId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.status === 200) {
+                console.log('레시피가 성공적으로 수정되었습니다.');
+                // 성공 후 처리 로직 (예: 페이지 이동)
+            } else {
+                console.error('레시피 수정에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('에러가 발생했습니다:', error);
         }
     };
 
@@ -249,7 +354,7 @@ const RecipeForm = () => {
                                 <input
                                     type="text"
                                     value={ingredient}
-                                    onChange={(e) => handleArrayInputChange(pairIndex, 'ingredients',index, e.target.value)}
+                                    onChange={(e) => handleArrayInputChange(pairIndex, 'ingredients', index, e.target.value)}
                                 />
                             </div>
                         ))}
@@ -274,46 +379,41 @@ const RecipeForm = () => {
                 재료 및 용량 추가
             </button>
 
+            {/* 이미지 및 설명 필드 */}
             {recipeForm.recips.map((detail, pairIndex) => (
-                <div key={pairIndex}>
-                    <fieldset>
-                        <legend>이미지 파일:</legend>
-                        {detail.imgFiles.map((imgFile, index) => (
-                            <div key={index}>
-                                <input
-                                    type="file"
-                                    onChange={(e) => {
-                                        handleArrayInputChange(pairIndex, 'imgFiles', index, e.target.files[0]);
-                                        handleImagePreview(pairIndex, index, e.target.files[0]);
-                                    }}
-                                />
-                                {imgFile && (
-                                    <img src={imgFile} alt={`Preview ${index}`}
-                                         style={{maxWidth: '100px', maxHeight: '100px'}}/>
-                                )}
-                            </div>
-                        ))}
-                    </fieldset>
-                    <fieldset>
-                        <legend>설명:</legend>
-                        {detail.explanations.map((explanation, index) => (
-                            <div key={index}>
-                                <input
-                                    type="text"
-                                    value={explanation}
-                                    onChange={(e) => handleExplanationChange(pairIndex, index, e.target.value)}
-                                />
-                            </div>
-                        ))}
-                    </fieldset>
+                <fieldset key={pairIndex}>
+                    <legend>이미지 파일:</legend>
+                    {detail.imgFiles.map((imgFile, index) => (
+                        <div key={index}>
+                            <img src={imgFile} alt={`Preview ${index}`} style={{ maxWidth: '100px', maxHeight: '100px' }} />
+                            {isEditMode && (
+                                <input type="file" onChange={(e) => handleImageChange(e, pairIndex, index)} />
+                            )}
+                        </div>
+                    ))}
+                    {isEditMode && (
+                        <input type="file" multiple onChange={(e) => handleNewImageChange(e, pairIndex)} />
+                    )}
+                    {detail.explanations.map((explanation, index) => (
+                        <div key={index}>
+                            <input
+                                type="text"
+                                value={explanation}
+                                onChange={(e) => handleExplanationChange(pairIndex, index, e.target.value)}
+                            />
+                        </div>
+                    ))}
                     <button type="button" onClick={() => handleAddExplanation(pairIndex)}>
                         설명 및 이미지 추가
                     </button>
-                </div>
+                </fieldset>
             ))}
-
-
-            <button type="submit">레시피 저장</button>
+            {/* 버튼 표시 조건: 수정 모드일 경우 '레시피 수정', 그렇지 않으면 '레시피 저장' */}
+            {isEditMode ? (
+                <button type="button" onClick={handleUpdate}>레시피 수정</button>
+            ) : (
+                <button type="submit">레시피 저장</button>
+            )}
         </form>
     );
 };

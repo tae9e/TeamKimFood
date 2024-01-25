@@ -78,7 +78,7 @@ const RecipeView = ({ match }) => {
 
     // 수정 페이지로 이동하는 함수
     const navigateToEditPage = (recipeId) => {
-        navigate(`/editRecipe/${recipeId}/${loggedInUserId}`);
+        navigate(`/editRecipe/${recipeId}`);
     };
 
     // 레시피 삭제 처리 함수
