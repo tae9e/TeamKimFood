@@ -43,7 +43,7 @@ public class LoginController {
             return "/login/memberLogin";
         }
 
-        return "redirect:/";
+        return "login/hello";
     }
 
     @GetMapping("/hello")
