@@ -76,7 +76,7 @@ public class RecipeController {
         }
     }
     //메인화면 구성
-    @GetMapping("/main")
+    @GetMapping("/api/boardlist")
     public Page<MainpageRecipeDto> getMain(
             @RequestParam(required = false) Long memberId,
             RecipeSearchDto recipeSearchDto, @RequestParam(defaultValue = "0")int page,
@@ -94,14 +94,14 @@ public class RecipeController {
         }
     }
     //세부조회(댓글 필요)
-    @GetMapping("/{id}")
-    public ResponseEntity<RecipeNCommentVo> viewOne(@PathVariable("id")Long recipeId){
-        OneRecipeDto oneRecipeDto = recipeService.viewOne(recipeId);
-        //현재 댓글은 빈 객체 돌려줌
-        CommentDto commentDto = new CommentDto();//코멘트 service 구현 완료시 수정예정.
-        RecipeNCommentVo recipeNCommentVo = new RecipeNCommentVo(oneRecipeDto, commentDto);
-        return ResponseEntity.ok(recipeNCommentVo);
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<RecipeNCommentVo> viewOne(@PathVariable("id")Long recipeId){
+//        OneRecipeDto oneRecipeDto = recipeService.viewOne(recipeId);
+//        //현재 댓글은 빈 객체 돌려줌
+//        CommentDto commentDto = new CommentDto();//코멘트 service 구현 완료시 수정예정.
+//        RecipeNCommentVo recipeNCommentVo = new RecipeNCommentVo(oneRecipeDto, commentDto);
+//        return ResponseEntity.ok(recipeNCommentVo);
+//    }
     //수정
     @PutMapping("/{id}")
     public ResponseEntity<Long> updateRecipe(@AuthenticationPrincipal UserDetails userDetails,

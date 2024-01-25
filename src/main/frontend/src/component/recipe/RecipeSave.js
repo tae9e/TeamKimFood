@@ -38,14 +38,6 @@ const RecipeForm = () => {
             };
         });
     };
-    // const handleArrayInputChange = (pairIndex, type, subIndex, value) => {
-    //     const newDetails = [...recipeForm.details];
-    //     newDetails[pairIndex][type][subIndex] = value;
-    //     setRecipeForm((prevForm) => ({
-    //         ...prevForm,
-    //         details: newDetails,
-    //     }));
-    // };
     const handleImagePreview = (pairIndex, index, file) => {
         const newRecips = [...recipeForm.recips];
         const reader = new FileReader();
@@ -97,10 +89,12 @@ const RecipeForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        //const email = localStorage.get???('email'); 이 변수 값을 memberid에 넣을 예정 로그인 후 사용자 로컬저장할 변수명을 ?에 쓸 예정 get???
+
         // API변수 변환
         const formData = new FormData();
         formData.append('recipeRequest', JSON.stringify({
-            memberId: 1, // 실제 로그인한 멤버 아이디로 대체
+            memberId: 1, // 실제 로그인한 멤버 아이디로 대체해야함
             recipeDto: {
                 title: recipeForm.title,
                 content: recipeForm.content,

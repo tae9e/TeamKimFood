@@ -116,16 +116,16 @@ public class RecipeService {
 //                .foodImgDtos(foodImgDtos)
 //                .build();
 //    }
-    public OneRecipeDto viewOne(Long recipeId) {
-        OneRecipeDto recipeDto = recipeQueryRepository.getOne(recipeId);
-        if (recipeDto != null) {
-            Recipe recipe = recipeRepository.addViewCount(recipeId);
-            recipeDto.setViewCount(recipe.getViewCount());
-            return recipeDto;
-        } else {
-            return null;
-        }
-    }
+//    public OneRecipeDto viewOne(Long recipeId) {
+//        OneRecipeDto recipeDto = recipeQueryRepository.getOne(recipeId);
+//        if (recipeDto != null) {
+//            Recipe recipe = recipeRepository.addViewCount(recipeId);
+//            recipeDto.setViewCount(recipe.getViewCount());
+//            return recipeDto;
+//        } else {
+//            return null;
+//        }
+//    }
 
     //    일반적인 메뉴노출(비회원 접속시)
     public Page<MainpageRecipeDto> getMain(RecipeSearchDto recipeSearchDto, Pageable pageable) {

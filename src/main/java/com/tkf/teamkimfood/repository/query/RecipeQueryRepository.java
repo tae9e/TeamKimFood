@@ -121,14 +121,11 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                                 recipe.viewCount,
                                 recipe.writeDate,
                                 recipe.correctionDate,
-                                foodImg.imgUrl,
-                                foodImg.explanation,
                                 member.nickname,
-                                recipeDetail.ingredients,
-                                recipeDetail.dosage,
                                 recipeCategory.Situation,
                                 recipeCategory.foodStuff,
-                                recipeCategory.foodNationType
+                                recipeCategory.foodNationType,
+                                member.id
                         )
                 )
                 .from(recipe)
@@ -138,6 +135,29 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 .join(recipe.recipeCategory, recipeCategory)
                 .where(recipe.id.eq(recipeId))
                 .fetchOne();
+        List<OneRecipeImgVo> addImgNExp = queryFactory.select(
+                        new QOneRecipeImgVo(
+                                foodImg.imgUrl,
+                                foodImg.explanation
+                        )
+                )
+                .from(recipe)
+                .join(recipe.foodImgs, foodImg)
+                .where(recipe.id.eq(recipeId))
+                .fetch();
+        List<OneRecipeIngDoVo> oneRecipeIngDoVos = queryFactory.select(
+                        new QOneRecipeIngDoVo(
+                                recipeDetail.ingredients,
+                                recipeDetail.dosage
+                        )
+                )
+                .from(recipe)
+                .join(recipe.recipeDetails, recipeDetail)
+                .where(recipe.id.eq(recipeId))
+                .fetch();
+        assert oneRecipeDto != null;
+        oneRecipeDto.insertIngreDosage(oneRecipeIngDoVos);
+        oneRecipeDto.insertRecipes(addImgNExp);
         return oneRecipeDto;
     }
 
