@@ -36,19 +36,19 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
     }
 
     //레시피 카테고리 받아온것 별로 조회
-    public List<Recipe> findAllWhereRecipeCategoryOrderByWriteDateDesc(RecipeCategory recipeCategory) {
-        return em.createQuery(
-                        "SELECT DISTINCT r " +
-                                "FROM Recipe r " +
-                                "WHERE r.recipeCategory.Situation = :situation " +
-                                "  OR r.recipeCategory.foodStuff = :foodStuff " +
-                                "  OR r.recipeCategory.foodNationType = :foodNationType " +
-                                "ORDER BY r.writeDate DESC", Recipe.class)
-                .setParameter("situation", recipeCategory.getSituation())
-                .setParameter("foodStuff", recipeCategory.getFoodStuff())
-                .setParameter("foodNationType", recipeCategory.getFoodNationType())
-                .getResultList();
-    }
+//    public List<Recipe> findAllWhereRecipeCategoryOrderByWriteDateDesc(RecipeCategory recipeCategory) {
+//        return em.createQuery(
+//                        "SELECT DISTINCT r " +
+//                                "FROM Recipe r " +
+//                                "WHERE r.recipeCategory.Situation = :situation " +
+//                                "  OR r.recipeCategory.foodStuff = :foodStuff " +
+//                                "  OR r.recipeCategory.foodNationType = :foodNationType " +
+//                                "ORDER BY r.writeDate DESC", Recipe.class)
+//                .setParameter("situation", recipeCategory.getSituation())
+//                .setParameter("foodStuff", recipeCategory.getFoodStuff())
+//                .setParameter("foodNationType", recipeCategory.getFoodNationType())
+//                .getResultList();
+//    }
 
     //받아온 멤버아이디와 레시피아이디가 일치하는 레시피
     public Recipe findOneWhereMemberIdAndRecipeId(String email, Long recipeId) {
@@ -83,7 +83,8 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                                 recipe.title,
                                 recipe.viewCount,
                                 foodImg.imgUrl,
-                                member.nickname
+                                member.nickname,
+                                recipe.writeDate
                         )
                 )
                 .from(recipe)
@@ -206,7 +207,8 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                                 recipe.title,
                                 recipe.viewCount,
                                 foodImg.imgUrl,
-                                member.nickname
+                                member.nickname,
+                                recipe.writeDate
                         )
                 )
                 .from(recipe)
@@ -238,7 +240,8 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                                 recipe.title,
                                 recipe.viewCount,
                                 foodImg.imgUrl,
-                                member.nickname
+                                member.nickname,
+                                recipe.writeDate
                         )
                 )
                 .from(recipe)
@@ -274,7 +277,8 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                                 recipe.title,
                                 recipe.viewCount,
                                 foodImg.imgUrl,
-                                member.nickname
+                                member.nickname,
+                                recipe.writeDate
                         )
                 )
                 .from(recipe)
