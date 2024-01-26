@@ -7,10 +7,12 @@ import com.tkf.teamkimfood.config.oauth.OAuthInfoResponse;
 import com.tkf.teamkimfood.config.oauth.OAuthLoginParams;
 import com.tkf.teamkimfood.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class OAuthLoginService {
     private final MemberRepository memberRepository;
     private final AuthTokensGenerator authTokensGenerator;
@@ -19,7 +21,9 @@ public class OAuthLoginService {
 
     public AuthTokens login(OAuthLoginParams params){
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
+        log.info("oAuthInfoResponse{}: " + oAuthInfoResponse);
         Long memberId = findOrCreateMember(oAuthInfoResponse);
+        log.info("memberId{}: " +memberId);
         return authTokensGenerator.generate(memberId);
     }
 

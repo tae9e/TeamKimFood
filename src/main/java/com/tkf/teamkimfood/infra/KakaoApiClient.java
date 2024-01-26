@@ -6,6 +6,7 @@ import com.tkf.teamkimfood.config.oauth.OAuthProvider;
 import com.tkf.teamkimfood.config.oauth.OauthApiClient;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 @RequiredArgsConstructor
 @Setter
+@Log4j2
 public class KakaoApiClient implements OauthApiClient {
 
     private static final String GRANT_TYPE="authorization_code";
@@ -48,6 +50,7 @@ public class KakaoApiClient implements OauthApiClient {
     @Override
     public String requestAccessToken(OAuthLoginParams params) {
         String url = authUrl + "/oauth/token";
+        log.info("url?{}" + url);
 
        HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -57,9 +60,11 @@ public class KakaoApiClient implements OauthApiClient {
         body.add("client_id", clientId);
         body.add("redirect_url",redirectUrl);
 
+        log.info("request{}: " + body);
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
         KakaoTokens response = restTemplate.postForObject(url, request, KakaoTokens.class);
+        log.info("response{}:" + response);
 
         assert response != null;
         return response.getAccessToken();
@@ -69,16 +74,21 @@ public class KakaoApiClient implements OauthApiClient {
     @Override
     public OAuthInfoResponse requestOauthInfo(String accessToken) {
         String url = apiUrl + "/v2/user/me";
-
+        log.info("apiUrl url{}" + apiUrl);
         HttpHeaders httpHeaders = new HttpHeaders();
+        log.info("httpHeaders{}: " + httpHeaders);
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         httpHeaders.set("Authorization", "Bearer " + accessToken);
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("property_keys", "[\"kakao_account.email\", \"kakao_account.profile\"]");
+        log.info("body{}" + body);
 
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
+        log.info("request{}" + request);
 
         return restTemplate.postForObject(url, request, KakaoInfoResponse.class);
     }
+
+
 }

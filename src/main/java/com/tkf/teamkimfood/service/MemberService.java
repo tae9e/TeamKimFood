@@ -4,9 +4,13 @@ package com.tkf.teamkimfood.service;
 
 import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.domain.status.MemberRole;
+
+import com.tkf.teamkimfood.dto.MemberDto;
 import com.tkf.teamkimfood.repository.MemberRepository;
-import com.tkf.teamkimfood.repository.UserRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,6 +18,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,15 +30,18 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Getter
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
-    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
+    //중복 회원 검사해서 저장
     public Member saveMember(Member member){
         validateDuplicateMember(member);
         return memberRepository.save(member);
     }
 
+    //유효성 검증, 존재하는 회원일 경우 예외 발생
     private void validateDuplicateMember(Member member){
         Optional<Member> findMember = memberRepository.findByEmail(member.getEmail());
         if(findMember.isPresent()){
@@ -43,30 +51,47 @@ public class MemberService implements UserDetailsService {
 
     }
 
-
-
+    //이메일을 이용해 회원 정보 조회
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        com.tkf.teamkimfood.domain.User user = userRepository.findByMemberEmail(email)
+        com.tkf.teamkimfood.domain.Member member = memberRepository.findByEmail(email)
                 .orElseThrow(()->new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
        //권한 부여 (필요에 따라 주석 처리해서 사용하세요)
         List<GrantedAuthority> authorityList = new ArrayList<>();
 
-//        if(member.getMemberRole().equals(MemberRole.ADMIN)){
-//            authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-//        }
 
-        if(user.getMember().getMemberRole().equals(MemberRole.USER)){
+        if(member.getMemberRole().equals(MemberRole.USER)){
             authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
-        }else if(user.getMember().getMemberRole().equals(MemberRole.ADMIN))
+        }else if(member.getMemberRole().equals(MemberRole.ADMIN))
             authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
-           return User.builder()
-                   .username(user.getMember().getEmail())
-                   .password(user.getMember().getPassword())
-                   .authorities(authorityList)
-                   .build();
+        User user = new User(
+                member.getEmail(),
+                member.getPassword(),
+                authorityList
+        );
+        return user;
 
+    }
+
+    //회원 정보 불러오기
+    public Optional<Member> getMemberId(Long memberId){
+        Optional<Member> member = memberRepository.findById(memberId);
+        return member;
+    }
+
+    //회원 수정
+    public Long updateMember(MemberDto memberDto){
+        Member member = memberRepository.findByEmail(memberDto.getEmail()).orElseThrow(EntityNotFoundException::new);
+
+        member.setName(memberDto.getName());
+        member.setEmail(memberDto.getEmail());
+        member.setPassword(memberDto.getPassword());
+        member.setNickname(memberDto.getNickName());
+        member.setPhoneNumber(memberDto.getPhoneNumber());
+
+        memberRepository.save(member);
+        return member.getId();
     }
 }

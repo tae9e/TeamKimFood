@@ -9,6 +9,7 @@ import com.tkf.teamkimfood.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -23,6 +24,7 @@ import java.time.Duration;
 
 @RequiredArgsConstructor
 @Component
+@Log4j2
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
@@ -38,15 +40,18 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String email = (String) oAuth2User.getAttributes().get("email");
         String nickName = (String) oAuth2User.getAttributes().get("nickName");
         OAuthProvider oAuthProvider = OAuthProvider.KAKAO;
+        log.info("oAuthProvider{}" + oAuthProvider);
 
         OAuthInfoResponse oAuthInfoResponse = new OAuthInfoResponseImpl(email, nickName, oAuthProvider);
+        log.info("oAuthInfoResponse{}" + oAuthInfoResponse);
 
         Long memberId = oAuthLoginService.findOrCreateMember(oAuthInfoResponse);
 
         AuthTokens tokens = authTokensGenerator.generate(memberId);
+        log.info("tokens{} " + tokens);
 
         addRefreshTokenToCookie(request,response,tokens.getRefreshToken());
-        redirectStrategy.sendRedirect(request,response,"/login/hello");
+        redirectStrategy.sendRedirect(request,response,"/main");
 
     }
 

@@ -34,10 +34,10 @@ public class OauthController {
         this.oAuthLoginService = oAuthLoginService;
     }
 
-    @PostMapping("/kakao")
-    public ResponseEntity<AuthTokens> loginKakao(@RequestBody KakaoLoginParams params){
-        return ResponseEntity.ok(oAuthLoginService.login(params));
-    }
+//    @PostMapping("/kakao")
+//    public ResponseEntity<AuthTokens> loginKakao(@RequestBody KakaoLoginParams params){
+//        return ResponseEntity.ok(oAuthLoginService.login(params));
+//    }
 
     @GetMapping("/auth/loginForm")
     public String KakaoOauth(){
@@ -49,12 +49,14 @@ public class OauthController {
     @PostMapping("/auth/kakao/callback")
     public String kakaoCallback(@RequestParam String code) {
         KakaoLoginParams kakaoLoginParams=new KakaoLoginParams();
+        log.info("KakaoParams{}: " + kakaoLoginParams);
+        log.info("code?{}"+code);
         kakaoLoginParams.setAuthorizationCode(code);
 
         String accessToken = kakaoApiClient.requestAccessToken(kakaoLoginParams);
         OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
 
-        return "카카오 로그인 처리 완료";
+        return "redirect:/login/hello";
     }
 
 }
