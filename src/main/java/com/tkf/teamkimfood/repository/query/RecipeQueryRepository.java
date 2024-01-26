@@ -83,7 +83,8 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                                 recipe.title,
                                 recipe.viewCount,
                                 foodImg.imgUrl,
-                                member.nickname
+                                member.nickname,
+                                recipe.writeDate
                         )
                 )
                 .from(recipe)
@@ -206,7 +207,8 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                                 recipe.title,
                                 recipe.viewCount,
                                 foodImg.imgUrl,
-                                member.nickname
+                                member.nickname,
+                                recipe.writeDate
                         )
                 )
                 .from(recipe)
@@ -238,7 +240,8 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                                 recipe.title,
                                 recipe.viewCount,
                                 foodImg.imgUrl,
-                                member.nickname
+                                member.nickname,
+                                recipe.writeDate
                         )
                 )
                 .from(recipe)
@@ -274,7 +277,8 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                                 recipe.title,
                                 recipe.viewCount,
                                 foodImg.imgUrl,
-                                member.nickname
+                                member.nickname,
+                                recipe.writeDate
                         )
                 )
                 .from(recipe)
