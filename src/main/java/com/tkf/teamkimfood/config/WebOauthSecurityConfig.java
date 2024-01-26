@@ -5,15 +5,20 @@ import com.tkf.teamkimfood.config.jwt.JwtTokenProvider;
 import com.tkf.teamkimfood.config.oauth.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.tkf.teamkimfood.config.oauth.OAuth2SuccessHandler;
 import com.tkf.teamkimfood.infra.CustomClientRegistration;
+import com.tkf.teamkimfood.repository.RefreshTokenRespository;
+import com.tkf.teamkimfood.service.MemberService;
 import com.tkf.teamkimfood.service.OAuthLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -34,6 +39,13 @@ public class WebOauthSecurityConfig {
     private final OAuthLoginService oAuthLoginService;
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomClientRegistration customClientRegistration;
+    private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+
+
+    public void configure(AuthenticationManagerBuilder auth) throws Exception{
+        auth.userDetailsService(userDetailsService);
+    }
     @Bean
     //보안 설정
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,26 +54,27 @@ public class WebOauthSecurityConfig {
                 .authorizeRequests(authorizeRequests -> {
                     authorizeRequests
                             .requestMatchers(new AntPathRequestMatcher("/oauth2/authorization/kakao")).permitAll()
-                            .requestMatchers("/public/**", "/login/**","/auth/kakao/callback").permitAll() // 특정 경로에 대한 접근 허용
+                            .requestMatchers("/public/**", "/login/**","/BoardList/**").permitAll() // 특정 경로에 대한 접근 허용
                             .anyRequest().authenticated(); // 다른 모든 요청은 인증 필요
                 })
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement((sessionManagement)->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .formLogin(formLogincustomizer -> formLogincustomizer // 로그인 페이지 및 로그인 처리 URL 설정
-                        .loginPage("/login/hello"))// 로그인 페이지 경로
+                        .loginPage("/login"))// 로그인 페이지 경로
                 .oauth2Login(
                         oauth2 -> oauth2
-                                .loginPage("/login/hello")
+                              .loginPage("/login")
                                 .authorizationEndpoint(authorizationEndpoint -> {
                                     authorizationEndpoint
                                             .baseUri("/oauth2/authorization")
                                             .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository());
                                 })
-                                .redirectionEndpoint(redirection->redirection.baseUri("oauth2/authorization/kakao")
+                                .redirectionEndpoint(redirection->redirection.baseUri("/oauth2/authorization/kakao")
 
                                 )
-                                .successHandler(oAuth2SuccessHandler()));
+                                .successHandler(oAuth2SuccessHandler())
+                                );
         return http.build();
 
     }
@@ -79,6 +92,12 @@ public class WebOauthSecurityConfig {
         return new AuthenticatedPrincipalOAuth2AuthorizedClientRepository(authorizedClientService);
     }
 
+    @Bean
+    public OAuth2SuccessHandler oAuth2SuccessHandler(){
+        return new OAuth2SuccessHandler(oAuthLoginService,
+                authTokensGenerator);
+    }
+
     //인증 처리
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
@@ -90,20 +109,6 @@ public class WebOauthSecurityConfig {
     public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository() {
         return new OAuth2AuthorizationRequestBasedOnCookieRepository();
     }
-
-    //비밀번호 암호화
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-
-    }
-
-    @Bean
-    public OAuth2SuccessHandler oAuth2SuccessHandler(){
-        return new OAuth2SuccessHandler(oAuthLoginService,
-                authTokensGenerator);
-    }
-
 
     }
 

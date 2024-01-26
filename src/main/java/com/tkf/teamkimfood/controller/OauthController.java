@@ -46,7 +46,7 @@ public class OauthController {
     }
 
 
-    @PostMapping("/auth/kakao/callback")
+    @PostMapping("/oauth2/authorization/kakao")
     public String kakaoCallback(@RequestParam String code) {
         KakaoLoginParams kakaoLoginParams=new KakaoLoginParams();
         log.info("KakaoParams{}: " + kakaoLoginParams);

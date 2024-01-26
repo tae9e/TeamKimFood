@@ -25,8 +25,7 @@ public class JwtTokenProvider {
 
 
     public JwtTokenProvider(@Value("${jwt.secret_key}")String secretKey){
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.key= Keys.hmacShaKeyFor(keyBytes);
+        this.key= Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
     //JWT 토큰 생성
@@ -85,13 +84,6 @@ public class JwtTokenProvider {
         return claims.get("id",Long.class);
 
     }
-
-//    private Claims getClaims(String token) {
-//        return Jwts.parser()
-//                .setSigningKey(jwtProperties.getSecretKey())
-//                .parseClaimsJws(token)
-//                .getBody();
-//    }
 
 
 }
