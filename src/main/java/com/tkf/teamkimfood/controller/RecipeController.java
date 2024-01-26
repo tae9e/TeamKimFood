@@ -1,6 +1,6 @@
 package com.tkf.teamkimfood.controller;
 
-import com.tkf.teamkimfood.dto.CommentRequestDto;
+import com.tkf.teamkimfood.dto.CommentDto;
 import com.tkf.teamkimfood.dto.RecipeNCommentVo;
 import com.tkf.teamkimfood.dto.aboutrecipe.*;
 import com.tkf.teamkimfood.dto.MainpageRecipeDto;
@@ -66,7 +66,7 @@ public class RecipeController {
     public ResponseEntity<RecipeNCommentVo> viewOne(@PathVariable("id")Long recipeId){
         OneRecipeDto oneRecipeDto = recipeService.viewOne(recipeId);
         //현재 댓글은 빈 객체 돌려줌
-        CommentRequestDto commentDto = new CommentRequestDto();//코멘트 service 구현 완료시 수정예정.
+        CommentDto commentDto = new CommentDto();//코멘트 service 구현 완료시 수정예정.
         RecipeNCommentVo recipeNCommentVo = new RecipeNCommentVo(oneRecipeDto, commentDto);
         return ResponseEntity.ok(recipeNCommentVo);
     }

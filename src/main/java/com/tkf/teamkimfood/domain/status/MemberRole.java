@@ -1,14 +1,7 @@
 package com.tkf.teamkimfood.domain.status;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import jakarta.persistence.Enumerated;
 
-@Getter
-@RequiredArgsConstructor
 public enum MemberRole {
-//    USER, ADMIN
-    USER("USER"),
-    ADMIN("ADMIN");
-
-    private final String value;
+    USER, ADMIN
 }
