@@ -30,11 +30,13 @@ public enum MemberRole {
     public static final class MemberRoleConverter implements AttributeConverter<MemberRole, String> {
         @Override
         public String convertToDatabaseColumn(MemberRole attribute) { // (4)
+
             return attribute.getValue();
         }
 
         @Override
         public MemberRole convertToEntityAttribute(String dbData) { // (5)
+
             return MemberRole.resolve(dbData);
         }
     }

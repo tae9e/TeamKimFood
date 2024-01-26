@@ -1,11 +1,14 @@
 package com.tkf.teamkimfood.infra;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-
+@Configuration
 public class CustomClientRegistration {
 
+    @Bean
     public ClientRegistration kakaoClientRegistration(){
         return  ClientRegistration.withRegistrationId("kakao")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)

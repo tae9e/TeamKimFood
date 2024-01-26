@@ -56,7 +56,7 @@ public class OauthController {
         String accessToken = kakaoApiClient.requestAccessToken(kakaoLoginParams);
         OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
 
-        return "카카오 로그인 처리 완료";
+        return "redirect:/login/hello";
     }
 
 }
