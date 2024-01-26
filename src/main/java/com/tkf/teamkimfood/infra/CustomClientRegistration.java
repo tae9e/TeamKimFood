@@ -1,5 +1,6 @@
 package com.tkf.teamkimfood.infra;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -8,20 +9,35 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 @Configuration
 public class CustomClientRegistration {
 
+    @Value("${oauth.kakao.api-url}")
+    private String apiUrl;
+
+    @Value("${oauth.kakao.oauth-url}")
+    private String authUrl;
+
+    @Value("${oauth.kakao.client-id}")
+    private String clientId;
+
+    @Value("${oauth.kakao.redirect-uri}")
+    private String redirectUrl;
+
+    @Value("${oauth.kakao.client-secret")
+    private String clientSecret;
+
     @Bean
     public ClientRegistration kakaoClientRegistration(){
-        return  ClientRegistration.withRegistrationId("kakao")
+        return ClientRegistration.withRegistrationId("kakao")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .scope("profile_nickname","account_email")
+                .scope("profile_nickname", "account_email")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-                .authorizationUri("https://kauth.kakao.com/oauth/authorize")
-                .redirectUri("http://localhost:8080/oauth2/authorization/kakao")
-                .tokenUri("https://kauth.kakao.com/oauth/token")
-                .userInfoUri("https://kapi.kakao.com/v2/user/me")
+                .authorizationUri(apiUrl + "/authorize")
+                .redirectUri(redirectUrl)
+                .tokenUri(authUrl + "/token")
+                .userInfoUri(apiUrl + "/v2/user/me")
                 .userNameAttributeName("id")
                 .clientName("Kakao")
-                .clientId("69445a05dee5a6928649b416c9df1964")
-                .clientSecret("hxEg8JGhjQm7Np8bMd18vQWZhVOjcPm0")
+                .clientId(clientId)
+                .clientSecret(clientSecret)
                 .build();
 
     }

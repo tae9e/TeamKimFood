@@ -58,7 +58,7 @@ public class KakaoApiClient implements OauthApiClient {
         MultiValueMap<String, String> body = params.makeBody();
         body.add("grant_type", GRANT_TYPE);
         body.add("client_id", clientId);
-        body.add("redirect_url",redirectUrl);
+        body.add("redirect_uri",redirectUrl);
 
         log.info("request{}: " + body);
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
@@ -66,8 +66,8 @@ public class KakaoApiClient implements OauthApiClient {
         KakaoTokens response = restTemplate.postForObject(url, request, KakaoTokens.class);
         log.info("response{}:" + response);
 
-        assert response != null;
-        return response.getAccessToken();
+
+        return response != null? response.getAccessToken() : null;
     }
 
     //액세스 토큰을 이용해 사용자 정보 요청

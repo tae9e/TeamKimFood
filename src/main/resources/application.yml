@@ -43,10 +43,11 @@ oauth:
 logging:
   level:
     root: INFO
-    org.springfrmework.web: trace
-    org.springframework.security: trace
-    org.hibernate.SQL: debug
-    org.hibernate.type: trace
+    org.springfrmework.web: DEBUG
+    org.springframework.security: TRACE
+    org.springframwork.security.oauth2: TRACE
+#    org.hibernate.SQL: debug
+#    org.hibernate.type: trace
 
 recipeImgLocation: c:/recipe/images
 
