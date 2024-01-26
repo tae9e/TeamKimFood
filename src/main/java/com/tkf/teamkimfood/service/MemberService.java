@@ -4,9 +4,13 @@ package com.tkf.teamkimfood.service;
 
 import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.domain.status.MemberRole;
-import com.tkf.teamkimfood.dto.AddUserRequest;
+
+import com.tkf.teamkimfood.dto.MemberDto;
 import com.tkf.teamkimfood.repository.MemberRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,22 +30,18 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Getter
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    //중복 회원 검사해서 저장
     public Member saveMember(Member member){
         validateDuplicateMember(member);
         return memberRepository.save(member);
     }
 
-    public Long save(AddUserRequest dto){
-        return memberRepository.save(Member.builder()
-                        .email(dto.getEmail())
-                        .password(passwordEncoder.encode(dto.getPassword()))
-                        .build()).getId();
-    }
-
+    //유효성 검증, 존재하는 회원일 경우 예외 발생
     private void validateDuplicateMember(Member member){
         Optional<Member> findMember = memberRepository.findByEmail(member.getEmail());
         if(findMember.isPresent()){
@@ -51,8 +51,7 @@ public class MemberService implements UserDetailsService {
 
     }
 
-
-
+    //이메일을 이용해 회원 정보 조회
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         com.tkf.teamkimfood.domain.Member member = memberRepository.findByEmail(email)
@@ -74,5 +73,25 @@ public class MemberService implements UserDetailsService {
         );
         return user;
 
+    }
+
+    //회원 정보 불러오기
+    public Optional<Member> getMemberId(Long memberId){
+        Optional<Member> member = memberRepository.findById(memberId);
+        return member;
+    }
+
+    //회원 수정
+    public Long updateMember(MemberDto memberDto){
+        Member member = memberRepository.findByEmail(memberDto.getEmail()).orElseThrow(EntityNotFoundException::new);
+
+        member.setName(memberDto.getName());
+        member.setEmail(memberDto.getEmail());
+        member.setPassword(memberDto.getPassword());
+        member.setNickname(memberDto.getNickName());
+        member.setPhoneNumber(memberDto.getPhoneNumber());
+
+        memberRepository.save(member);
+        return member.getId();
     }
 }

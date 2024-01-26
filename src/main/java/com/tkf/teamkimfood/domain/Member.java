@@ -113,8 +113,8 @@ public class Member {
         member.setEmail(memberFormDto.getEmail());
         member.setNickname(memberFormDto.getNickname());
         member.setPhoneNumber(memberFormDto.getPhoneNumber());
-        member.setMemberRole(MemberRole.USER);
-        //member.setRole(MemberRole.ADMIN);
+        //member.setMemberRole(MemberRole.USER);
+        member.setMemberRole(MemberRole.ADMIN);
         return member;
     }
 
