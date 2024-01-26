@@ -7,7 +7,6 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { DropdownSubmenu, NavDropdownMenu} from "react-bootstrap-submenu";
 import { SlLogin, SlPencil  } from "react-icons/sl";
-import '../Css/Common.css';
 
 function TopNav() {
     return (

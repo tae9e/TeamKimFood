@@ -4,13 +4,13 @@ import axios from "axios";
 
 import BoardList from './component/BoardList';
 import LoginForm from './component/LoginForm';
-import Header from './component/Header/Header';
-import Footer from './component/Footer/Footer';
+import Header from './component/header/Header';
+import Footer from './component/footer/Footer';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './component/Css/Common.css';
 import './component/Css/Layout.css';
-import PersonalTreat from "./component/Footer/PersonalTreat";
+import PersonalTreat from "./component/footer/PersonalTreat";
 
 function App() {
 

@@ -7,9 +7,9 @@ import lombok.Data;
 public class RecipeNCommentVo {
 
     private OneRecipeDto oneRecipeDto;
-    private CommentDto commentDto;
+    private CommentRequestDto commentDto;
 
-    public RecipeNCommentVo(OneRecipeDto oneRecipeDto, CommentDto commentDto) {
+    public RecipeNCommentVo(OneRecipeDto oneRecipeDto, CommentRequestDto commentDto) {
         this.oneRecipeDto = oneRecipeDto;
         this.commentDto = commentDto;
     }
