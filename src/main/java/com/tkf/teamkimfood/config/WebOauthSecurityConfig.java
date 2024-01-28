@@ -27,6 +27,7 @@ import org.springframework.security.oauth2.client.registration.InMemoryClientReg
 import org.springframework.security.oauth2.client.web.AuthenticatedPrincipalOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -64,6 +65,7 @@ public class WebOauthSecurityConfig {
                             .anyRequest().authenticated(); // 다른 모든 요청은 인증 필요
                 })
                 .httpBasic(Customizer.withDefaults())
+                .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((sessionManagement)->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .formLogin(formLogincustomizer -> formLogincustomizer // 로그인 페이지 및 로그인 처리 URL 설정

@@ -53,6 +53,7 @@ public class OauthController {
         OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
         log.info("{}", userInfo.getEmail());
 
+        //DB에 User정보 담기
         Long userId = oAuthLoginService.findOrCreateMember(userInfo);
 
         Map<String, Object> responseBody = new HashMap<>();
