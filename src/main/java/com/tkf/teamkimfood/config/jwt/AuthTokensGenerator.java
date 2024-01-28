@@ -7,6 +7,7 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
+
 public class AuthTokensGenerator {
         //인증 타입으로 JWT 토큰 사용
         private static final String BEARER_TYPE = "Bearer";
@@ -15,20 +16,30 @@ public class AuthTokensGenerator {
 
         private final JwtTokenProvider jwtTokenProvider;
 
-        public AuthTokens generate(Long memberId) {
+
+        //사용자 아이디에 대한 토큰 생성
+        public AuthTokens generate(Long memberId){
+            String accessToken = createAccessToken(memberId);
+            String refreshToken = createRefreshToken(memberId);
+            return AuthTokens.create(accessToken,refreshToken,BEARER_TYPE,ACCESS_TOKEN_EXPIRE_TIME);
+        }
+
+
+        private String createAccessToken(Long memberId){
             long now = (new Date()).getTime();
             Date accessTokenExpiredAt = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
-            Date refreshTokenExpiredAt = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
-
             String subject = memberId.toString();
-            String accessToken = jwtTokenProvider.generate(subject, accessTokenExpiredAt);
-            String refreshToken = jwtTokenProvider.generate(subject, refreshTokenExpiredAt);
+            return jwtTokenProvider.generate(subject,accessTokenExpiredAt);
 
-            return AuthTokens.of(accessToken, refreshToken, BEARER_TYPE, ACCESS_TOKEN_EXPIRE_TIME / 1000L);
         }
 
-        public Long extractMemberId(String accessToken) {
-            return Long.valueOf(jwtTokenProvider.extractSubject(accessToken));
+        private String createRefreshToken(Long memberId){
+            long now = (new Date()).getTime();
+            Date refreshTokenExpiredAt = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
+            String subject = memberId.toString();
+
+            return jwtTokenProvider.generate(subject,refreshTokenExpiredAt);
         }
+
     }
 

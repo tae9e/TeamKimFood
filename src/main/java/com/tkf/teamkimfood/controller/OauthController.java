@@ -1,65 +1,49 @@
 package com.tkf.teamkimfood.controller;
 
-import com.tkf.teamkimfood.config.jwt.AuthTokens;
+import com.tkf.teamkimfood.config.oauth.OAuthInfoResponse;
+import com.tkf.teamkimfood.infra.KakaoApiClient;
 import com.tkf.teamkimfood.infra.KakaoLoginParams;
 import com.tkf.teamkimfood.service.OAuthLoginService;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.*;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 
 
-
-@Controller
-@Log4j2
+@RestController
+@Slf4j
 @RequestMapping("/public")
 public class OauthController {
 
     private final OAuthLoginService oAuthLoginService;
+    private final KakaoApiClient kakaoApiClient;
 
-    public OauthController(OAuthLoginService oAuthLoginService) {
+
+
+    public OauthController(OAuthLoginService oAuthLoginService,KakaoApiClient kakaoApiClient) {
+        this.kakaoApiClient=kakaoApiClient;
         this.oAuthLoginService = oAuthLoginService;
     }
 
-    @PostMapping("/kakao")
-    public ResponseEntity<AuthTokens> loginKakao(@RequestBody KakaoLoginParams params){
-        return ResponseEntity.ok(oAuthLoginService.login(params));
+    @GetMapping("/auth/kakao/login")
+    public void KakaoOauthTest(HttpServletResponse response) throws IOException {
+        response.sendRedirect(kakaoApiClient.getAuthorizeUrl());
     }
-
-    @GetMapping("/auth/loginForm")
-    public String KakaoOauth(){
-
-        return "logintest/kakaoLogin";
-    }
-
 
     @GetMapping("/auth/kakao/callback")
-    public String kakaoCallback (@RequestParam String code){
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type", "application/x-www-form-urlencode;charset=utf-8");
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", "69445a05dee5a6928649b416c9df1964");
-        params.add("redirect_uri", "http://localhost:8080/auth/kakao/callback");
-        params.add("code", code);
+    public String kakaoCallback(@RequestParam("code") String code) {
+        KakaoLoginParams kakaoLoginParams=new KakaoLoginParams();
+        log.info("KakaoParams : {}", kakaoLoginParams);
+       //로그는 (+) 쓰지말고 아래처럼 "" 안에는 {} 로 변수 위치 잡아주고 (,) 뒤에다가 해당 위치에 넣을 변수 지정해주면 됨
+        log.info("code : {}", code);
+        kakaoLoginParams.setAuthorizationCode(code);
 
-        log.info("토큰 요청" + code);
-
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
-
-        ResponseEntity response = restTemplate.exchange("https://kauth.kakao.com/oauth/token,",
-                HttpMethod.POST,
-                kakaoTokenRequest,
-                String.class);
-        return "카카오 토큰 요청, 토큰 요청에 대한 응답" + response;
-
+        String accessToken = kakaoApiClient.requestAccessToken(kakaoLoginParams);
+        OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
+        log.info("{}", userInfo.getEmail());
+        // 여기서 리다이렉트 하지말고 토큰 값이랑 프론트에서 필요한 사용자 정보를 보내주면 됨
+        return "redirect:/login/success";
     }
 
 }

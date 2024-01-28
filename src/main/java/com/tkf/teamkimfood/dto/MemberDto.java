@@ -1,7 +1,11 @@
 package com.tkf.teamkimfood.dto;
 
-import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class MemberDto {
     private String name;
     private String password;

@@ -6,13 +6,14 @@ function BoardList() {
 
         const [inputData, setInputData] = useState([{
             view_count: '',
-            correction_date: '',
-            member_id: '',
+            // correction_date: '', //수정일은 따로 안띄워도 될 것 같습니다.
+            nickname: '',
             recipe_id: '',
             score: '',
             write_date: '',
-            content: '',
+            // content: '',
             title: ''
+            //imgUrl도 추가 하셔야 할 것 같습니다.
         }])
 
     // 글 리스트의 갯수를 세기 위해 선언, 기본값 0
@@ -28,11 +29,11 @@ function BoardList() {
                 // 받아온 데이터를 map 해주어 rowData 별로 _inputData 선언
                 const _inputData = await res.data.map((rowData) => ({
                     view_count: rowData.view_count,
-                    correction_date: rowData.correction_date,
-                    member_id: rowData.member_id,
+                    // correction_date: rowData.correction_date, //수정일은 따로 안띄워도 될 것 같습니다.
+                    nickname: rowData.nickname,//member_id 받으시면 큰일납니다!
                     recipe_id: rowData.recipe_id,
                     write_date: rowData.write_date,
-                    content: rowData.content,
+                    // content: rowData.content,
                     title: rowData.title
                     })
                 )
@@ -60,13 +61,18 @@ function BoardList() {
                                 rowData.recipe_id !== '' &&
                                 <tr>
                                     <td className='listTableIndex'>
-                                        // router 로 이동 시 idx값을 param 으로 전달
+                                        {/*router 로 이동 시 idx값을 param 으로 전달*/}
                                         <Link to={`/BoardContent/${rowData.recipe_id}`}>{rowData.recipe_id}</Link>
                                     </td>
                                     <td className='listTableTitle'>
                                         <Link to={`/BoardContent/${rowData.recipe_id}`}>{rowData.title}</Link>
                                     </td>
+                                    <td>{rowData.nickname}</td>
+                                    <td>{rowData.view_count}</td>
+                                    <td>{rowData.write_date}</td>
+                                {/*    imgUrl 추가하는 html코드 추가해주세요! */}
                                 </tr>
+
                             )) :
                             <tr>
                                 <td className='listTableIndex'></td>

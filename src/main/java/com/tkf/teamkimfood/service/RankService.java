@@ -10,11 +10,13 @@ import com.tkf.teamkimfood.repository.rank.RankQueryRepository;
 import com.tkf.teamkimfood.repository.rank.RankRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeRepository;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,23 +37,26 @@ public class RankService {
     private final RecipeRepository recipeRepository;
 
     //랭크 생성후 추천 증감시키는 로직
-    public Long recommRecipeVariation(Long memberId, Long recipeId, Rank rank) {
-        Member member = memberRepository.findById(memberId).orElseThrow(NullPointerException::new);
-        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(NullPointerException::new);
+    public Long recommRecipeVariation(RankDto rankDto) {
+        Member member = memberRepository.findById(rankDto.getMemberId()).orElseThrow(EntityNotFoundException::new);
+        Recipe recipe = recipeRepository.findById(rankDto.getRecipeId()).orElseThrow(EntityNotFoundException::new);
 
+        Optional<Rank> existingRank = rankRepository.findByMemberAndRecipe(member, recipe);
+        Rank rank = Rank.builder().build();
         rank.setMember(member);
         rank.setRecipe(recipe);
-        Rank saved = rankRepository.save(rank);
-        RankDto rankDto = new RankDto();
-        rankDto.setId(saved.getId());
-        rankDto.setRecipeRecommendation(saved.isRecipeRecommendation());
-        rankDto.setUserRecommendation(saved.isUserRecommendation());
 
-        //추천을 주기 위해서
-        if (rankDto.isRecipeRecommendation()) {
-            rankDto.setRecipeRecommendation(true);
+        if (existingRank.isEmpty()) {
+            Rank saved = rankRepository.save(rank);//reue로 생성. 애초에 추천을 위해 onClick함
+            rankDto.setId(saved.getId());
+            rankDto.setRecipeRecommendation(saved.isRecipeRecommendation());//디폴트값이 true기에
         } else {
-            rankDto.setRecipeRecommendation(false);
+            //추천을 주기 위해서
+            if (!rankDto.isRecipeRecommendation()) {
+                rankDto.setRecipeRecommendation(true);
+            } else {
+                rankDto.setRecipeRecommendation(false);
+            }
         }
         rank.recipeRecommend(rankDto);//추천수 증감시킴
         rankRepository.save(rank);

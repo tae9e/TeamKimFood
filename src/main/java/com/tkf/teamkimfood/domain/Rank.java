@@ -23,7 +23,7 @@ public class Rank {
     private RankSearchStatus rankSearchStatus;
 
     //레시피 추천 관련 유저가 가지고 있는 값
-    private boolean recipeRecommendation = false;
+    private boolean recipeRecommendation = true;
     //유저 추천 관련 해당 유저에 대한 값
     private boolean userRecommendation = false;
 
@@ -40,9 +40,11 @@ public class Rank {
     private long recipeRecoTotal;
     private long memberRecoTotal;
 
-
-
-    //검색관련 데이터주입
+    @Builder
+    public Rank(boolean recipeRecommendation, boolean userRecommendation) {
+        this.recipeRecommendation = recipeRecommendation;
+        this.userRecommendation = userRecommendation;
+    }
 
     //연관관계 메서드
     public void setMember(Member member) {
