@@ -6,7 +6,8 @@ import BoardList from './component/BoardList';
 import LoginForm from './component/LoginForm';
 import Header from './component/Header/Header';
 import Footer from './component/Footer/Footer';
-
+import ProtectedRoute from "./component/manage/ProtectedRoute";
+import ManagePage from "./component/manage/ManagePage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './component/Css/Common.css';
 import './component/Css/Layout.css';
@@ -23,6 +24,11 @@ function App() {
                     <Route path='/login' Component={ LoginForm } />
                     <Route path='/personaltreat' Component={ PersonalTreat } />
                     {/*<Route path='/BoardContent/:recipe_id' component={ BoardContent } />*/}
+                    <Route path="/admin" element={
+                        <ProtectedRoute>
+                                 <ManagePage/>
+                        </ProtectedRoute>}>
+                    </Route>
                 </Routes>
 
                 <Footer />

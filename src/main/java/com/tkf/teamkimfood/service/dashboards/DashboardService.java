@@ -1,7 +1,9 @@
 package com.tkf.teamkimfood.service.dashboards;
 
+import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.dto.dashboards.DailyStatsDto;
 import com.tkf.teamkimfood.dto.dashboards.DashboardDto;
+import com.tkf.teamkimfood.dto.dashboards.MemberManagementDto;
 import com.tkf.teamkimfood.repository.DashboardRepository;
 import com.tkf.teamkimfood.repository.MemberRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeRepository;
@@ -9,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -54,4 +57,14 @@ public class DashboardService {
     private Long getTotalRecipes() {
         return recipeRepository.count();
     }
+
+    //멤버관리를위해 전체 멤버 불러오기
+    public List<MemberManagementDto> getUsersToDashboard() {
+        List<Member> allUsers = memberRepository.findAll();
+
+        return allUsers.stream()
+                .map(m -> new MemberManagementDto(m.getId(), m.getName(), m.getEmail(), m.getNickname(), m.getPhoneNumber()))
+                .toList();
+    }
+
 }
