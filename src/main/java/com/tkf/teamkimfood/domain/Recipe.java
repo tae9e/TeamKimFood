@@ -2,12 +2,10 @@ package com.tkf.teamkimfood.domain;
 
 import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +13,9 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Recipe {
 
     @Id @Column(name = "recipe_id")
@@ -35,7 +35,11 @@ public class Recipe {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
     private List<RecipeDetail> recipeDetails = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+//    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+//    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Where(clause = "parent_id is null")
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
