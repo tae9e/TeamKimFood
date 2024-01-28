@@ -6,7 +6,7 @@ class Footer extends Component {
             <footer className="footer">
                     <div className="ft_r">
                         <ul>
-                            <li className="ft_li"><a href="#n">개인정보처리방침</a></li>
+                            <li className="ft_li"><a href="/personaltreat">개인정보처리방침</a></li>
                             <li className="ft_li"><a href="#n">이메일주소무단수집거부</a></li>
                         </ul>
                     </div>

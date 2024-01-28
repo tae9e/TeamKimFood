@@ -40,7 +40,7 @@ public class RecipeService {
 
     //레시피 저장...
     @Transactional
-    public Long saveRecipe(Long memberId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto,List<String> explanations, List<MultipartFile> foodImgFileList) throws IOException {
+    public Long saveRecipe(Long memberId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto,List<String> explanations, List<MultipartFile> foodImgFileList, int repImageIndex) throws IOException {
         Member member = memberRepository.findOne(memberId);
         Recipe recipe = Recipe.builder()
                 .title(recipeDto.getTitle())
@@ -77,12 +77,12 @@ public class RecipeService {
         for (int i = 0; i < foodImgFileList.size(); i++) {
             FoodImg foodImg = new FoodImg();
             foodImg.setRecipe(savedRecipe);
-            if (i == 0) {
+            if (i == repImageIndex) {
                 foodImg.setRepImgYn("Y");
             } else {
                 foodImg.setRepImgYn("N");
             }
-            foodImgService.saveFoodImg(foodImg, explanations.get(i) , foodImgFileList.get(i));
+            foodImgService.saveFoodImg(foodImg, explanations.get(i), foodImgFileList.get(i));
         }
         return savedRecipe.getId();
     }
@@ -125,6 +125,9 @@ public class RecipeService {
         } else {
             return null;
         }
+    }
+    public OneRecipeForUpdateVo findOneByEmail(Long recipeId, String email) {
+        return recipeQueryRepository.findOneByEmail(recipeId, email);
     }
 
     //    일반적인 메뉴노출(비회원 접속시)
@@ -173,10 +176,10 @@ public class RecipeService {
     }
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
     @Transactional
-    public Long updateRecipe(Long memberId , Long recipeId, FoodImgDto foodImgDto, List<String> explanations, List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
+    public Long updateRecipe(String email , Long recipeId, FoodImgDto foodImgDto, List<String> explanations, List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
         Recipe checking = recipeRepository.findById(recipeId).orElseThrow();
-        if (checking.getMember().getId().equals(memberId)) {
-            Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(memberId, recipeId);
+        if (checking.getMember().getEmail().equals(email)) {
+            Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(email, recipeId);
             Recipe updateRecipe = Recipe.builder()
                     .title(recipeDto.getTitle())
                     .content(recipeDto.getContent())
@@ -227,4 +230,6 @@ public class RecipeService {
     public Page<MainpageRecipeDto> getAllOrderByRankPoint(Pageable pageable) {
         return recipeQueryRepository.getAllOrderByRankPoint(pageable);
     }
+
+    //레시피 자세히 보기
 }

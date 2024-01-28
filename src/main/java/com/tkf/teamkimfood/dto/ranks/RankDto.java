@@ -1,6 +1,8 @@
 package com.tkf.teamkimfood.dto.ranks;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.tkf.teamkimfood.domain.Member;
+import com.tkf.teamkimfood.domain.Recipe;
 import com.tkf.teamkimfood.domain.status.RankSearchStatus;
 import lombok.Data;
 
@@ -13,8 +15,15 @@ public class RankDto {
     private boolean recipeRecommendation = false;
     //유저 추천 관련 해당 유저에 대한 값
     private boolean userRecommendation = false;
+    private Long memberId;
+    private Long recipeId;
 
     public RankDto() {
+    }
+
+    public RankDto(Long memberId, Long recipeId) {
+        this.memberId = memberId;
+        this.recipeId = recipeId;
     }
 
     @QueryProjection

@@ -1,6 +1,7 @@
 @charset "UTF-8";
 
 /* Header */
+
 header {
     display: flex;
     flex-direction: row;
@@ -110,6 +111,26 @@ header {
 .navbar-text a:hover,
 .navbar-text a:focus {
     color: var(--bs-navbar-active-color);
+}
+
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: var(--bs-dropdown-item-padding-y) var(--bs-dropdown-item-padding-x);
+    clear: both;
+    font-weight: 400;
+    color: var(--bs-dropdown-link-color);
+    text-align: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    color: var(--bs-dropdown-link-active-color);
+    text-decoration: none;
+    background-color: var(--beige);
 }
 
 .navbar-collapse {
