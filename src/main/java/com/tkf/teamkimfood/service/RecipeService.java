@@ -40,7 +40,7 @@ public class RecipeService {
 
     //레시피 저장...
     @Transactional
-    public Long saveRecipe(Long memberId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto,List<String> explanations, List<MultipartFile> foodImgFileList) throws IOException {
+    public Long saveRecipe(Long memberId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto,List<String> explanations, List<MultipartFile> foodImgFileList, int repImageIndex) throws IOException {
         Member member = memberRepository.findOne(memberId);
         Recipe recipe = Recipe.builder()
                 .title(recipeDto.getTitle())
@@ -77,12 +77,12 @@ public class RecipeService {
         for (int i = 0; i < foodImgFileList.size(); i++) {
             FoodImg foodImg = new FoodImg();
             foodImg.setRecipe(savedRecipe);
-            if (i == 0) {
+            if (i == repImageIndex) {
                 foodImg.setRepImgYn("Y");
             } else {
                 foodImg.setRepImgYn("N");
             }
-            foodImgService.saveFoodImg(foodImg, explanations.get(i) , foodImgFileList.get(i));
+            foodImgService.saveFoodImg(foodImg, explanations.get(i), foodImgFileList.get(i));
         }
         return savedRecipe.getId();
     }

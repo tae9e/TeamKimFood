@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import {useParams} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 
 const RecipeForm = () => {
     const [recipeForm, setRecipeForm] = useState({
@@ -14,8 +14,10 @@ const RecipeForm = () => {
     });
 
     const {recipeId} = useParams();//recipeId 파라미터에서 가져옴
+    const [repImageIndex, setRepImageIndex] = useState(null);
     const [newImages, setNewImages] = useState([]);
     const [isEditMode, setIsEditMode] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (recipeId) {
@@ -188,6 +190,7 @@ const RecipeForm = () => {
             if (response.status === 200) {
                 const data = response.data;
                 console.log('레시피를 성공적으로 저장했습니다.:', data);
+                navigate(`/api/recipes/boardList`);
             } else {
                 console.error('레시피를 저장하는데 실패했습니다.:', response.statusText);
             }
@@ -229,12 +232,19 @@ const RecipeForm = () => {
 
             if (response.status === 200) {
                 console.log('레시피가 성공적으로 수정되었습니다.');
-                // 성공 후 처리 로직 (예: 페이지 이동)
+                navigate(`/api/recipe/${recipeId}`);
             } else {
                 console.error('레시피 수정에 실패했습니다.');
             }
         } catch (error) {
             console.error('에러가 발생했습니다:', error);
+        }
+    };
+    const handleRepImageChange = (index) => {
+        if (repImageIndex === index) {
+            setRepImageIndex(null);
+        } else {
+            setRepImageIndex(index);
         }
     };
 
@@ -385,14 +395,20 @@ const RecipeForm = () => {
                     <legend>이미지 파일:</legend>
                     {detail.imgFiles.map((imgFile, index) => (
                         <div key={index}>
-                            <img src={imgFile} alt={`Preview ${index}`} style={{ maxWidth: '100px', maxHeight: '100px' }} />
+                            <img src={imgFile} alt={`Preview ${index}`}
+                                 style={{maxWidth: '100px', maxHeight: '100px'}}/>
+                            <input
+                                type="checkbox"
+                                checked={repImageIndex === index}
+                                onChange={() => handleRepImageChange(index)}
+                            />
                             {isEditMode && (
-                                <input type="file" onChange={(e) => handleImageChange(e, pairIndex, index)} />
+                                <input type="file" onChange={(e) => handleImageChange(e, pairIndex, index)}/>
                             )}
                         </div>
                     ))}
                     {isEditMode && (
-                        <input type="file" multiple onChange={(e) => handleNewImageChange(e, pairIndex)} />
+                        <input type="file" multiple onChange={(e) => handleNewImageChange(e, pairIndex)}/>
                     )}
                     {detail.explanations.map((explanation, index) => (
                         <div key={index}>

@@ -52,7 +52,8 @@ public class RecipeController {
 //    }
     @PostMapping(value = "/api/recipe/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Long> saveRecipe(@RequestParam("recipeRequest") String recipeRequest,
-                                           @RequestParam("foodImgFileList") MultipartFile[] foodImgFileList) {
+                                           @RequestParam("foodImgFileList") MultipartFile[] foodImgFileList,
+                                           @RequestParam("repImageIndex") int repImageIndex) {
         try {
             // JSON 문자열을 RecipeRequestVo 객체로 변환
             RecipeRequestVo request = new ObjectMapper().readValue(recipeRequest, RecipeRequestVo.class);
@@ -68,7 +69,8 @@ public class RecipeController {
                     request.getCategoryPreferenceDto(),
                     request.getRecipeDetailListDto(),
                     request.getExplanations(),
-                    request.getFoodImgFileList()
+                    request.getFoodImgFileList(),
+                    repImageIndex
             );
 
             return ResponseEntity.ok(saveRecipe);
@@ -97,14 +99,14 @@ public class RecipeController {
         }
     }
     //세부조회(댓글 필요)
-//    @GetMapping("/{id}")
-//    public ResponseEntity<RecipeNCommentVo> viewOne(@PathVariable("id")Long recipeId){
-//        OneRecipeDto oneRecipeDto = recipeService.viewOne(recipeId);
-//        //현재 댓글은 빈 객체 돌려줌
-//        CommentDto commentDto = new CommentDto();//코멘트 service 구현 완료시 수정예정.
-//        RecipeNCommentVo recipeNCommentVo = new RecipeNCommentVo(oneRecipeDto, commentDto);
-//        return ResponseEntity.ok(recipeNCommentVo);
-//    }
+    @GetMapping("/api/recipe/{id}")
+    public ResponseEntity<RecipeNCommentVo> viewOne(@PathVariable("id")Long recipeId){
+        OneRecipeDto oneRecipeDto = recipeService.viewOne(recipeId);
+        //현재 댓글은 빈 객체 돌려줌
+        CommentDto commentDto = new CommentDto();//코멘트 service 구현 완료시 수정예정.
+        RecipeNCommentVo recipeNCommentVo = new RecipeNCommentVo(oneRecipeDto, commentDto);
+        return ResponseEntity.ok(recipeNCommentVo);
+    }
     //수정
     @PutMapping("/api/recipes/{recipeId}")
     public ResponseEntity<Long> updateRecipe(@AuthenticationPrincipal UserDetails userDetails,
