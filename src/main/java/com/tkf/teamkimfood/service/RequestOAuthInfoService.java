@@ -17,7 +17,7 @@ public class RequestOAuthInfoService {
 
     public RequestOAuthInfoService(List<OauthApiClient> clients) {
         this.clients = clients.stream().collect(
-                Collectors.toUnmodifiableMap(OauthApiClient::oAuthProvider, Function.identity())
+                Collectors.toUnmodifiableMap(OauthApiClient::initOAuthProvider, Function.identity())
         );
     }
 

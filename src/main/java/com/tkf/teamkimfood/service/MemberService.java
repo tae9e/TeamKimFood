@@ -94,4 +94,11 @@ public class MemberService implements UserDetailsService {
         memberRepository.save(member);
         return member.getId();
     }
+
+    //회원 삭제
+    public void deleteMember(Long memberId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(EntityNotFoundException::new);
+        memberRepository.delete(member);
+    }
 }
