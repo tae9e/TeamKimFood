@@ -1,14 +1,13 @@
 package com.tkf.teamkimfood.dto.aboutrecipe;
 
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class OneRecipeDto {
+public class OneRecipeForUpdateVo {
     private Long memberId;
     private Long id;
     private String title;
@@ -31,7 +30,7 @@ public class OneRecipeDto {
 
     //1개 조회용
     @QueryProjection
-    public OneRecipeDto(Long id, String title, String content, int viewCount, LocalDateTime writeDate, LocalDateTime correctionDate, String nickName, String situation, String foodStuff, String foodNationType, Long memberId) {
+    public OneRecipeForUpdateVo(Long id, String title, String content, int viewCount, LocalDateTime writeDate, LocalDateTime correctionDate, String nickName, String situation, String foodStuff, String foodNationType, Long memberId) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -57,6 +56,4 @@ public class OneRecipeDto {
             this.dosage.add(oriv.getDosage());
         });
     }
-
-
 }

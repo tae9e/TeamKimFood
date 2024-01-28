@@ -5,6 +5,8 @@ import com.tkf.teamkimfood.dto.CommentDto;
 import com.tkf.teamkimfood.dto.RecipeNCommentVo;
 import com.tkf.teamkimfood.dto.aboutrecipe.*;
 import com.tkf.teamkimfood.dto.MainpageRecipeDto;
+import com.tkf.teamkimfood.dto.ranks.RankDto;
+import com.tkf.teamkimfood.service.RankService;
 import com.tkf.teamkimfood.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,7 @@ import java.util.List;
 public class RecipeController {
 
     private final RecipeService recipeService;
+    private final RankService rankService;
     //레시피 저장
 //    @PostMapping("/api/recipes/save")
 //    public ResponseEntity<Long> saveRecipe(@RequestBody RecipeRequestVo request) {
@@ -47,9 +50,10 @@ public class RecipeController {
 //            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(-1L);
 //        }
 //    }
-    @PostMapping(value = "/api/recipes/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/api/recipe/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Long> saveRecipe(@RequestParam("recipeRequest") String recipeRequest,
-                                           @RequestParam("foodImgFileList") MultipartFile[] foodImgFileList) {
+                                           @RequestParam("foodImgFileList") MultipartFile[] foodImgFileList,
+                                           @RequestParam("repImageIndex") int repImageIndex) {
         try {
             // JSON 문자열을 RecipeRequestVo 객체로 변환
             RecipeRequestVo request = new ObjectMapper().readValue(recipeRequest, RecipeRequestVo.class);
@@ -65,7 +69,8 @@ public class RecipeController {
                     request.getCategoryPreferenceDto(),
                     request.getRecipeDetailListDto(),
                     request.getExplanations(),
-                    request.getFoodImgFileList()
+                    request.getFoodImgFileList(),
+                    repImageIndex
             );
 
             return ResponseEntity.ok(saveRecipe);
@@ -76,7 +81,7 @@ public class RecipeController {
         }
     }
     //메인화면 구성
-    @GetMapping("/main")
+    @GetMapping("/api/recipes/boardList")
     public Page<MainpageRecipeDto> getMain(
             @RequestParam(required = false) Long memberId,
             RecipeSearchDto recipeSearchDto, @RequestParam(defaultValue = "0")int page,
@@ -94,7 +99,7 @@ public class RecipeController {
         }
     }
     //세부조회(댓글 필요)
-    @GetMapping("/{id}")
+    @GetMapping("/api/recipe/{id}")
     public ResponseEntity<RecipeNCommentVo> viewOne(@PathVariable("id")Long recipeId){
         OneRecipeDto oneRecipeDto = recipeService.viewOne(recipeId);
         //현재 댓글은 빈 객체 돌려줌
@@ -103,15 +108,21 @@ public class RecipeController {
         return ResponseEntity.ok(recipeNCommentVo);
     }
     //수정
-    @PutMapping("/{id}")
+    @PutMapping("/api/recipes/{recipeId}")
     public ResponseEntity<Long> updateRecipe(@AuthenticationPrincipal UserDetails userDetails,
-                                             @PathVariable("id")Long recipeId,
-                                             @RequestParam(required = false) FoodImgDto foodImgDto,
-                                             @RequestParam(required = false) List<String> explanations,
-                                             @RequestParam(required = false) List<MultipartFile> foodImgFileList,
-                                             @RequestBody RecipeDto recipeDto) throws IOException {
-        Long userId = getUserId(userDetails);
-        Long updatedRecipe = recipeService.updateRecipe(userId, recipeId, foodImgDto,explanations ,foodImgFileList, recipeDto);
+                                             @PathVariable("recipeId") Long recipeId,
+                                             @RequestParam("recipeRequest") String recipeRequest,
+                                             @RequestParam(required = false) MultipartFile[] foodImgFileList
+                                             ) throws IOException {
+        // JSON 문자열을 RecipeRequestVo 객체로 변환
+        RecipeRequestVo request = new ObjectMapper().readValue(recipeRequest, RecipeRequestVo.class);
+
+        // 파일 리스트를 RecipeRequestVo 객체에 설정
+        request.setFoodImgFileList(Arrays.asList(foodImgFileList));
+
+        String email = userDetails.getUsername();
+
+        Long updatedRecipe = recipeService.updateRecipe(email, recipeId, request.getFoodImgDto(),request.getExplanations() ,request.getFoodImgFileList(), request.getRecipeDto());
         if (updatedRecipe != null) {
             return ResponseEntity.ok(updatedRecipe);
         } else {
@@ -126,9 +137,23 @@ public class RecipeController {
             throw new RuntimeException("로그인이 확인되지 않습니다.");
         }
     }
+    //레시피 1개 보기
+
+    //수정할 레시피 내용 가져오기
+    @GetMapping("/api/recipes/{id}")
+    public ResponseEntity<?> getOneRecipeForUpdate(@PathVariable("id")Long recipeId, @AuthenticationPrincipal UserDetails userDetails) {
+
+        String userEmail = userDetails.getUsername();
+        OneRecipeForUpdateVo recipe = recipeService.findOneByEmail(recipeId, userEmail);
+        if (recipe != null) {
+            return ResponseEntity.ok(recipe);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("레시피 정보를 가져오지 못했습니다. 본인이 작성한 레시피가 맞는지 확인해주세요");
+        }
+    }
 
     //삭제
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/api/recipes/{id}/delete")
     public ResponseEntity<String> deleteRecipe(@PathVariable("id")Long recipeId, @AuthenticationPrincipal UserDetails userDetails) {
         Long userId = getUserId(userDetails);
         Boolean success = recipeService.deleteRecipe(userId, recipeId);
@@ -139,4 +164,18 @@ public class RecipeController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("삭제에 실패했습니다. 본인이 작성한 레시피가 맞는지 확인 부탁드립니다.");
         }
     }
+    //레시피 추천
+    @PostMapping("/api/recipes/{id}/recommend")
+    public ResponseEntity<?> recommendRecipe(@PathVariable("id")Long recipeId,
+                                             @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            Long userId = getUserId(userDetails);
+            RankDto rankDto = new RankDto(userId, recipeId);
+            Long totalRecommendation = rankService.recommRecipeVariation(rankDto);
+            return ResponseEntity.ok(totalRecommendation);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("추천 처리중 오류가 발생했습니다.");
+        }
+    }
+
 }

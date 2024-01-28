@@ -1,5 +1,6 @@
 package com.tkf.teamkimfood.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tkf.teamkimfood.config.oauth.OAuthProvider;
 import com.tkf.teamkimfood.domain.prefer.MemberPreference;
 import com.tkf.teamkimfood.domain.status.MemberRole;
@@ -16,7 +17,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "member")
 public class Member {
 
@@ -83,9 +85,18 @@ public class Member {
 
     //여기를 통해 데이터 넣으세용 id는 멤버가 아직 만들어지기 전이라 임시로 넣었습니다. 추후 프론트랑 연결시 삭제하겠습니다.
     @Builder
+
     public Member(Long id, String name, String password, String email, String nickname, String phoneNumber, MemberRole memberRole, LocalDateTime joinedDate,
                   MemberPreference memberPreference, OAuthProvider oAuthProvider) {
 
+
+
+    public Member(@JsonProperty("id") Long id, @JsonProperty("name") String name, @JsonProperty("password") String password,
+                  @JsonProperty("email") String email, @JsonProperty("nickname") String nickname, @JsonProperty("phoneNumber") String phoneNumber,
+                  @JsonProperty("memberRole") MemberRole memberRole, @JsonProperty("joinedDate") LocalDateTime joinedDate,
+                  @JsonProperty("memberPreference")MemberPreference memberPreference, @JsonProperty("oauthProvider") OAuthProvider oAuthProvider) {
+
+      
         this.id = id;
         this.name = name;
         this.password = password;
