@@ -38,18 +38,18 @@ public class LoginController {
     public String createMember(@Valid MemberFormDto memberFormDto , BindingResult bindingResult, Model model){
 
         if(bindingResult.hasErrors()){
-            return "/login/memberLogin";
+            return "login/memberLogin";
         }
 
         try{
             Member member = Member.createMember(memberFormDto,passwordEncoder);
             memberService.saveMember(member);
+            return "login/success";
         }catch(IllegalStateException e){
             model.addAttribute("errorMessage",e.getMessage());
-            return "/login/memberLogin";
+            return "login/memberLogin";
         }
 
-        return "login/hello";
     }
 
     //회원 수정
@@ -66,4 +66,16 @@ public class LoginController {
         }
         return new ResponseEntity<String>("수정이 완료되었습니다",HttpStatus.OK);
     }
+
+    //회원 삭제
+    @DeleteMapping("/member/{memberId}")
+    public @ResponseBody ResponseEntity deleteCartItem(@PathVariable("memberId") Long memberId,Principal principal){
+        try {
+            memberService.deleteMember(memberId);
+            return ResponseEntity.ok("탈퇴되었습니다.");
+        }catch(EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
+        }
+    }
+
 }

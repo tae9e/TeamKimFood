@@ -53,8 +53,14 @@ public class WebOauthSecurityConfig {
                 .csrf(customizer -> customizer.disable()) // CSRF 보호 비활성화
                 .authorizeRequests(authorizeRequests -> {
                     authorizeRequests
-                            .requestMatchers(new AntPathRequestMatcher("/oauth2/authorization/kakao")).permitAll()
-                            .requestMatchers("/public/**", "/login/**","/BoardList/**").permitAll() // 특정 경로에 대한 접근 허용
+//                            .requestMatchers(new AntPathRequestMatcher("/oauth2/authorization/kakao")).permitAll()
+                            .requestMatchers(
+                                    "/public/**"
+                                    , "/BoardList/**"
+                                    , "/login/**"
+                                    , "/auth/**"
+                                    , "/favicon.ico"
+                                    , "/error").permitAll() // 특정 경로에 대한 접근 허용
                             .anyRequest().authenticated(); // 다른 모든 요청은 인증 필요
                 })
                 .httpBasic(Customizer.withDefaults())
@@ -64,7 +70,7 @@ public class WebOauthSecurityConfig {
                         .loginPage("/login"))// 로그인 페이지 경로
                 .oauth2Login(
                         oauth2 -> oauth2
-                              .loginPage("/login")
+                                .loginPage("/login")
                                 .authorizationEndpoint(authorizationEndpoint -> {
                                     authorizationEndpoint
                                             .baseUri("/oauth2/authorization")
@@ -74,7 +80,7 @@ public class WebOauthSecurityConfig {
 
                                 )
                                 .successHandler(oAuth2SuccessHandler())
-                                );
+                );
         return http.build();
 
     }
@@ -110,5 +116,5 @@ public class WebOauthSecurityConfig {
         return new OAuth2AuthorizationRequestBasedOnCookieRepository();
     }
 
-    }
+}
 

@@ -9,7 +9,7 @@ import org.springframework.util.MultiValueMap;
 @Setter
 @RequiredArgsConstructor
 public class KakaoLoginParams implements OAuthLoginParams {
-        private String authorizationCode;
+    private String authorizationCode;
 
 
     @Override
@@ -20,10 +20,10 @@ public class KakaoLoginParams implements OAuthLoginParams {
 
     //OAuth 인증 요청에 필요한 파라미터 생성
     @Override
-        public MultiValueMap<String, String> makeBody() {
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            body.add("code", authorizationCode);
-            return body;
-        }
+    public MultiValueMap<String, String> makeBody() {
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("code", authorizationCode);
+        return body;
     }
+}
 
