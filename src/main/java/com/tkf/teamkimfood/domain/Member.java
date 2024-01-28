@@ -25,8 +25,13 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL, mappedBy = "member")
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "refresh_id")
     private RefreshToken refreshToken;
+
+    @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name="UserInfo_id_id")
+    private KakaoUserInfo kakaoUserInfo;
 
     private String name;
     private String password;
@@ -39,14 +44,6 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
-
-    //Oauth 로그인을 위한 필드
-    @Column(name = "kakao_user_id")
-    private String kakaoUserId;
-
-
-    @Column(name = "kakao_access_token")
-    private String kakaoAccessToken;
 
     @ColumnDefault("0")
     private int grade;
@@ -87,7 +84,8 @@ public class Member {
     //여기를 통해 데이터 넣으세용 id는 멤버가 아직 만들어지기 전이라 임시로 넣었습니다. 추후 프론트랑 연결시 삭제하겠습니다.
     @Builder
     public Member(Long id, String name, String password, String email, String nickname, String phoneNumber, MemberRole memberRole, LocalDateTime joinedDate,
-                  MemberPreference memberPreference, OAuthProvider oAuthProvider,String kakaoUserId,String kakaoAccessToken) {
+                  MemberPreference memberPreference, OAuthProvider oAuthProvider) {
+
         this.id = id;
         this.name = name;
         this.password = password;
@@ -98,8 +96,8 @@ public class Member {
         this.joinedDate = joinedDate;
         this.memberPreference = memberPreference;
         this.oAuthProvider = oAuthProvider;
-        this.kakaoUserId=kakaoUserId;
-        this.kakaoAccessToken=kakaoAccessToken;
+
+
     }
     //테스트용 테스트가 끝나면 주석처리하시거나 삭제 해주세요
 

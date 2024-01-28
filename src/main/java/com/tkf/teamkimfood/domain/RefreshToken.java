@@ -14,11 +14,10 @@ import lombok.RequiredArgsConstructor;
 public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id",updatable = false)
+    @Column(name = "refresh_id",updatable = false)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id",referencedColumnName = "member_id")
+    @OneToOne(mappedBy = "refreshToken")
     private Member member;
 
     @Column(name="refresh_token",nullable = false)

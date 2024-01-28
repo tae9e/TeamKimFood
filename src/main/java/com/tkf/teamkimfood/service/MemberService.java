@@ -5,9 +5,8 @@ package com.tkf.teamkimfood.service;
 import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.domain.status.MemberRole;
 
-import com.tkf.teamkimfood.dto.MemberDto;
+import com.tkf.teamkimfood.dto.MemberFormDto;
 import com.tkf.teamkimfood.repository.MemberRepository;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
@@ -82,14 +81,14 @@ public class MemberService implements UserDetailsService {
     }
 
     //회원 수정
-    public Long updateMember(MemberDto memberDto){
-        Member member = memberRepository.findByEmail(memberDto.getEmail()).orElseThrow(EntityNotFoundException::new);
+    public Long updateMember(MemberFormDto memberFormDto){
+        Member member = memberRepository.findByEmail(memberFormDto.getEmail()).orElseThrow(EntityNotFoundException::new);
 
-        member.setName(memberDto.getName());
-        member.setEmail(memberDto.getEmail());
-        member.setPassword(memberDto.getPassword());
-        member.setNickname(memberDto.getNickName());
-        member.setPhoneNumber(memberDto.getPhoneNumber());
+        member.setName(memberFormDto.getName());
+        member.setNickname(memberFormDto.getNickname());
+        member.setEmail(memberFormDto.getEmail());
+        member.setPassword(memberFormDto.getPassword());
+        member.setPhoneNumber(memberFormDto.getPhoneNumber());
 
         memberRepository.save(member);
         return member.getId();
