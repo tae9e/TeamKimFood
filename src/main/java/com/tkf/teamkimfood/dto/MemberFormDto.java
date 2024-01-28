@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MemberFormDto {
+    private Long memberId;
     @NotEmpty(message = "이름을 입력해주세요.")
     private String name;
 

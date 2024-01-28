@@ -2,9 +2,11 @@ package com.tkf.teamkimfood.service;
 
 import com.tkf.teamkimfood.config.jwt.AuthTokens;
 import com.tkf.teamkimfood.config.jwt.AuthTokensGenerator;
+import com.tkf.teamkimfood.domain.KakaoUserInfo;
 import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.config.oauth.OAuthInfoResponse;
 import com.tkf.teamkimfood.config.oauth.OAuthLoginParams;
+import com.tkf.teamkimfood.repository.KakaoUserRepository;
 import com.tkf.teamkimfood.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Log4j2
 public class OAuthLoginService {
-    private final MemberRepository memberRepository;
+    private final KakaoUserRepository kakaoUserRepository;
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
 
@@ -29,21 +31,20 @@ public class OAuthLoginService {
 
     //사용자를 찾거나 새로 생성
     public Long findOrCreateMember(OAuthInfoResponse oAuthInfoResponse){
-        return memberRepository.findByEmail(oAuthInfoResponse.getEmail())
-                .map(Member::getId)
-                .orElseGet(() -> newMember(oAuthInfoResponse));
+        return kakaoUserRepository.findByEmail(oAuthInfoResponse.getEmail())
+                .map(KakaoUserInfo::getId)
+                .orElseGet(() -> newKakaoUser(oAuthInfoResponse));
     }
 
     //새로운 사용자 생성
-    private Long newMember(OAuthInfoResponse oAuthInfoResponse){
-        Member member = Member.builder()
-                .email(oAuthInfoResponse.getEmail())
-                .nickname(oAuthInfoResponse.getNickName())
-                .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
-                .build();
+    private Long newKakaoUser(OAuthInfoResponse oAuthInfoResponse){
+        KakaoUserInfo kakaoUserInfo = new KakaoUserInfo();
+        kakaoUserInfo.setEmail(oAuthInfoResponse.getEmail());
+        kakaoUserInfo.setNickName(oAuthInfoResponse.getNickName());
 
+        KakaoUserInfo saveKakaoUserInfo = kakaoUserRepository.save(kakaoUserInfo);
+        return saveKakaoUserInfo.getId();
 
-                return memberRepository.save(member).getId();
     }
 
 
