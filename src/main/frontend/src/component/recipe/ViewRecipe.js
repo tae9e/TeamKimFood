@@ -8,6 +8,12 @@ const RecipeView = ({ match }) => {
     const [recipe, setRecipe] = useState(null);
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const [recommendations, setRecommendations] = useState(0);
+
+    //추천버튼
+    const renderRecommendButton = () => (
+        <button onClick={handleRecommend}>{`추천 (${recommendations})`}</button>
+    );
 
     // 레시피 상세 정보를 로드하는 함수
     const loadRecipe = async () => {
@@ -97,6 +103,16 @@ const RecipeView = ({ match }) => {
             }
         }
     };
+    //추천버튼 로직
+    const handleRecommend = async () => {
+        try {
+            const response = await axios.post(`/api/recipes/${recipe.oneRecipeDto.id}/recommend`);
+            setRecommendations(response.data); // 추천 수 업데이트
+        } catch (error) {
+            console.error('추천 처리 중 오류 발생', error);
+            alert('추천 처리 중 문제가 발생했습니다.');
+        }
+    };
 
     return (
         <div>
@@ -123,12 +139,16 @@ const RecipeView = ({ match }) => {
                 <div>
                     {/*좌측하단*/}
                     <div>
-                        <button type="button" onClick={()=>navigateToMain()}>메인</button>
+                        <button type="button" onClick={() => navigateToMain()}>메인</button>
                     </div>
                     {/*우측하단*/}
                     <div>
                         {renderEditAndDeleteButtons()}
                     </div>
+                </div>
+                {/*추천버튼*/}
+                <div>
+                    {renderRecommendButton()}
                 </div>
                 {/*댓글*/}
                 <div>
