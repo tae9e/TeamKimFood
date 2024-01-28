@@ -3,6 +3,7 @@ package com.tkf.teamkimfood.controller;
 import com.tkf.teamkimfood.dto.dashboards.DailyStatsDto;
 import com.tkf.teamkimfood.dto.dashboards.DashboardDto;
 import com.tkf.teamkimfood.dto.dashboards.MemberManagementDto;
+import com.tkf.teamkimfood.dto.dashboards.RecipeManagementDto;
 import com.tkf.teamkimfood.service.dashboards.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,5 +32,10 @@ public class DashboardController {
     @GetMapping("/memberManagement")
     public List<MemberManagementDto> getAllMembers() {
         return dashboardService.getUsersToDashboard();
+    }
+
+    @GetMapping("/recipeManagement")
+    public List<RecipeManagementDto> getAllRecipes() {
+        return dashboardService.getAllRecipeForManage();
     }
 }
