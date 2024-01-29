@@ -46,7 +46,7 @@ const MemberManagement = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {members.map(member => (
+                {members.map((member, index) => (
                     <tr key={member.id}>
                         <td>{index + 1}</td>
                         <td>{member.name}</td>
