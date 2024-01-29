@@ -26,7 +26,6 @@ function App() {
                 <Routes>
                     <Route exact path='/' Component={ BoardList } />
                     <Route path='/login' Component={ LoginForm } />
-                    {/*<Route path='/personaltreat' Component={ PersonalTreat } />*/}
                     {/*<Route path='/BoardContent/:recipe_id' component={ BoardContent } />*/}
                     <Route path={"/api/recipes/save"} Component={RecipeSave}/>
                     <Route path="/admin" element={<ProtectedRoute><ManagePage/></ProtectedRoute>} />
