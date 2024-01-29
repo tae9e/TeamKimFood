@@ -1,15 +1,14 @@
 package com.tkf.teamkimfood.domain.prefer;
 
+import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.domain.Recipe;
 import com.tkf.teamkimfood.dto.RecipeCategoryDto;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecipeCategory {
 
@@ -20,6 +19,9 @@ public class RecipeCategory {
     private String Situation;//상황 : 혼밥,연인, 가족 등등
     private String foodStuff;//음식재료 : 육류 어류 등등
     private String foodNationType;//음식타입 : 한식 중식 일식 등
+
+    @OneToOne(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+    private Member member;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")

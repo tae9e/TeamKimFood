@@ -3,6 +3,7 @@ package com.tkf.teamkimfood.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tkf.teamkimfood.config.oauth.OAuthProvider;
 import com.tkf.teamkimfood.domain.prefer.MemberPreference;
+import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
 import com.tkf.teamkimfood.domain.status.MemberRole;
 import com.tkf.teamkimfood.dto.MemberFormDto;
 import jakarta.persistence.*;
@@ -78,6 +79,9 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<FoodImg> foodImgs = new ArrayList<>();
+
+    @OneToOne(mappedBy = "member")
+    private RecipeCategory recipeCategory;
 
 
     //Oauth

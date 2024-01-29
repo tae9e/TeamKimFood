@@ -38,31 +38,34 @@ public class RecipeCategoryService {
 
     //설문조사 LIST 불러오기
     @Transactional(readOnly = true)
-    public RecipeCategoryDto getSurveyResult(String email) {
+    public List<RecipeCategoryDto> getSurveyResults(String email) {
         Optional<Member> memberOptional = memberRepository.findByEmail(email);
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
             List<RecipeCategory> recipeCategoryList = recipeCategoryRepository.findByMember(member);
-            if (!recipeCategoryList.isEmpty()) {
-                //RecipeCategory recipeCategory = recipeCategoryList.get(recipeCategoryList);
-//                RecipeCategoryDto categoryDto = new RecipeCategoryDto();
-//                categoryDto.setFoodStuff(recipeCategory.getFoodStuff());
-//                categoryDto.setSituation(recipeCategory.getSituation());
-//                categoryDto.setFoodNationType(recipeCategory.getFoodNationType());
-//                return categoryDto;
-            }
-        }
-        return null;
-    }
 
+            List<RecipeCategoryDto> recipeCategoryDtos = new ArrayList<>();
+            for (RecipeCategory category : recipeCategoryList) {
+                RecipeCategoryDto recipeCategoryDto = new RecipeCategoryDto();
+                recipeCategoryDto.setSituation(category.getSituation());
+                recipeCategoryDto.setFoodStuff(category.getFoodStuff());
+                recipeCategoryDto.setFoodNationType(category.getFoodNationType());
+                recipeCategoryDtos.add(recipeCategoryDto);
+            }
+
+            return recipeCategoryDtos;
+        } else {
+            throw new IllegalArgumentException("회원 정보를 찾을 수 없습니다.");
+        }
+    }
     //설문조사 수정
     @Transactional
     public void updateSurvey(RecipeCategoryDto recipeCategoryDto){
         RecipeCategory recipeCategory=recipeCategoryRepository.findById(recipeCategoryDto.getId())
                 .orElseThrow(EntityNotFoundException::new);
-        recipeCategory.getSituation();
-        recipeCategory.getFoodStuff();
-        recipeCategory.getFoodNationType();
+        recipeCategory.setSituation(recipeCategoryDto.getSituation());
+        recipeCategory.setFoodStuff(recipeCategory.getFoodStuff());
+        recipeCategory.setFoodNationType(recipeCategoryDto.getFoodNationType());
         recipeCategoryRepository.save(recipeCategory);
     }
 
