@@ -11,7 +11,11 @@ import ManagePage from "./component/manage/ManagePage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './component/Css/Common.css';
 import './component/Css/Layout.css';
-import PersonalTreat from "./component/Footer/PersonalTreat";
+import MemberManagement from "./component/manage/MemberManagement";
+import RecipeManagement from "./component/manage/RecipeManagement";
+import Dashboard from "./component/manage/Dashboard";
+// import PersonalTreat from "./component/Footer/PersonalTreat";
+import RecipeSave from "./component/recipe/RecipeSave";
 
 function App() {
 
@@ -22,13 +26,12 @@ function App() {
                 <Routes>
                     <Route exact path='/' Component={ BoardList } />
                     <Route path='/login' Component={ LoginForm } />
-                    <Route path='/personaltreat' Component={ PersonalTreat } />
                     {/*<Route path='/BoardContent/:recipe_id' component={ BoardContent } />*/}
-                    <Route path="/admin" element={
-                        <ProtectedRoute>
-                                 <ManagePage/>
-                        </ProtectedRoute>}>
-                    </Route>
+                    <Route path={"/api/recipes/save"} Component={RecipeSave}/>
+                    <Route path="/admin" element={<ProtectedRoute><ManagePage/></ProtectedRoute>} />
+                    <Route path="/admin/members" element={<ProtectedRoute><MemberManagement/></ProtectedRoute>} />
+                    <Route path="/admin/recipes" element={<ProtectedRoute><RecipeManagement/></ProtectedRoute>} />
+                    <Route path="/admin/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
                 </Routes>
 
                 <Footer />
