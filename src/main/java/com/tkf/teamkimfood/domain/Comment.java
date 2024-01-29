@@ -3,9 +3,7 @@ package com.tkf.teamkimfood.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,10 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor
-@Getter
-@Setter
 @Table(name = "comments")
 public class Comment {
 
@@ -43,9 +38,9 @@ public class Comment {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "nickname")
-    private Member nickname;
+    private String nickname;
 
     @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
