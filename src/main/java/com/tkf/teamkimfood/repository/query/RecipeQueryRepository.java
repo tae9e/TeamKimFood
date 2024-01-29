@@ -267,38 +267,38 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
         return new PageImpl<>(mainpageRecipeDtos, pageable, total);
     }
         public Page<MainpageRecipeDto> getAllOrderByRankPoint(Pageable pageable) {
-        QRecipe recipe = QRecipe.recipe;
-        QMember member = QMember.member;
-        QFoodImg foodImg = QFoodImg.foodImg;
-        QRank rank = QRank.rank;
-        List<MainpageRecipeDto> mainpageRecipeDtos = queryFactory.select(
-                        new QMainpageRecipeDto(
-                                recipe.id,
-                                recipe.title,
-                                recipe.viewCount,
-                                foodImg.imgUrl,
-                                member.nickname,
-                                recipe.writeDate
-                        )
-                )
-                .from(recipe)
-                .join(recipe.member, member)
-                .join(recipe.foodImgs, foodImg)
-                .join(recipe.rank, rank)
-                .where(foodImg.repImgYn.eq("Y"))
-                .orderBy(rank.recipeRecoTotal.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+            QRecipe recipe = QRecipe.recipe;
+            QMember member = QMember.member;
+            QFoodImg foodImg = QFoodImg.foodImg;
+            QRank rank = QRank.rank;
+            List<MainpageRecipeDto> mainpageRecipeDtos = queryFactory.select(
+                            new QMainpageRecipeDto(
+                                    recipe.id,
+                                    recipe.title,
+                                    recipe.viewCount,
+                                    foodImg.imgUrl,
+                                    member.nickname,
+                                    recipe.writeDate
+                            )
+                    )
+                    .from(recipe)
+                    .join(recipe.member, member)
+                    .join(recipe.foodImgs, foodImg)
+                    .join(recipe.rank, rank)
+                    .where(foodImg.repImgYn.eq("Y"))
+                    .orderBy(rank.recipeRecoTotal.desc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
 
-        Long total = queryFactory
-                .select(Wildcard.count)
-                .from(foodImg)
-                .join(foodImg.recipe, recipe)
-                .where(foodImg.repImgYn.eq("Y"))
-                .fetchOne();
-        return new PageImpl<>(mainpageRecipeDtos, pageable, total);
-    }
+            Long total = queryFactory
+                    .select(Wildcard.count)
+                    .from(foodImg)
+                    .join(foodImg.recipe, recipe)
+                    .where(foodImg.repImgYn.eq("Y"))
+                    .fetchOne();
+            return new PageImpl<>(mainpageRecipeDtos, pageable, total);
+        }
     //수정전 데이터 불러오기용
     public OneRecipeForUpdateVo findOneByEmail(Long recipeId, String email) {
         QRecipe recipe = QRecipe.recipe;
