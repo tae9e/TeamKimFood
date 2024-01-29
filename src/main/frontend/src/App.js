@@ -22,6 +22,7 @@ function App() {
                     <Route exact path='/' Component={ BoardList } />
                     <Route path='/login' Component={ LoginForm } />
                     <Route path='/personaltreat' Component={ PersonalTreat } />
+                    {/*<Route path='/mypage' Component={ MyPage } />*/}
                     {/*<Route path='/BoardContent/:recipe_id' component={ BoardContent } />*/}
                 </Routes>
 
