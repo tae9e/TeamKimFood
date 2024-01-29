@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import axios from "axios";
+import React from 'react';
+import {Route, Routes} from 'react-router-dom';
 
 import BoardList from './component/BoardList';
 import LoginForm from './component/LoginForm';
@@ -16,6 +15,7 @@ import RecipeManagement from "./component/manage/RecipeManagement";
 import Dashboard from "./component/manage/Dashboard";
 // import PersonalTreat from "./component/Footer/PersonalTreat";
 import RecipeSave from "./component/recipe/RecipeSave";
+import MemberRegistrationForm from "./component/member/MemberRegistrationForm";
 
 function App() {
 
@@ -26,6 +26,7 @@ function App() {
                 <Routes>
                     <Route exact path='/' Component={ BoardList } />
                     <Route path='/login' Component={ LoginForm } />
+                    <Route path={'/member/join'} Component={MemberRegistrationForm}/>
                     {/*<Route path='/personaltreat' Component={ PersonalTreat } />*/}
                     {/*<Route path='/BoardContent/:recipe_id' component={ BoardContent } />*/}
                     <Route path={"/api/recipes/save"} Component={RecipeSave}/>
