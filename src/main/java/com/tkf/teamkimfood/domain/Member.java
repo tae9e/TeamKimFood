@@ -23,16 +23,17 @@ import java.util.List;
 public class Member {
 
 
-    @Id @Column(name = "member_id")
+    @Id
+    @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "refresh_id")
     private RefreshToken refreshToken;
 
-    @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name="UserInfo_id_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "UserInfo_id_id")
     private KakaoUserInfo kakaoUserInfo;
 
     private String name;
@@ -84,19 +85,19 @@ public class Member {
 
 
     //여기를 통해 데이터 넣으세용 id는 멤버가 아직 만들어지기 전이라 임시로 넣었습니다. 추후 프론트랑 연결시 삭제하겠습니다.
+
+    //
+//    public Member(Long id, String name, String password, String email, String nickname, String phoneNumber, MemberRole memberRole, LocalDateTime joinedDate,
+//                  MemberPreference memberPreference, OAuthProvider oAuthProvider) {
+//
     @Builder
-
-    public Member(Long id, String name, String password, String email, String nickname, String phoneNumber, MemberRole memberRole, LocalDateTime joinedDate,
-                  MemberPreference memberPreference, OAuthProvider oAuthProvider) {
-
-
-
     public Member(@JsonProperty("id") Long id, @JsonProperty("name") String name, @JsonProperty("password") String password,
                   @JsonProperty("email") String email, @JsonProperty("nickname") String nickname, @JsonProperty("phoneNumber") String phoneNumber,
                   @JsonProperty("memberRole") MemberRole memberRole, @JsonProperty("joinedDate") LocalDateTime joinedDate,
-                  @JsonProperty("memberPreference")MemberPreference memberPreference, @JsonProperty("oauthProvider") OAuthProvider oAuthProvider) {
+                  @JsonProperty("memberPreference")MemberPreference memberPreference, @JsonProperty("oauthProvider") OAuthProvider oAuthProvider
+                  ,@JsonProperty("kakaoUserInfo") KakaoUserInfo kakaoUserInfo
+    ){
 
-      
         this.id = id;
         this.name = name;
         this.password = password;
@@ -107,6 +108,7 @@ public class Member {
         this.joinedDate = joinedDate;
         this.memberPreference = memberPreference;
         this.oAuthProvider = oAuthProvider;
+        this.kakaoUserInfo = kakaoUserInfo;
 
 
     }
@@ -130,3 +132,7 @@ public class Member {
 
 
 }
+
+
+
+
