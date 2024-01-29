@@ -66,6 +66,7 @@ public class WebOauthSecurityConfig {
                                     , "/BoardList/**"
                                     , "/login/**"
                                     , "/auth/**"
+                                    ,"/survey/**"
                                     , "/favicon.ico"
                                     , "/error"
                             ).permitAll() // 특정 경로에 대한 접근 허용

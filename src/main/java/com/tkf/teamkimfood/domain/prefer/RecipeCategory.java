@@ -1,6 +1,7 @@
 package com.tkf.teamkimfood.domain.prefer;
 
 import com.tkf.teamkimfood.domain.Recipe;
+import com.tkf.teamkimfood.dto.RecipeCategoryDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,6 +32,7 @@ public class RecipeCategory {
         this.foodNationType = foodNationType;
         this.recipe = recipe;
     }
+
 
     public void setRecipe(Recipe recipe) {
 
