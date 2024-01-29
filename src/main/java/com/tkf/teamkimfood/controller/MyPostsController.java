@@ -14,7 +14,7 @@ public class MyPostsController {
     @Autowired
     private MyPostsRepository myPostsRepository;
 
-    @GetMapping("/mypage/mypost")
+    @GetMapping("/mypage/myposts")
     public List<MyPosts> getMyPosts() {
         return myPostsRepository.findAll();
     }
