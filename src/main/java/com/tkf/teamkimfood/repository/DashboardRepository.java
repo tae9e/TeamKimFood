@@ -2,6 +2,7 @@ package com.tkf.teamkimfood.repository;
 
 import com.tkf.teamkimfood.domain.Member;
 import com.tkf.teamkimfood.dto.dashboards.DailyStatsDto;
+import com.tkf.teamkimfood.dto.dashboards.RecipeManagementDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -31,4 +32,5 @@ public class DashboardRepository {
 
         return em.createQuery(query).getResultList();
     }
+
 }

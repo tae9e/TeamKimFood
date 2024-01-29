@@ -10,7 +10,7 @@ const RecipeForm = () => {
         foodStuff: '',
         foodNationType: '',
         details: [{ ingredients: [''], dosage: ['']}],
-        recips : [{explanations: [''], imgFiles: [null] }],
+        recips : [{explanations: [''], imgFiles: [null], repImageIndex: null }],
     });
 
     const {recipeId} = useParams();//recipeId 파라미터에서 가져옴
@@ -142,12 +142,16 @@ const RecipeForm = () => {
         });
     };
     const handleAddExplanation = (pairIndex) => {
-        setRecipeForm((prevForm) => {
-            const newRecips = [...prevForm.recips, { explanations: [''], imgFiles: [null] }];
-            return {
-                ...prevForm,
-                recips: newRecips,
+        setRecipeForm(prevForm => {
+            const newRecips = [...prevForm.recips];
+            const newRecip = {
+                explanations: [''],
+                imgFiles: [null],
+                // repImageIndex: newRecips[pairIndex].repImageIndex // 이전 repImageIndex 값을 유지
             };
+
+            newRecips.push(newRecip);
+            return {...prevForm, recips: newRecips};//
         });
     };
 
@@ -179,6 +183,9 @@ const RecipeForm = () => {
                 formData.append(`foodImgFileList`, recip.imgFiles[0]);
             }
         });
+        if (repImageIndex !== null) {
+            formData.append('repImageIndex', repImageIndex.index);
+        }
 
         try {
             const response = await axios.post('/api/recipes/save', formData, {
@@ -240,11 +247,20 @@ const RecipeForm = () => {
             console.error('에러가 발생했습니다:', error);
         }
     };
-    const handleRepImageChange = (index) => {
-        if (repImageIndex === index) {
+    const handleRepImageChange = (pairIndex, index) => {
+        // 이미 선택된 대표 이미지가 있는지 확인
+        if (repImageIndex !== null && repImageIndex.pairIndex !== pairIndex) {
+            alert("이미 다른 항목에서 대표사진을 지정하셨습니다.");
+            return;
+        }
+
+        // 새로운 대표 이미지 설정 또는 해제
+        if (repImageIndex && repImageIndex.pairIndex === pairIndex && repImageIndex.index === index) {
+            // 이미 선택된 이미지를 다시 클릭한 경우, 선택 해제
             setRepImageIndex(null);
         } else {
-            setRepImageIndex(index);
+            // 새로운 이미지를 선택한 경우
+            setRepImageIndex({ pairIndex, index });
         }
     };
 
@@ -397,14 +413,14 @@ const RecipeForm = () => {
                         <div key={index}>
                             <img src={imgFile} alt={`Preview ${index}`}
                                  style={{maxWidth: '100px', maxHeight: '100px'}}/>
+                            
+
+                            <input type="file" onChange={(e) => handleImageChange(e, pairIndex, index)}/>
                             <input
                                 type="checkbox"
-                                checked={repImageIndex === index}
-                                onChange={() => handleRepImageChange(index)}
-                            />
-                            {isEditMode && (
-                                <input type="file" onChange={(e) => handleImageChange(e, pairIndex, index)}/>
-                            )}
+                                checked={repImageIndex && repImageIndex.pairIndex === pairIndex && repImageIndex.index === index}
+                                onChange={() => handleRepImageChange(pairIndex, index)}
+                            />대표사진 지정하기
                         </div>
                     ))}
                     {isEditMode && (
@@ -412,6 +428,7 @@ const RecipeForm = () => {
                     )}
                     {detail.explanations.map((explanation, index) => (
                         <div key={index}>
+                            <legend>조리과정 설명:</legend>
                             <input
                                 type="text"
                                 value={explanation}
