@@ -184,7 +184,7 @@ const RecipeForm = () => {
 
             if (recip.imgFiles[0]) {
                 const fileData = recip.imgFiles[0];//Base64 문자열
-                console.log("개놈아 : ",fileData.originalName)
+                // console.log("원래이름: ",fileData.originalName)
                 const file = dataURLtoFile(fileData.dataUrl, fileData.originalName); // 저장된 원래 파일명을 사용
                 formData.append(`foodImgFileList`, file);
             }
