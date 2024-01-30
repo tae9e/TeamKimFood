@@ -73,9 +73,13 @@ const RecipeView = ({ match }) => {
     const renderEditAndDeleteButtons = () => {
         if (recipe.oneRecipeDto.memberId === loggedInUserId) {
             return (
-                <div>
-                    <button type="button" onClick={() => navigateToEditPage(recipe.oneRecipeDto.id)}>수정</button>
-                    <button type="button" onClick={() => handleDelete(recipe.oneRecipeDto.id)}>삭제</button>
+                <div className="flex space-x-2 mt-2">
+                    <button type="button" onClick={() => navigateToEditPage(recipe.oneRecipeDto.id)}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >수정</button>
+                    <button type="button" onClick={() => handleDelete(recipe.oneRecipeDto.id)}
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    >삭제</button>
                 </div>
             );
         }
@@ -115,31 +119,33 @@ const RecipeView = ({ match }) => {
     };
 
     return (
-        <div>
-            <div>
+        <div className={'container mx-auto mt-10'}>
+            <div className={'border p-5 rounded-lg'}>
                 <div>
                     <input type="hidden" value={recipe.oneRecipeDto.id}/>
-                    <h1>{recipe.oneRecipeDto.title}</h1>
+                    <h1 className="text-2xl font-bold">{recipe.oneRecipeDto.title}</h1>
                     <p>조회수 : {recipe.oneRecipeDto.viewCount}</p>
                     {displayDate()}
                     <p>작성자 {recipe.oneRecipeDto.nickName}</p>
                     <p>{recipe.oneRecipeDto.content}</p>
                 </div>
-                <div>
+                <div className={'border-t pt-4 mt-4'}>
                     <p>{recipe.oneRecipeDto.situation}</p>
                     <p>{recipe.oneRecipeDto.foodStuff}</p>
                     <p>{recipe.oneRecipeDto.foodNationType}</p>
                 </div>
-                <div>
+                <div className="border-t pt-4 mt-4">
                     {renderIngredientsAndDosages()}
                 </div>
-                <div>
+                <div className="border-t pt-4 mt-4">
                     {renderImagesAndDescriptions()}
                 </div>
                 <div>
                     {/*좌측하단*/}
-                    <div>
-                        <button type="button" onClick={() => navigateToMain()}>메인</button>
+                    <div className="flex justify-between border-t pt-4 mt-4">
+                        <button
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            type="button" onClick={() => navigateToMain()}>메인</button>
                     </div>
                     {/*우측하단*/}
                     <div>
@@ -147,7 +153,7 @@ const RecipeView = ({ match }) => {
                     </div>
                 </div>
                 {/*추천버튼*/}
-                <div>
+                <div className="border-t pt-4 mt-4">
                     {renderRecommendButton()}
                 </div>
                 {/*댓글*/}

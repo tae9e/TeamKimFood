@@ -32,29 +32,30 @@ const MemberManagement = () => {
     };
 
     return (
-        <div>
-            <h2>멤버 관리</h2>
-            <table>
-                <thead>
+        <div className={'container mx-auto mt-10 border p-3 rounded-lg'}>
+            <h2 className={'text-xl font-bold mb-4'}>멤버 관리</h2>
+            <table className={'min-w-full table-auto'}>
+                <thead >
                 <tr>
-                    <th>번호</th>
-                    <th>이름</th>
-                    <th>이메일</th>
-                    <th>닉네임</th>
-                    <th>전화번호</th>
-                    <th>작업</th>
+                    <th className={'px-4 py-2'}>번호</th>
+                    <th className={'px-4 py-2'}>이름</th>
+                    <th className={'px-4 py-2'}>이메일</th>
+                    <th className={'px-4 py-2'}>닉네임</th>
+                    <th className={'px-4 py-2'}>전화번호</th>
+                    <th className={'px-4 py-2'}>작업</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody >
                 {members.map((member, index) => (
-                    <tr key={member.id}>
-                        <td>{index + 1}</td>
-                        <td>{member.name}</td>
-                        <td>{member.email}</td>
-                        <td>{member.nickname}</td>
-                        <td>{member.phoneNumber}</td>
-                        <td>
-                            <button onClick={() => handleMemberRemoval(member.email)}>
+                    <tr key={member.id} className={'border-b'}>
+                        <td className={'px04 py-2'}>{index + 1}</td>
+                        <td className={'px04 py-2'}>{member.name}</td>
+                        <td className={'px04 py-2'}>{member.email}</td>
+                        <td className={'px04 py-2'}>{member.nickname}</td>
+                        <td className={'px04 py-2'}>{member.phoneNumber}</td>
+                        <td className={'px04 py-2'}>
+                            <button onClick={() => handleMemberRemoval(member.email)}
+                            className={'bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded'}>
                                 탈퇴시키기
                             </button>
                         </td>

@@ -42,41 +42,61 @@ const MemberRegistrationForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>이름:</label>
+        <div className={'flex justify-center items-center my-20 '}>
+        <form onSubmit={handleSubmit} className={'w-full max-w-xs border p-3 rounded-lg'}>
+            <div className={'mb-1 border p-3 rounded-lg'}>
+                <label className={'block text-gray-700 text-sm font-bold mb-2'}>이름:</label>
                 <input
                     type="text"
                     name="name"
                     value={memberData.name}
                     onChange={handleChange}
                     required
-                    style={{ borderColor: errors.name ? 'red' : 'initial' }}
+                    placeholder={'ex)홍길동'}
+                    className={'shadow appearance-none border ${errors.name ? \'border-red-500\' : \'\'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}
+                    // style={{ borderColor: errors.name ? 'red' : 'initial' }}
                 />
                 {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
             </div>
-            <div>
-                <label>비밀번호:</label>
+            <div className={' mb-1 border p-3 rounded-lg'}>
+                <label className={'block text-gray-700 text-sm font-bold mb-2'}>비밀번호:</label>
                 <input type="password" name="password" value={memberData.password} onChange={handleChange} required
-                       style={{ borderColor: errors.password ? 'red' : 'initial' }}/>
+                       className={'shadow appearance-none border ${errors.password ? \'border-red-500\' : \'\'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}
+                       // style={{ borderColor: errors.password ? 'red' : 'initial' }}
+                />
+
             </div>
-            <div>
-                <label>이메일:</label>
+            <div className={'mb-1 border p-3 rounded-lg'}>
+                <label className={'block text-gray-700 text-sm font-bold mb-2'}>이메일:</label>
                 <input type="email" name="email" value={memberData.email} onChange={handleChange} required
-                       style={{ borderColor: errors.email ? 'red' : 'initial' }}/>/>
+                       placeholder={'ex) hong@yorijori.shop'}
+                       className={'shadow appearance-none border ${errors.email ? \'border-red-500\' : \'\'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}
+                       // style={{ borderColor: errors.email ? 'red' : 'initial' }}
+                />
             </div>
-            <div>
-                <label>닉네임:</label>
+            <div className={'mb-1 border p-3 rounded-lg'}>
+                <label className={'block text-gray-700 text-sm font-bold mb-2'}>닉네임:</label>
                 <input type="text" name="nickname" value={memberData.nickname} onChange={handleChange} required
-                       style={{ borderColor: errors.nickname ? 'red' : 'initial' }}/>/>
+                       placeholder={'별명을 만들어주세요!'}
+                       className={'shadow appearance-none border ${errors.nickname ? \'border-red-500\' : \'\'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}
+                       // style={{ borderColor: errors.nickname ? 'red' : 'initial' }}
+                />
             </div>
-            <div>
-                <label>전화번호:</label>
+            <div className={'mb-1 border p-3 rounded-lg'}>
+                <label className={'block text-gray-700 text-sm font-bold mb-2'}>전화번호:</label>
                 <input type="text" name="phoneNumber" value={memberData.phoneNumber} onChange={handleChange} required
-                       style={{ borderColor: errors.phoneNumber ? 'red' : 'initial' }}/>/>
+                       placeholder={'010-0000-0000'}
+                       className={'shadow appearance-none border ${errors.phoneNumber ? \'border-red-500\' : \'\'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}
+                       // style={{ borderColor: errors.phoneNumber ? 'red' : 'initial' }}
+                />
             </div>
-            <button type="submit">회원가입</button>
+            <div className={'mb-4'}>
+                <button type="submit"
+                className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"}
+                >회원가입</button>
+            </div>
         </form>
+        </div>
     );
 };
 
