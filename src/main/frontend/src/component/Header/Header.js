@@ -32,6 +32,7 @@ const navigate = useNavigate();
     const handleKakaoLogin = async () => {
       try {
         const code = new URL(window.location.href).searchParams.get('code');
+        console.log("code??: ", code)
         const backendUrl = 'http://localhost:8080';
 
         const res = await axios({
@@ -39,11 +40,12 @@ const navigate = useNavigate();
           url: `${backendUrl}/public/auth/kakao/callback?code=${code}`,
           headers: {
             'Content-Type': 'application/json;charset=utf-8',
+             'cache': 'no-store' // 캐시 무시 헤더
           },
         });
         console.log('Response', res);
         localStorage.setItem('name', res.data.account.kakaoName);
-        navigate('/boardList'); // navigate 함수를 사용하여 페이지 이동을 처리합니다.
+        window.location.href = '/boardList';
       } catch (error) {
         console.error('로그인 에러', error);
         // 에러 처리 로직
