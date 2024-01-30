@@ -265,188 +265,210 @@ const RecipeForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>제목</label>
-            <input type="text" name="title" value={recipeForm.title} onChange={handleInputChange}/>
+        <form onSubmit={handleSubmit} className={'max-w-lg mx-auto p-4 border border-gray-200 shadow-lg mt-10'}>
+            <div className={'mb-4 border p-3 rounded-lg'}>
+                <label className={'block text-gray-700 text-sm font-bold mb-2'}
+                >제목</label>
+                <input type="text" name="title" value={recipeForm.title} placeholder={'내 레시피를 소개할 멋진 이름을 써주세요!'} onChange={handleInputChange}
+                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+            </div>
+            <div className={'mb-4 border p-3 rounded-lg'}>
+                <label className={'block text-gray-700 text-sm font-bold mb-2'}
+                >음식소개</label>
+                <textarea name="content" value={recipeForm.content} onChange={handleInputChange}
+                          placeholder={'내 레시피가 어떤 아이인지 소개 해주세요!'}
+                          className={'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}/>
+            </div>
+            <div className={'mb-4 border p-3 rounded-lg'}>
+                <label>#음식태그</label>
+                <fieldset>
+                    <legend className={'block text-gray-700 text-sm font-bold mb-2'}>상황</legend>
+                    <label>
+                        <input
+                            type="radio"
+                            name="situation"
+                            value="ALONE"
+                            checked={recipeForm.situation === 'ALONE'}
+                            onChange={handleInputChange}
+                        />
+                        혼자
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="situation"
+                            value="TOGETHER"
+                            onChange={handleInputChange}
+                        />
+                        같이
+                    </label>
+                    {/* 이야기 해보고 이름 맞춰서 넣기 */}
+                </fieldset>
 
-            <label>음식소개</label>
-            <textarea name="content" value={recipeForm.content} onChange={handleInputChange}/>
+                <fieldset>
+                    <legend className={'block text-gray-700 text-sm font-bold mb-2'}>주재료:</legend>
+                    <label>
+                        <input
+                            type="radio"
+                            name="foodStuff"
+                            value="MEAT"
+                            checked={recipeForm.foodStuff === 'MEAT'}
+                            onChange={handleInputChange}
+                        />
+                        고기
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="foodStuff"
+                            value="EGG"
+                            onChange={handleInputChange}
+                        />
+                        계란
+                    </label>
+                    {/* 이야기 해보고 이름 맞춰서 넣기 */}
+                </fieldset>
 
-            <label>태그</label>
-            <fieldset>
-                <legend>상황</legend>
-                <label>
-                    <input
-                        type="radio"
-                        name="situation"
-                        value="ALONE"
-                        checked={recipeForm.situation === 'ALONE'}
-                        onChange={handleInputChange}
-                    />
-                    혼자
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="situation"
-                        value="TOGETHER"
-                        onChange={handleInputChange}
-                    />
-                    같이
-                </label>
-                {/* 이야기 해보고 이름 맞춰서 넣기 */}
-            </fieldset>
+                <fieldset>
+                    <legend className={'block text-gray-700 text-sm font-bold mb-2'}>분류:</legend>
+                    <label>
+                        <input
+                            type="radio"
+                            name="foodNationType"
+                            value="KOREAN"
+                            checked={recipeForm.foodNationType === 'KOREAN'}
+                            onChange={handleInputChange}
+                        />
+                        한식
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="foodNationType"
+                            value="CHINESE"
+                            onChange={handleInputChange}
+                        />
+                        중식
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="foodNationType"
+                            value="JAPANESE"
+                            onChange={handleInputChange}
+                        />
+                        일식
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="foodNationType"
+                            value="ETCWESTERN"
+                            onChange={handleInputChange}
+                        />
+                        양식
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="foodNationType"
+                            value="ETC"
+                            onChange={handleInputChange}
+                        />
+                        기타
+                    </label>
 
-            <fieldset>
-                <legend>주재료:</legend>
-                <label>
-                    <input
-                        type="radio"
-                        name="foodStuff"
-                        value="MEAT"
-                        checked={recipeForm.foodStuff === 'MEAT'}
-                        onChange={handleInputChange}
-                    />
-                    고기
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="foodStuff"
-                        value="EGG"
-                        onChange={handleInputChange}
-                    />
-                    계란
-                </label>
-                {/* 이야기 해보고 이름 맞춰서 넣기 */}
-            </fieldset>
+                </fieldset>
+            </div>
+            <div className={'mb-4 border p-3 rounded-lg'}>
+                {recipeForm.details.map((detail, pairIndex) => (
+                    <div key={pairIndex}>
+                        <fieldset>
+                            <legend className={'block text-gray-700 text-sm font-bold mb-2'}>재료:</legend>
+                            {detail.ingredients.map((ingredient, index) => (
+                                <div key={index}>
+                                    <input
+                                        type="text"
+                                        value={ingredient}
+                                        placeholder={'ex) 참기름'}
+                                        onChange={(e) => handleArrayInputChange(pairIndex, 'ingredients', index, e.target.value)}
+                                        className={'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}/>
+                                </div>
+                            ))}
+                        </fieldset>
 
-            <fieldset>
-                <legend>분류:</legend>
-                <label>
-                    <input
-                        type="radio"
-                        name="foodNationType"
-                        value="KOREAN"
-                        checked={recipeForm.foodNationType === 'KOREAN'}
-                        onChange={handleInputChange}
-                    />
-                    한식
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="foodNationType"
-                        value="CHINESE"
-                        onChange={handleInputChange}
-                    />
-                    중식
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="foodNationType"
-                        value="JAPANESE"
-                        onChange={handleInputChange}
-                    />
-                    일식
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="foodNationType"
-                        value="ETCWESTERN"
-                        onChange={handleInputChange}
-                    />
-                    양식
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="foodNationType"
-                        value="ETC"
-                        onChange={handleInputChange}
-                    />
-                    기타
-                </label>
-
-            </fieldset>
-            {recipeForm.details.map((detail, pairIndex) => (
-                <div key={pairIndex}>
-                    <fieldset>
-                        <legend>재료:</legend>
-                        {detail.ingredients.map((ingredient, index) => (
-                            <div key={index}>
-                                <input
-                                    type="text"
-                                    value={ingredient}
-                                    onChange={(e) => handleArrayInputChange(pairIndex, 'ingredients', index, e.target.value)}
-                                />
-                            </div>
-                        ))}
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>용량:</legend>
-                        {detail.dosage.map((dose, index) => (
-                            <div key={index}>
-                                <input
-                                    type="text"
-                                    value={dose}
-                                    onChange={(e) => handleArrayInputChange(pairIndex, 'dosage', index, e.target.value)}
-                                />
-                            </div>
-                        ))}
-                    </fieldset>
-                </div>
-            ))}
-
+                        <fieldset>
+                            <legend className={'block text-gray-700 text-sm font-bold mb-2'}>용량:</legend>
+                            {detail.dosage.map((dose, index) => (
+                                <div key={index}>
+                                    <input
+                                        type="text"
+                                        placeholder={'ex) 1 밥숫가락 혹은 티스푼'}
+                                        value={dose}
+                                        onChange={(e) => handleArrayInputChange(pairIndex, 'dosage', index, e.target.value)}
+                                        className={'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}/>
+                                </div>
+                            ))}
+                        </fieldset>
+                    </div>
+                ))}
+            </div>
             <button type="button" onClick={handleAddInputPairForDetails}>
                 재료 및 용량 추가
             </button>
 
             {/* 이미지 및 설명 필드 */}
-            {recipeForm.recips.map((detail, pairIndex) => (
-                <fieldset key={pairIndex}>
-                    <legend>이미지 파일:</legend>
-                    {detail.imgFiles.map((imgFile, index) => (
-                        <div key={index}>
-                            <img src={imgFile} alt={`Preview ${index}`}
-                                 style={{maxWidth: '100px', maxHeight: '100px'}}/>
-                            
+            <div className={'mb-4 border p-3 rounded-lg'}>
+                {recipeForm.recips.map((detail, pairIndex) => (
+                    <fieldset key={pairIndex}>
+                        <legend className={'block text-gray-700 text-sm font-bold mb-2'}>이미지 파일:</legend>
+                        {detail.imgFiles.map((imgFile, index) => (
+                            <div key={index}>
+                                <img src={imgFile} alt={`Preview ${index}`}
+                                     style={{maxWidth: '100px', maxHeight: '100px'}}/>
 
-                            <input type="file" onChange={(e) => handleImageChange(e, pairIndex, index)}/>
-                            <input
-                                type="checkbox"
-                                checked={repImageIndex && repImageIndex.pairIndex === pairIndex && repImageIndex.index === index}
-                                onChange={() => handleRepImageChange(pairIndex, index)}
-                            />대표사진 지정하기
-                        </div>
-                    ))}
-                    {isEditMode && (
-                        <input type="file" multiple onChange={(e) => handleNewImageChange(e, pairIndex)}/>
-                    )}
-                    {detail.explanations.map((explanation, index) => (
-                        <div key={index}>
-                            <legend>조리과정 설명:</legend>
-                            <input
-                                type="text"
-                                value={explanation}
-                                onChange={(e) => handleExplanationChange(pairIndex, index, e.target.value)}
-                            />
-                        </div>
-                    ))}
-                    <button type="button" onClick={() => handleAddExplanation(pairIndex)}>
-                        설명 및 이미지 추가
-                    </button>
-                </fieldset>
-            ))}
+
+                                <input type="file" onChange={(e) => handleImageChange(e, pairIndex, index)}/>
+                                <input
+                                    type="checkbox"
+                                    checked={repImageIndex && repImageIndex.pairIndex === pairIndex && repImageIndex.index === index}
+                                    onChange={() => handleRepImageChange(pairIndex, index)}
+                                />대표사진 지정하기
+                            </div>
+                        ))}
+                        {isEditMode && (
+                            <input type="file" multiple onChange={(e) => handleNewImageChange(e, pairIndex)}/>
+                        )}
+                        {detail.explanations.map((explanation, index) => (
+                            <div key={index}>
+                                <legend className={'block text-gray-700 text-sm font-bold mb-2'}>조리과정 설명:</legend>
+                                <input
+                                    type="text"
+                                    value={explanation}
+                                    onChange={(e) => handleExplanationChange(pairIndex, index, e.target.value)}
+                                    className={'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}/>
+                            </div>
+                        ))}
+                        <button type="button" onClick={() => handleAddExplanation(pairIndex)}>
+                            설명 및 이미지 추가
+                        </button>
+
+                    </fieldset>
+                ))}
+            </div>
+
             {/* 버튼 표시 조건: 수정 모드일 경우 '레시피 수정', 그렇지 않으면 '레시피 저장' */}
+            <div className={'mt-4'}>
             {isEditMode ? (
-                <button type="button" onClick={handleUpdate}>레시피 수정</button>
+                <button type="button" onClick={handleUpdate}
+                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >레시피 수정</button>
             ) : (
-                <button type="submit">레시피 저장</button>
+                <button type="submit"
+                        className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >레시피 저장</button>
             )}
+            </div>
         </form>
     );
 };

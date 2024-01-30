@@ -1,0 +1,35 @@
+{
+  "files": {
+    "main.css": "/static/css/main.938c665c.css",
+    "main.js": "/static/js/main.dde7862a.js",
+    "static/js/787.9e9f4ffd.chunk.js": "/static/js/787.9e9f4ffd.chunk.js",
+    "static/media/NanumMyeongjo.ttf": "/static/media/NanumMyeongjo.7118f418c77c17301efd.ttf",
+    "static/media/NanumMyeongjo.woff2": "/static/media/NanumMyeongjo.3d509b82ed4839ebc5c8.woff2",
+    "static/media/NanumMyeongjo.eot": "/static/media/NanumMyeongjo.ab7a63b21b40af8c6976.eot",
+    "static/media/GmarketSansTTFBold.ttf": "/static/media/GmarketSansTTFBold.69428064ef8eee25be33.ttf",
+    "static/media/GmarketSansTTFMedium.ttf": "/static/media/GmarketSansTTFMedium.d4bac6b182bed73c9375.ttf",
+    "static/media/GmarketSansTTFBold.eot": "/static/media/GmarketSansTTFBold.81451685dfe0ed510978.eot",
+    "static/media/GmarketSansTTFMedium.eot": "/static/media/GmarketSansTTFMedium.0716ed88127e1f66a300.eot",
+    "static/media/NanumMyeongjo.woff": "/static/media/NanumMyeongjo.56905a5fce87474285da.woff",
+    "static/media/GmarketSansTTFBold.woff": "/static/media/GmarketSansTTFBold.00a1de9fec4bf263af41.woff",
+    "static/media/GmarketSansTTFMedium.woff": "/static/media/GmarketSansTTFMedium.059e7c8ddf1c46794950.woff",
+    "static/media/GmarketSansTTFBold.woff2": "/static/media/GmarketSansTTFBold.c9f123e28a2211e39d84.woff2",
+    "static/media/GmarketSansTTFMedium.woff2": "/static/media/GmarketSansTTFMedium.965e8626a2fc2c765965.woff2",
+    "static/media/SpoqaHanSansNeo-Regular.ttf": "/static/media/SpoqaHanSansNeo-Regular.b935041cbcc86b551721.ttf",
+    "static/media/SpoqaHanSansNeo-Bold.ttf": "/static/media/SpoqaHanSansNeo-Bold.9a610369db9d3c28b99f.ttf",
+    "static/media/SpoqaHanSansNeo-Bold.eot": "/static/media/SpoqaHanSansNeo-Bold.07401071f91a6483c1fa.eot",
+    "static/media/SpoqaHanSansNeo-Bold.woff": "/static/media/SpoqaHanSansNeo-Bold.dc75532918fd412e27a3.woff",
+    "static/media/SpoqaHanSansNeo-Regular.eot": "/static/media/SpoqaHanSansNeo-Regular.4320485bbcd34cf66efe.eot",
+    "static/media/SpoqaHanSansNeo-Regular.woff": "/static/media/SpoqaHanSansNeo-Regular.4af655e2b88a518cc85c.woff",
+    "static/media/SpoqaHanSansNeo-Bold.woff2": "/static/media/SpoqaHanSansNeo-Bold.1db18034ccc384032a4a.woff2",
+    "static/media/SpoqaHanSansNeo-Regular.woff2": "/static/media/SpoqaHanSansNeo-Regular.452bf1579d6a73fbaffc.woff2",
+    "index.html": "/index.html",
+    "main.938c665c.css.map": "/static/css/main.938c665c.css.map",
+    "main.dde7862a.js.map": "/static/js/main.dde7862a.js.map",
+    "787.9e9f4ffd.chunk.js.map": "/static/js/787.9e9f4ffd.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.938c665c.css",
+    "static/js/main.dde7862a.js"
+  ]
+}
