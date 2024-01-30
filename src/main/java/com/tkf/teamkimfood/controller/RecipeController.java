@@ -51,7 +51,8 @@ public class RecipeController {
 //        }
 //    }
     @PostMapping(value = "/api/recipe/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Long> saveRecipe(@RequestParam("recipeRequest") String recipeRequest,
+    public ResponseEntity<Long> saveRecipe(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam("recipeRequest") String recipeRequest,
                                            @RequestParam("foodImgFileList") MultipartFile[] foodImgFileList,
                                            @RequestParam("repImageIndex") int repImageIndex) {
         try {
@@ -60,11 +61,11 @@ public class RecipeController {
 
             // 파일 리스트를 RecipeRequestVo 객체에 설정
             request.setFoodImgFileList(Arrays.asList(foodImgFileList));
-
+            String email = userDetails.getUsername();
 
             // 서비스 호출
             Long saveRecipe = recipeService.saveRecipe(
-                    request.getMemberId(),
+                    email,
                     request.getRecipeDto(),
                     request.getCategoryPreferenceDto(),
                     request.getRecipeDetailListDto(),

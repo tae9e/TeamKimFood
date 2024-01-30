@@ -8,6 +8,7 @@ import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
 import com.tkf.teamkimfood.dto.*;
 import com.tkf.teamkimfood.dto.aboutrecipe.*;
 import com.tkf.teamkimfood.exception.NoAuthorityException;
+import com.tkf.teamkimfood.repository.MemberRepository;
 import com.tkf.teamkimfood.repository.query.MemberQueryRepository;
 import com.tkf.teamkimfood.repository.query.RecipeQueryRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeCategoryRepository;
@@ -33,15 +34,16 @@ public class RecipeService {
     private final FoodImgService foodImgService;
     private final RecipeRepository recipeRepository;
     private final RecipeQueryRepository recipeQueryRepository;
-    private final MemberQueryRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final MemberQueryRepository memberQueryRepository;
     private final RecipeDetailRepository recipeDetailRepository;
     private final RecipeCategoryRepository recipeCategoryRepository;
 
 
     //레시피 저장...
     @Transactional
-    public Long saveRecipe(Long memberId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto,List<String> explanations, List<MultipartFile> foodImgFileList, int repImageIndex) throws IOException {
-        Member member = memberRepository.findOne(memberId);
+    public Long saveRecipe(String email, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto,List<String> explanations, List<MultipartFile> foodImgFileList, int repImageIndex) throws IOException {
+        Member member = memberRepository.findByEmail(email).orElseThrow();
         Recipe recipe = Recipe.builder()
                 .title(recipeDto.getTitle())
                 .content(recipeDto.getContent())
@@ -168,7 +170,7 @@ public class RecipeService {
 //                .toList();
 //    }
     public Page<MainpageRecipeDto> getMainForMember(CategoryPreferenceDto categoryPreferenceDto, RecipeSearchDto recipeSearchDto, Pageable pageable) {
-        Member member = memberRepository.findOne(categoryPreferenceDto.getId());
+        Member member = memberQueryRepository.findOne(categoryPreferenceDto.getId());
         categoryPreferenceDto.setSituation(member.getMemberPreference().getSituation());
         categoryPreferenceDto.setFoodStuff(member.getMemberPreference().getFoodStuff());
         categoryPreferenceDto.setFoodNationType(member.getMemberPreference().getFoodNationType());
