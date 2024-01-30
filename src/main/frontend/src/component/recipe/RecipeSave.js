@@ -63,20 +63,23 @@ const RecipeForm = () => {
         });
     };
     const handleImageChange = (e, pairIndex, index) => {
-        // 이미지 파일 처리 및 미리보기 업데이트
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (readEvent) => {
                 setRecipeForm(prevForm => {
                     const updatedRecips = [...prevForm.recips];
-                    updatedRecips[pairIndex].imgFiles[index] = readEvent.target.result;
+                    updatedRecips[pairIndex].imgFiles[index] = {
+                        dataUrl: readEvent.target.result,
+                        originalName: file.name // 파일의 원래 이름 저장
+                    };
                     return {...prevForm, recips: updatedRecips};
                 });
             };
             reader.readAsDataURL(file);
         }
     };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setRecipeForm((prevForm) => ({
@@ -172,14 +175,17 @@ const RecipeForm = () => {
                 foodNationType: recipeForm.foodNationType,
             },
             recipeDetailListDto: recipeForm.details.map((detail) => ({
-                ingredients: detail.ingredients,
-                dosage: detail.dosage,
+                ingredients: detail.ingredients[0],
+                dosage: detail.dosage[0],
             })),
-            explanations: recipeForm.recips.map((recip) => recip.explanations)
+            explanations: recipeForm.recips.map((recip) => recip.explanations[0])
         }));
         recipeForm.recips.forEach((recip, index) => {
+
             if (recip.imgFiles[0]) {
-                const file = dataURLtoFile(recip.imgFiles[0], 'image.jpg'); // Base64 문자열을 파일로 변환
+                const fileData = recip.imgFiles[0];//Base64 문자열
+                console.log("개놈아 : ",fileData.originalName)
+                const file = dataURLtoFile(fileData.dataUrl, fileData.originalName); // 저장된 원래 파일명을 사용
                 formData.append(`foodImgFileList`, file);
             }
         });
