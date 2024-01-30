@@ -84,6 +84,7 @@ public class WebOauthSecurityConfig {
                                 .authorizationEndpoint(authorizationEndpoint -> {
                                     authorizationEndpoint
                                             .baseUri("/oauth2/authorization")
+                                            .baseUri("/public/auth/kakao/callback")
                                             .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository());
                                 })
                                 .redirectionEndpoint(redirection->redirection.baseUri("/oauth2/authorization/kakao")
