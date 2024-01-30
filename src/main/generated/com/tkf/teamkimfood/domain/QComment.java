@@ -34,7 +34,7 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final QMember member;
 
-    public final QMember nickname;
+    public final StringPath nickname = createString("nickname");
 
     public final QRecipe recipe;
 
@@ -57,7 +57,6 @@ public class QComment extends EntityPathBase<Comment> {
     public QComment(Class<? extends Comment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new QMember(forProperty("member"), inits.get("member")) : null;
-        this.nickname = inits.isInitialized("nickname") ? new QMember(forProperty("nickname"), inits.get("nickname")) : null;
         this.recipe = inits.isInitialized("recipe") ? new QRecipe(forProperty("recipe"), inits.get("recipe")) : null;
     }
 
