@@ -45,31 +45,32 @@ const RecipeManagement = () => {
     };
 
     return (
-        <div>
-            <h2>레시피 관리</h2>
-            <table>
+        <div className={'container mx-auto mt-10 border p-3 rounded-lg'}>
+            <h2 className={'text-xl font-bold mb-4'}>레시피 관리</h2>
+            <table className={'min-w-full table-auto border-collapse'}>
                 <thead>
                 <tr>
-                    <th>번호</th>
-                    <th>타이틀</th>
-                    <th>닉네임</th>
-                    <th>조회수</th>
-                    <th>작성일</th>
-                    <th>작업</th>
+                    <th className={'border px-4 py-2'}>번호</th>
+                    <th className={'border px-4 py-2'}>타이틀</th>
+                    <th className={'border px-4 py-2'}>닉네임</th>
+                    <th className={'border px-4 py-2'}>조회수</th>
+                    <th className={'border px-4 py-2'}>작성일</th>
+                    <th className={'border px-4 py-2'}>작업</th>
                 </tr>
                 </thead>
                 <tbody>
                 {recipes.map((recipe, index) => (
-                    <tr key={recipe.id}>
-                        <td>{index + 1}</td>
-                        <td style={{ cursor: 'pointer' }} onClick={() => handleRecipeDetail(recipe.id)}>
+                    <tr key={recipe.id} className={'hover:bg-gray-50'}>
+                        <td className={'border px-4 py-2'}>{index + 1}</td>
+                        <td className={'border px-4 py-2 cursor-pointer'} style={{ cursor: 'pointer' }} onClick={() => handleRecipeDetail(recipe.id)}>
                             {recipe.title}
                         </td>
-                        <td>{recipe.nickname}</td>
-                        <td>{recipe.viewCount}</td>
-                        <td>{formatDate(recipe.writeDate)}</td>
-                        <td>
-                            <button onClick={() => handleRecipeDelete(recipe.id)}>
+                        <td className={'border px-4 py-2'}>{recipe.nickname}</td>
+                        <td className={'border px-4 py-2'}>{recipe.viewCount}</td>
+                        <td className={'border px-4 py-2'}>{formatDate(recipe.writeDate)}</td>
+                        <td className={'border px-4 py-2'}>
+                            <button onClick={() => handleRecipeDelete(recipe.id)}
+                            className={'bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded'}>
                                 삭제
                             </button>
                         </td>

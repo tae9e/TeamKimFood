@@ -50,7 +50,7 @@ public class LoginController {
 //    }
 
     @PostMapping("/member")
-    public @ResponseBody ResponseEntity createMember(@Valid MemberFormDto memberFormDto,BindingResult bindingResult){
+    public @ResponseBody ResponseEntity createMember(@Valid @RequestBody MemberFormDto memberFormDto,BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return ResponseEntity.badRequest().body("회원가입에 실패했습니다. 유효성 메시지를 확인해주세요");
         }
