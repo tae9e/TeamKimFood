@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import axios from "axios";
 
@@ -14,7 +14,7 @@ import './component/Css/Layout.css';
 import MemberManagement from "./component/manage/MemberManagement";
 import RecipeManagement from "./component/manage/RecipeManagement";
 import Dashboard from "./component/manage/Dashboard";
-// import PersonalTreat from "./component/Footer/PersonalTreat";
+import PersonalTreat from "./component/Footer/PersonalTreat";
 import RecipeSave from "./component/recipe/RecipeSave";
 
 function App() {
@@ -26,6 +26,7 @@ function App() {
                 <Routes>
                     <Route exact path='/' Component={ BoardList } />
                     <Route path='/login' Component={ LoginForm } />
+                    <Route path='/personaltreat' Component={ PersonalTreat } />
                     {/*<Route path='/BoardContent/:recipe_id' component={ BoardContent } />*/}
                     <Route path={"/api/recipes/save"} Component={RecipeSave}/>
                     <Route path="/admin" element={<ProtectedRoute><ManagePage/></ProtectedRoute>} />
