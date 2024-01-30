@@ -20,9 +20,9 @@ import MemberRegistrationForm from "./component/member/MemberRegistrationForm";
 function App() {
 
     return(
-            <div className="App">
+            <div className="App flex flex-col min-h-screen">
                 <Header />
-
+                <div className={'flex-grow mb-5'}>
                 <Routes>
                     <Route exact path='/' Component={ BoardList } />
                     <Route path='/login' Component={ LoginForm } />
@@ -35,6 +35,7 @@ function App() {
                     <Route path="/admin/recipes" element={<ProtectedRoute><RecipeManagement/></ProtectedRoute>} />
                     <Route path="/admin/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
                 </Routes>
+                </div>
 
                 <Footer />
             </div>
