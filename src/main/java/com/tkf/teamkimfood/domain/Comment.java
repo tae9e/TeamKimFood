@@ -3,6 +3,7 @@ package com.tkf.teamkimfood.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
+@Getter
 @Table(name = "comments")
 public class Comment {
 
