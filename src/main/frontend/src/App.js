@@ -32,7 +32,7 @@ function App() {
                     <Route exact path='/' Component={ BoardList } />
                     <Route path='/login' Component={ LoginForm } />
                     <Route path='/personaltreat' Component={ PersonalTreat } />
-                    <Route path={'/member/join'} Component={MemberRegistrationForm}/>
+                    <Route path={'/signin'} Component={MemberRegistrationForm}/>
                     {/*<Route path='/BoardContent/:recipe_id' component={ BoardContent } />*/}
                     <Route path={"/api/recipes/save"} Component={RecipeSave}/>
                     <Route path="/admin" element={<ProtectedRoute><ManagePage/></ProtectedRoute>} />

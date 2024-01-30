@@ -18,12 +18,12 @@ const RecipeForm = () => {
     const [newImages, setNewImages] = useState([]);
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate();
+    const authToken = localStorage.getItem('authToken');
 
     useEffect(() => {
         if (recipeId) {
             setIsEditMode(true); // URL에 recipeId가 있으면 수정 모드로 설정
             const RecipeData = async () => {
-                const authToken = localStorage.getItem('변수명합의보기');
                 try {
                     const response = await axios.get(`/api/recipes/${recipeId}`, {
                         headers: {
@@ -158,11 +158,10 @@ const RecipeForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        //const email = localStorage.get???('email'); 이 변수 값을 memberid에 넣을 예정 로그인 후 사용자 로컬저장할 변수명을 ?에 쓸 예정 get???
+
         // API변수 변환
         const formData = new FormData();
         formData.append('recipeRequest', JSON.stringify({
-            memberId: 1, // 실제 로그인한 멤버 아이디로 대체해야함
             recipeDto: {
                 title: recipeForm.title,
                 content: recipeForm.content,
@@ -180,17 +179,37 @@ const RecipeForm = () => {
         }));
         recipeForm.recips.forEach((recip, index) => {
             if (recip.imgFiles[0]) {
-                formData.append(`foodImgFileList`, recip.imgFiles[0]);
+                const file = dataURLtoFile(recip.imgFiles[0], 'image.jpg'); // Base64 문자열을 파일로 변환
+                formData.append(`foodImgFileList`, file);
             }
         });
-        if (repImageIndex !== null) {
-            formData.append('repImageIndex', repImageIndex.index);
+        function dataURLtoFile(dataurl, filename) {
+            let arr = dataurl.split(','),
+                mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]),
+                n = bstr.length,
+                u8arr = new Uint8Array(n);
+
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+
+            return new File([u8arr], filename, { type: mime });
+        }
+        const repIndex = repImageIndex ? repImageIndex.pairIndex : null;
+        console.log("repImageIndex:", repIndex); // 디버깅을 위한 로그 출력
+        formData.append('repImageIndex', repIndex);
+
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
         }
 
+
         try {
-            const response = await axios.post('/api/recipes/save', formData, {
+            const response = await axios.post('/api/recipe/save', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${authToken}`,
                 },
             });
 
@@ -217,11 +236,11 @@ const RecipeForm = () => {
                 foodStuff: recipeForm.foodStuff,
                 foodNationType: recipeForm.foodNationType,
             },
-            recipeDetailListDto: recipeForm.details.map((detail) => ({
-                ingredients: detail.ingredients,
-                dosage: detail.dosage,
+            recipeDetailListDto: recipeForm.details.map(detail => ({
+                ingredients: detail.ingredients[0],
+                dosage: detail.dosage[0],
             })),
-            explanations: recipeForm.recips.map((recip) => recip.explanations)
+            explanations: recipeForm.recips.map((recip) => recip.explanations[0])
         }));
         //이미지 파일 추가
         newImages.forEach((files, index) => {
@@ -248,6 +267,7 @@ const RecipeForm = () => {
         }
     };
     const handleRepImageChange = (pairIndex, index) => {
+        //console.log("Selected pairIndex:", pairIndex, "Selected index:", index); // 디버깅을 위한 로그 출력
         // 이미 선택된 대표 이미지가 있는지 확인
         if (repImageIndex !== null && repImageIndex.pairIndex !== pairIndex) {
             alert("이미 다른 항목에서 대표사진을 지정하셨습니다.");
@@ -459,15 +479,15 @@ const RecipeForm = () => {
 
             {/* 버튼 표시 조건: 수정 모드일 경우 '레시피 수정', 그렇지 않으면 '레시피 저장' */}
             <div className={'mt-4'}>
-            {isEditMode ? (
-                <button type="button" onClick={handleUpdate}
-                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >레시피 수정</button>
-            ) : (
-                <button type="submit"
-                        className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >레시피 저장</button>
-            )}
+                {isEditMode ? (
+                    <button type="button" onClick={handleUpdate}
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    >레시피 수정</button>
+                ) : (
+                    <button type="submit"
+                            className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    >레시피 저장</button>
+                )}
             </div>
         </form>
     );
