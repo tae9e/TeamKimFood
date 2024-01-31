@@ -76,6 +76,9 @@ class LoginForm extends Component {
                     </div>
                 </div>
 
+                <a href={KAKAO_AUTH_URL} className="kakaobtn">
+                   <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />
+                </a>
 
 
             </section>

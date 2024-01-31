@@ -58,7 +58,7 @@ public class MemberService implements UserDetailsService {
     //이메일을 이용해 회원 정보 조회
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        com.tkf.teamkimfood.domain.Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(()->new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
        //권한 부여 (필요에 따라 주석 처리해서 사용하세요)
