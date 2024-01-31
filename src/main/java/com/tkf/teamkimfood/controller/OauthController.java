@@ -1,16 +1,21 @@
 package com.tkf.teamkimfood.controller;
 
+import com.tkf.teamkimfood.config.jwt.AuthTokens;
+import com.tkf.teamkimfood.config.jwt.AuthTokensGenerator;
 import com.tkf.teamkimfood.config.oauth.OAuthInfoResponse;
+import com.tkf.teamkimfood.dto.LoginCredentialsVo;
 import com.tkf.teamkimfood.infra.KakaoApiClient;
 import com.tkf.teamkimfood.infra.KakaoLoginParams;
+import com.tkf.teamkimfood.service.MemberService;
 import com.tkf.teamkimfood.service.OAuthLoginService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,11 +29,21 @@ public class OauthController {
 
     private final OAuthLoginService oAuthLoginService;
     private final KakaoApiClient kakaoApiClient;
+    private final AuthTokensGenerator authTokensGenerator;
+    private final MemberService memberService;
 
 
     public OauthController(OAuthLoginService oAuthLoginService, KakaoApiClient kakaoApiClient) {
         this.kakaoApiClient = kakaoApiClient;
+
+
+    public OauthController(OAuthLoginService oAuthLoginService, KakaoApiClient kakaoApiClient, AuthTokensGenerator authTokensGenerator, MemberService memberService) {
+        this.kakaoApiClient=kakaoApiClient;
+
         this.oAuthLoginService = oAuthLoginService;
+
+        this.authTokensGenerator = authTokensGenerator;
+        this.memberService = memberService;
     }
 
     @GetMapping("/auth/kakao/login")
@@ -66,8 +81,25 @@ public class OauthController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", redirectUrl);
         return new ResponseEntity<>(headers, HttpStatus.FOUND); // HttpStatus.FOUND: 302 응답 코드
+      
+      
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginCredentialsVo loginCredentialsVo) {
 
+        Long memberForToken = memberService.findMemberForLogin(loginCredentialsVo.getUsername(), loginCredentialsVo.getPassword());
+        AuthTokens tokens = authTokensGenerator.generate(memberForToken);
+        log.info("토큰 : "+tokens.getAccessToken());
 
     }
+
+        // JSON 객체로 토큰을 감싸 반환
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("token", tokens.getAccessToken());
+
+        return ResponseEntity.ok(tokenMap);
+    }
+
+
+
 
 }
