@@ -58,6 +58,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final ListPath<Rank, QRank> rank = this.<Rank, QRank>createList("rank", Rank.class, QRank.class, PathInits.DIRECT2);
 
+    public final com.tkf.teamkimfood.domain.prefer.QRecipeCategory recipeCategory;
+
     public final BooleanPath recipeRecommend = createBoolean("recipeRecommend");
 
     public final ListPath<Recipe, QRecipe> recipes = this.<Recipe, QRecipe>createList("recipes", Recipe.class, QRecipe.class, PathInits.DIRECT2);
@@ -84,6 +86,7 @@ public class QMember extends EntityPathBase<Member> {
         super(type, metadata, inits);
         this.kakaoUserInfo = inits.isInitialized("kakaoUserInfo") ? new QKakaoUserInfo(forProperty("kakaoUserInfo"), inits.get("kakaoUserInfo")) : null;
         this.memberPreference = inits.isInitialized("memberPreference") ? new com.tkf.teamkimfood.domain.prefer.QMemberPreference(forProperty("memberPreference"), inits.get("memberPreference")) : null;
+        this.recipeCategory = inits.isInitialized("recipeCategory") ? new com.tkf.teamkimfood.domain.prefer.QRecipeCategory(forProperty("recipeCategory"), inits.get("recipeCategory")) : null;
         this.refreshToken = inits.isInitialized("refreshToken") ? new QRefreshToken(forProperty("refreshToken"), inits.get("refreshToken")) : null;
     }
 
