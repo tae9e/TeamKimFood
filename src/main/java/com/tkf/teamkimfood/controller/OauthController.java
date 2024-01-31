@@ -1,16 +1,24 @@
 package com.tkf.teamkimfood.controller;
 
+import com.tkf.teamkimfood.config.jwt.AuthTokens;
+import com.tkf.teamkimfood.config.jwt.AuthTokensGenerator;
 import com.tkf.teamkimfood.config.oauth.OAuthInfoResponse;
+import com.tkf.teamkimfood.domain.status.MemberRole;
+import com.tkf.teamkimfood.dto.LoginCredentialsVo;
 import com.tkf.teamkimfood.infra.KakaoApiClient;
 import com.tkf.teamkimfood.infra.KakaoLoginParams;
+import com.tkf.teamkimfood.service.MemberService;
 import com.tkf.teamkimfood.service.OAuthLoginService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,11 +32,16 @@ public class OauthController {
 
     private final OAuthLoginService oAuthLoginService;
     private final KakaoApiClient kakaoApiClient;
+    private final AuthTokensGenerator authTokensGenerator;
+    private final MemberService memberService;
 
 
-    public OauthController(OAuthLoginService oAuthLoginService, KakaoApiClient kakaoApiClient) {
+    public OauthController(OAuthLoginService oAuthLoginService, KakaoApiClient kakaoApiClient, AuthTokensGenerator authTokensGenerator, MemberService memberService) {
         this.kakaoApiClient = kakaoApiClient;
         this.oAuthLoginService = oAuthLoginService;
+
+        this.authTokensGenerator = authTokensGenerator;
+        this.memberService = memberService;
     }
 
     @GetMapping("/auth/kakao/login")
@@ -37,7 +50,7 @@ public class OauthController {
     }
 
     @GetMapping("/auth/kakao/callback")
-    public ResponseEntity<Map<String, Object>> kakaoCallback(@RequestParam("code") String code){
+    public ResponseEntity<Map<String, Object>> kakaoCallback(@RequestParam("code") String code) {
 
         KakaoLoginParams kakaoLoginParams = new KakaoLoginParams();
         log.info("KakaoParams : {}", kakaoLoginParams);
@@ -70,6 +83,34 @@ public class OauthController {
 
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginCredentialsVo loginCredentialsVo) {
+        try {
+            // 사용자 정보 가져오기
+            UserDetails userDetails = memberService.loadUserByUsername(loginCredentialsVo.getUsername());
+
+            // 사용자가 관리자인지 확인
+            boolean isAdmin = userDetails.getAuthorities().stream()
+                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+
+            // 사용자 인증 성공 시 처리
+            Long memberForToken = memberService.findMemberForLogin(loginCredentialsVo.getUsername(), loginCredentialsVo.getPassword());
+            AuthTokens tokens = authTokensGenerator.generate(memberForToken);
+            log.info("토큰 : " + tokens.getAccessToken());
 
 
+            // JSON 객체로 토큰을 감싸 반환
+            Map<String, String> tokenMap = new HashMap<>();
+            tokenMap.put("token", tokens.getAccessToken());
+            tokenMap.put("isAdmin",Boolean.toString(isAdmin));
+
+            return ResponseEntity.ok(tokenMap);
+        } catch (UsernameNotFoundException e) {
+            // 사용자를 찾을 수 없는 경우 에러 처리 또는 다른 로직 수행
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("사용자를 찾을 수 없습니다.");
+        } catch (BadCredentialsException e) {
+            // 잘못된 자격 증명인 경우 에러 처리 또는 다른 로직 수행
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유저이름 혹은 비밀번호가 다릅니다.");
+        }
+    }
 }

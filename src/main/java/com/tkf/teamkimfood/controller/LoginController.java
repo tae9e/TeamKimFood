@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.security.Principal;
 
@@ -25,29 +26,8 @@ public class LoginController {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
-//    @GetMapping("/member")
-//    public String loginMember(Model model){
-//    model.addAttribute("memberFormDto",new MemberFormDto());
-//    return "login/memberLogin";
-//    }
-//
-//    @PostMapping("/member")
-//    public String createMember(@Valid MemberFormDto memberFormDto , BindingResult bindingResult, Model model){
-//
-//        if(bindingResult.hasErrors()){
-//            return "login/memberLogin";
-//        }
-//
-//        try{
-//            Member member = Member.createMember(memberFormDto,passwordEncoder);
-//            memberService.saveMember(member);
-//            return "login/success";
-//        }catch(IllegalStateException e){
-//            model.addAttribute("errorMessage",e.getMessage());
-//            return "login/memberLogin";
-//        }
-//
-//    }
+
+
 
     @PostMapping("/member")
     public @ResponseBody ResponseEntity createMember(@Valid @RequestBody MemberFormDto memberFormDto,BindingResult bindingResult){
@@ -89,5 +69,7 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
         }
     }
+
+    //
 
 }

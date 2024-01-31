@@ -3,14 +3,18 @@ package com.tkf.teamkimfood.service;
 
 
 import com.tkf.teamkimfood.domain.Member;
+import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
 import com.tkf.teamkimfood.domain.status.MemberRole;
 
 import com.tkf.teamkimfood.dto.MemberFormDto;
+import com.tkf.teamkimfood.dto.aboutrecipe.RecipeSearchDto;
 import com.tkf.teamkimfood.repository.MemberRepository;
+import com.tkf.teamkimfood.repository.recipe.RecipeCategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -33,6 +37,7 @@ import java.util.Optional;
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RecipeCategoryRepository recipeCategoryRepository;
 
     //중복 회원 검사해서 저장
     public Member saveMember(Member member){
@@ -53,7 +58,7 @@ public class MemberService implements UserDetailsService {
     //이메일을 이용해 회원 정보 조회
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        com.tkf.teamkimfood.domain.Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(()->new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
        //권한 부여 (필요에 따라 주석 처리해서 사용하세요)
@@ -99,5 +104,25 @@ public class MemberService implements UserDetailsService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(EntityNotFoundException::new);
         memberRepository.delete(member);
+    }
+
+    //로그인을위한 멤버 불러오기 -김원성
+    public Long findMemberForLogin(String email, String password) {
+        Member member = memberRepository.findByEmail(email).orElseThrow();
+        if (member != null && passwordEncoder.matches(password, member.getPassword())) {
+            return member.getId();
+        } else {
+            throw new BadCredentialsException("유저이름 혹은 비밀번호가 다릅니다.");
+        }
+    }
+    public Long findById(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Member with email " + id + " not found"));
+        List<RecipeCategory> byMember = recipeCategoryRepository.findByMember(member);
+        if (byMember == null) {
+            return null;
+        }else{
+
+            return member.getId();
+        }
     }
 }
