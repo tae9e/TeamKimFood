@@ -133,16 +133,33 @@ public class RecipeService {
 //                .foodImgDtos(foodImgDtos)
 //                .build();
 //    }
+    @Transactional
     public OneRecipeDto viewOne(Long recipeId) {
         OneRecipeDto recipeDto = recipeQueryRepository.getOne(recipeId);
-        if (recipeDto != null) {
-            Recipe recipe = recipeRepository.addViewCount(recipeId);
-            recipeDto.setViewCount(recipe.getViewCount());
-            return recipeDto;
+
+        // 조회 수를 업데이트
+        recipeRepository.addViewCount(recipeId);
+
+        // 업데이트된 Recipe 객체를 다시 가져옴
+        Recipe updatedRecipe = recipeRepository.findById(recipeId).orElse(null);
+
+        if (updatedRecipe != null) {
+            recipeDto.setViewCount(updatedRecipe.getViewCount());
         } else {
-            return null;
+            // Recipe가 존재하지 않는 경우에 대한 처리
+            // 예를 들어, 적절한 에러 메시지를 설정하거나 예외를 던질 수 있습니다.
         }
+
+        return recipeDto;
     }
+    public List<OneRecipeImgVo> viewOneForOne(Long recipeId) {
+        return recipeQueryRepository.getImgExp(recipeId);
+    }
+    public List<OneRecipeIngDoVo> getOneForOne(Long recipeId) {
+        return recipeQueryRepository.getIngDo(recipeId);
+    }
+
+
     public OneRecipeForUpdateVo findOneByEmail(Long recipeId, String email) {
         return recipeQueryRepository.findOneByEmail(recipeId, email);
     }

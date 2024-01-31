@@ -18,7 +18,7 @@ import PersonalTreat from "./component/Footer/PersonalTreat";
 import RecipeSave from "./component/recipe/RecipeSave";
 import MemberRegistrationForm from "./component/member/MemberRegistrationForm";
 import RecipeList from "./component/recipe/RecipeList";
-
+import ViewRecipe from "./component/recipe/ViewRecipe";
 function App() {
 
     return(
@@ -32,7 +32,8 @@ function App() {
                     <Route path={'/signin'} Component={MemberRegistrationForm}/>
                     {/*<Route path='/BoardContent/:recipe_id' component={ BoardContent } />*/}
                     <Route path={"/api/recipes/save"} Component={RecipeSave}/>
-                    <Route path={"/"} Component={RecipeList}/>
+                    <Route path={"/api/recipe/:id"} Component={ViewRecipe}/>
+                    <Route path={"/main"} Component={RecipeList}/>
                     <Route path="/admin" element={<ProtectedRoute><ManagePage/></ProtectedRoute>} />
                     <Route path="/admin/members" element={<ProtectedRoute><MemberManagement/></ProtectedRoute>} />
                     <Route path="/admin/recipes" element={<ProtectedRoute><RecipeManagement/></ProtectedRoute>} />

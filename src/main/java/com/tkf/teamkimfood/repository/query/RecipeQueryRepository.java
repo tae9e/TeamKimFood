@@ -112,7 +112,7 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
         QRecipe recipe = QRecipe.recipe;
         QFoodImg foodImg = QFoodImg.foodImg;
         QMember member = QMember.member;
-        QRecipeDetail recipeDetail = QRecipeDetail.recipeDetail;
+
         QRecipeCategory recipeCategory = QRecipeCategory.recipeCategory;
         OneRecipeDto oneRecipeDto = queryFactory.select(
                         new QOneRecipeDto(
@@ -135,17 +135,16 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 .join(recipe.recipeCategory, recipeCategory)
                 .where(recipe.id.eq(recipeId))
                 .fetchOne();
-        List<OneRecipeImgVo> addImgNExp = queryFactory.select(
-                        new QOneRecipeImgVo(
-                                foodImg.imgUrl,
-                                foodImg.explanation
-                        )
-                )
-                .from(recipe)
-                .join(recipe.foodImgs, foodImg)
-                .where(recipe.id.eq(recipeId))
-                .fetch();
-        List<OneRecipeIngDoVo> oneRecipeIngDoVos = queryFactory.select(
+
+        assert oneRecipeDto != null;
+        return oneRecipeDto;
+    }
+
+    public List<OneRecipeIngDoVo> getIngDo(Long recipeId) {
+        QRecipe recipe = QRecipe.recipe;
+        QRecipeDetail recipeDetail = QRecipeDetail.recipeDetail;
+
+        return queryFactory.select(
                         new QOneRecipeIngDoVo(
                                 recipeDetail.ingredients,
                                 recipeDetail.dosage
@@ -155,10 +154,22 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 .join(recipe.recipeDetails, recipeDetail)
                 .where(recipe.id.eq(recipeId))
                 .fetch();
-        assert oneRecipeDto != null;
-        oneRecipeDto.insertIngreDosage(oneRecipeIngDoVos);
-        oneRecipeDto.insertRecipes(addImgNExp);
-        return oneRecipeDto;
+    }
+
+    public List<OneRecipeImgVo> getImgExp(Long recipeId) {
+        QRecipe recipe = QRecipe.recipe;
+        QFoodImg foodImg = QFoodImg.foodImg;
+
+        return queryFactory.select(
+                        new QOneRecipeImgVo(
+                                foodImg.imgUrl,
+                                foodImg.explanation
+                        )
+                )
+                .from(recipe)
+                .join(recipe.foodImgs, foodImg)
+                .where(recipe.id.eq(recipeId))
+                .fetch();
     }
 
     //내가 쓴 글 조회
