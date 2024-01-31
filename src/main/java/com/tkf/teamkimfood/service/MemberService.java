@@ -3,10 +3,13 @@ package com.tkf.teamkimfood.service;
 
 
 import com.tkf.teamkimfood.domain.Member;
+import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
 import com.tkf.teamkimfood.domain.status.MemberRole;
 
 import com.tkf.teamkimfood.dto.MemberFormDto;
+import com.tkf.teamkimfood.dto.aboutrecipe.RecipeSearchDto;
 import com.tkf.teamkimfood.repository.MemberRepository;
+import com.tkf.teamkimfood.repository.recipe.RecipeCategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
@@ -34,6 +37,7 @@ import java.util.Optional;
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RecipeCategoryRepository recipeCategoryRepository;
 
     //중복 회원 검사해서 저장
     public Member saveMember(Member member){
@@ -110,6 +114,15 @@ public class MemberService implements UserDetailsService {
         } else {
             throw new BadCredentialsException("유저이름 혹은 비밀번호가 다릅니다.");
         }
+    }
+    public Long findById(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Member with email " + id + " not found"));
+        List<RecipeCategory> byMember = recipeCategoryRepository.findByMember(member);
+        if (byMember == null) {
+            return null;
+        }else{
 
+            return member.getId();
+        }
     }
 }

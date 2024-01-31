@@ -186,9 +186,10 @@ public class RecipeService {
 //    }
     public Page<MainpageRecipeDto> getMainForMember(CategoryPreferenceDto categoryPreferenceDto, RecipeSearchDto recipeSearchDto, Pageable pageable) {
         Member member = memberQueryRepository.findOne(categoryPreferenceDto.getId());
-        categoryPreferenceDto.setSituation(member.getMemberPreference().getSituation());
-        categoryPreferenceDto.setFoodStuff(member.getMemberPreference().getFoodStuff());
-        categoryPreferenceDto.setFoodNationType(member.getMemberPreference().getFoodNationType());
+//
+//        categoryPreferenceDto.setSituation(member.getMemberPreference().getSituation());
+//        categoryPreferenceDto.setFoodStuff(member.getMemberPreference().getFoodStuff());
+//        categoryPreferenceDto.setFoodNationType(member.getMemberPreference().getFoodNationType());
         return recipeQueryRepository.getAllWhereTypesOrderByWriteDay(categoryPreferenceDto, recipeSearchDto, pageable);
     }
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음

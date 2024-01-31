@@ -20,6 +20,9 @@ public class RecipeCategory {
     private String foodStuff;//음식재료 : 육류 어류 등등
     private String foodNationType;//음식타입 : 한식 중식 일식 등
 
+    @OneToOne(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+    private Member member;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
@@ -34,6 +37,7 @@ public class RecipeCategory {
 
 
     public void setRecipe(Recipe recipe) {
+
         this.recipe = recipe;
     }
 }

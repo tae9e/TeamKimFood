@@ -1,12 +1,8 @@
 
 import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import axios from "axios";
 
-
-
-
-import BoardList from './component/BoardList';
+// import BoardList from './component/BoardList';
 import LoginForm from './component/LoginForm';
 import Header from './component/Header/Header';
 import Footer from './component/Footer/Footer';
@@ -21,7 +17,7 @@ import Dashboard from "./component/manage/Dashboard";
 import PersonalTreat from "./component/Footer/PersonalTreat";
 import RecipeSave from "./component/recipe/RecipeSave";
 import MemberRegistrationForm from "./component/member/MemberRegistrationForm";
-
+import RecipeList from "./component/recipe/RecipeList";
 
 function App() {
 
@@ -30,12 +26,13 @@ function App() {
                 <Header />
                 <div className={'flex-grow mb-5'}>
                 <Routes>
-                    <Route exact path='/' Component={ BoardList } />
+                    {/*<Route exact path='/' Component={ BoardList } />*/}
                     <Route path='/login' Component={ LoginForm } />
                     <Route path='/personaltreat' Component={ PersonalTreat } />
                     <Route path={'/signin'} Component={MemberRegistrationForm}/>
                     {/*<Route path='/BoardContent/:recipe_id' component={ BoardContent } />*/}
                     <Route path={"/api/recipes/save"} Component={RecipeSave}/>
+                    <Route path={"/"} Component={RecipeList}/>
                     <Route path="/admin" element={<ProtectedRoute><ManagePage/></ProtectedRoute>} />
                     <Route path="/admin/members" element={<ProtectedRoute><MemberManagement/></ProtectedRoute>} />
                     <Route path="/admin/recipes" element={<ProtectedRoute><RecipeManagement/></ProtectedRoute>} />

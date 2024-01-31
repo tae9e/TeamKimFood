@@ -64,6 +64,8 @@ public class WebOauthSecurityConfig {
                                     , "/favicon.ico"
                                     , "/error"
                                     ,"/api/**"
+                                    ,"/images/**"
+                                    ,"/recipe/**"
                             ).permitAll() // 특정 경로에 대한 접근 허용
                             .anyRequest().authenticated(); // 다른 모든 요청은 인증 필요
                 })

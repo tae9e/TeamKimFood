@@ -51,7 +51,7 @@ logging:
 #    org.hibernate.SQL: debug
 #    org.hibernate.type: trace
 
-recipeImgLocation: c:/recipe/images
+recipeImgLocation: C:/BootIntelijComSpace/TeamKimFood/src/main/frontend/public/images/recipe
 
 server:
   servlet:
