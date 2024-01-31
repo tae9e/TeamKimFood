@@ -176,16 +176,16 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                         )
                 )
                 .from(recipe)
-                .join(recipe.member, member)
-                .join(recipe.foodImgs, foodImg)
+                .join(recipe.member, member)//연관된 멤버 정보 조인
+                .join(recipe.foodImgs, foodImg)//url이미지주소 조인
                 .where(recipe.member.id.eq(memberId))
-                .where(foodImg.repImgYn.eq("Y"))
+                .where(foodImg.repImgYn.eq("Y"))//대표이미지만 가져옴
                 .orderBy(recipe.writeDate.desc())
-                .offset(pageable.getOffset())
+                .offset(pageable.getOffset())//페이징처리
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        Long result = queryFactory
+        Long result = queryFactory//총 갯수 카운트
                 .select(Wildcard.count)
                 .from(foodImg)
                 .join(foodImg.recipe, recipe)

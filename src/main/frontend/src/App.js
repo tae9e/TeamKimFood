@@ -2,9 +2,7 @@
 import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import axios from "axios";
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import axios from "axios";
+
 
 
 
@@ -22,7 +20,6 @@ import RecipeManagement from "./component/manage/RecipeManagement";
 import Dashboard from "./component/manage/Dashboard";
 import PersonalTreat from "./component/Footer/PersonalTreat";
 import RecipeSave from "./component/recipe/RecipeSave";
-import LoginHandler from "./component/manage/LoginHandler";
 import MemberRegistrationForm from "./component/member/MemberRegistrationForm";
 
 
@@ -43,7 +40,6 @@ function App() {
                     <Route path="/admin/members" element={<ProtectedRoute><MemberManagement/></ProtectedRoute>} />
                     <Route path="/admin/recipes" element={<ProtectedRoute><RecipeManagement/></ProtectedRoute>} />
                     <Route path="/admin/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
-                    <Route path="/public/auth/kakao/callback" element={<ProtectedRoute><LoginHandler /></ProtectedRoute>} />
                 </Routes>
                 </div>
 

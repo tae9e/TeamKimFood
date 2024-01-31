@@ -18,7 +18,7 @@ const RecipeForm = () => {
     const [newImages, setNewImages] = useState([]);
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate();
-    const authToken = localStorage.getItem('authToken');
+    const authToken = localStorage.getItem('token');
 
     useEffect(() => {
         if (recipeId) {

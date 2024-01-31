@@ -61,11 +61,11 @@ public class RecipeController {
 
             // 파일 리스트를 RecipeRequestVo 객체에 설정
             request.setFoodImgFileList(Arrays.asList(foodImgFileList));
-            String email = userDetails.getUsername();
+            Long id = Long.valueOf(userDetails.getUsername());
 
             // 서비스 호출
             Long saveRecipe = recipeService.saveRecipe(
-                    email,
+                    id,
                     request.getRecipeDto(),
                     request.getCategoryPreferenceDto(),
                     request.getRecipeDetailListDto(),

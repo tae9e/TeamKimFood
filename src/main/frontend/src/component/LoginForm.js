@@ -14,7 +14,7 @@ class LoginForm extends Component {
              const loginData = {username: email, password: password};
 
              try{
-                const response = await fetch('/login',{
+                const response = await fetch('public/login',{
                     method: 'POST',
                     headers: {
                         'Content-Type':'application/json',
@@ -24,7 +24,10 @@ class LoginForm extends Component {
 
                 if(response.ok){
                     console.log('로그인');
-                      this.props.history.push('/boardlist');
+                    const data = await response.json();
+                    localStorage.setItem('token', data.token);
+                    console.log(data.token);
+                    this.props.history.push('/boardlist');
                 }else{
                     console.log('로그인 실패');
                 }
@@ -44,7 +47,7 @@ class LoginForm extends Component {
                         <div  className="in_ty1">
                             <input type="password" id="pwd_val" placeholder="비밀번호" />
                         </div>
-                        <div className="s_bt" type="" onClick={(e) => this.submitClick(e)}>로그인</div>
+                        <div><button className="s_bt" type="" onClick={(e) => this.submitClick(e)}>로그인</button></div>
                         {/*
                         <ul className="af">
                             <li><Link to={'/register'}>회원가입</Link></li>
@@ -71,7 +74,7 @@ class LoginForm extends Component {
                         </div>
                         */}
                     </div>
-                    </div>
+                </div>
 
                 <a href={KAKAO_AUTH_URL} className="kakaobtn">
                    <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />

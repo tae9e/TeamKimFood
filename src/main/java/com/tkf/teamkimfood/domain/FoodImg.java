@@ -14,6 +14,7 @@ import org.hibernate.annotations.BatchSize;
 public class FoodImg {
 
     @Id @Column(name = "foodimg_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String imgName;
