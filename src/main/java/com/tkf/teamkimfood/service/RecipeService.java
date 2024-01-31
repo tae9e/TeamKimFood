@@ -8,12 +8,15 @@ import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
 import com.tkf.teamkimfood.dto.*;
 import com.tkf.teamkimfood.dto.aboutrecipe.*;
 import com.tkf.teamkimfood.exception.NoAuthorityException;
+import com.tkf.teamkimfood.repository.MemberRepository;
 import com.tkf.teamkimfood.repository.query.MemberQueryRepository;
 import com.tkf.teamkimfood.repository.query.RecipeQueryRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeCategoryRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeDetailRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,26 +31,32 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class RecipeService {
 
     private final FoodImgService foodImgService;
     private final RecipeRepository recipeRepository;
     private final RecipeQueryRepository recipeQueryRepository;
-    private final MemberQueryRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final MemberQueryRepository memberQueryRepository;
     private final RecipeDetailRepository recipeDetailRepository;
     private final RecipeCategoryRepository recipeCategoryRepository;
 
 
     //레시피 저장...
     @Transactional
-    public Long saveRecipe(Long memberId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto,List<String> explanations, List<MultipartFile> foodImgFileList, int repImageIndex) throws IOException {
-        Member member = memberRepository.findOne(memberId);
+    public Long saveRecipe(Long userId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto,List<String> explanations, List<MultipartFile> foodImgFileList, int repImageIndex) throws IOException {
+        log.info("이메일 : "+userId);
+        Member member = memberRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Member with email " + userId + " not found"));
         Recipe recipe = Recipe.builder()
                 .title(recipeDto.getTitle())
                 .content(recipeDto.getContent())
                 .writeDate(LocalDateTime.now())
                 .correctionDate(LocalDateTime.now())
                 .build();
+        log.info("레시피 : "+recipe.getTitle());
+        log.info("레시피 : "+recipe.getContent());
+        log.info("레시피 : "+recipe.getWriteDate());
         RecipeCategory recipeCategory = RecipeCategory.builder()
                 .foodNationType(categoryPreferenceDto.getFoodNationType())
                 .foodStuff(categoryPreferenceDto.getFoodStuff())
@@ -65,6 +74,14 @@ public class RecipeService {
         }
 
         Recipe savedRecipe = recipe.createRecipe(recipeDetails, member, recipeCategory);
+        savedRecipe = Recipe.builder()
+                        .title(recipe.getTitle())
+                                .content(recipe.getContent())
+                                        .writeDate(recipe.getWriteDate())
+                                                .correctionDate(recipe.getCorrectionDate())
+                                                        .build();
+        savedRecipe.setMember(member);
+
 
         recipeRepository.save(savedRecipe);
         recipeCategory.setRecipe(savedRecipe);//연관관계 메소드 영속성 유지를 위해 꼭 해줘야함. 아니면 NullPointException납니다.+JPA save시 레시피 아이디값이 안들어갑니다.
@@ -168,10 +185,11 @@ public class RecipeService {
 //                .toList();
 //    }
     public Page<MainpageRecipeDto> getMainForMember(CategoryPreferenceDto categoryPreferenceDto, RecipeSearchDto recipeSearchDto, Pageable pageable) {
-        Member member = memberRepository.findOne(categoryPreferenceDto.getId());
-        categoryPreferenceDto.setSituation(member.getMemberPreference().getSituation());
-        categoryPreferenceDto.setFoodStuff(member.getMemberPreference().getFoodStuff());
-        categoryPreferenceDto.setFoodNationType(member.getMemberPreference().getFoodNationType());
+        Member member = memberQueryRepository.findOne(categoryPreferenceDto.getId());
+//
+//        categoryPreferenceDto.setSituation(member.getMemberPreference().getSituation());
+//        categoryPreferenceDto.setFoodStuff(member.getMemberPreference().getFoodStuff());
+//        categoryPreferenceDto.setFoodNationType(member.getMemberPreference().getFoodNationType());
         return recipeQueryRepository.getAllWhereTypesOrderByWriteDay(categoryPreferenceDto, recipeSearchDto, pageable);
     }
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음

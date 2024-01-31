@@ -6,6 +6,7 @@ import com.tkf.teamkimfood.dto.RecipeNCommentVo;
 import com.tkf.teamkimfood.dto.aboutrecipe.*;
 import com.tkf.teamkimfood.dto.MainpageRecipeDto;
 import com.tkf.teamkimfood.dto.ranks.RankDto;
+import com.tkf.teamkimfood.service.MemberService;
 import com.tkf.teamkimfood.service.RankService;
 import com.tkf.teamkimfood.service.RecipeService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class RecipeController {
 
     private final RecipeService recipeService;
     private final RankService rankService;
+    private final MemberService memberService;
     //레시피 저장
 //    @PostMapping("/api/recipes/save")
 //    public ResponseEntity<Long> saveRecipe(@RequestBody RecipeRequestVo request) {
@@ -51,7 +53,8 @@ public class RecipeController {
 //        }
 //    }
     @PostMapping(value = "/api/recipe/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Long> saveRecipe(@RequestParam("recipeRequest") String recipeRequest,
+    public ResponseEntity<Long> saveRecipe(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam("recipeRequest") String recipeRequest,
                                            @RequestParam("foodImgFileList") MultipartFile[] foodImgFileList,
                                            @RequestParam("repImageIndex") int repImageIndex) {
         try {
@@ -60,11 +63,11 @@ public class RecipeController {
 
             // 파일 리스트를 RecipeRequestVo 객체에 설정
             request.setFoodImgFileList(Arrays.asList(foodImgFileList));
-
+            Long id = Long.valueOf(userDetails.getUsername());
 
             // 서비스 호출
             Long saveRecipe = recipeService.saveRecipe(
-                    request.getMemberId(),
+                    id,
                     request.getRecipeDto(),
                     request.getCategoryPreferenceDto(),
                     request.getRecipeDetailListDto(),
@@ -83,20 +86,30 @@ public class RecipeController {
     //메인화면 구성
     @GetMapping("/api/recipes/boardList")
     public Page<MainpageRecipeDto> getMain(
-            @RequestParam(required = false) Long memberId,
+            @AuthenticationPrincipal UserDetails userDetails,
             RecipeSearchDto recipeSearchDto, @RequestParam(defaultValue = "0")int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        if (memberId != null) {
-            // memberId가 존재하는 경우
-            //멤버가 따로 관심사 설정 안했을경우도 만들기.
-            CategoryPreferenceDto categoryPreferenceDto = new CategoryPreferenceDto();
-            categoryPreferenceDto.setId(memberId);
-            return recipeService.getMainForMember(categoryPreferenceDto, recipeSearchDto, pageable);
-        } else {
+        if (userDetails != null) {
+            Long id = Long.valueOf(userDetails.getUsername());
+            Long memberId = memberService.findById(id);
+
+            if (memberId != null) {
+                // memberId가 존재하는 경우
+                //멤버가 따로 관심사 설정 안했을경우도 만들기.
+                CategoryPreferenceDto categoryPreferenceDto = new CategoryPreferenceDto();
+                categoryPreferenceDto.setId(memberId);
+                return recipeService.getMainForMember(categoryPreferenceDto, recipeSearchDto, pageable);
+            } else {
+                //선호도 조사 안했을경우
+                return recipeService.getMain(recipeSearchDto, pageable);
+            } 
+            
+        }else {
             // memberId가 없는 경우
             return recipeService.getMain(recipeSearchDto, pageable);
         }
+        
     }
     //세부조회(댓글 필요)
     @GetMapping("/api/recipe/{id}")

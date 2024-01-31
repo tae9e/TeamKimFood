@@ -51,7 +51,7 @@ public class FoodImgService {
             }
             String originImgName = foodImgFile.getOriginalFilename();
             String imgName = fileService.uploadFile(recipeImgLocation, originImgName, foodImgFile.getBytes());
-            String imgUrl = "/image/recipe/"+imgName;
+            String imgUrl = "/images/recipe/"+imgName;
             savedFoodImg.updateItemImg(imgName,originImgName,imgUrl);
         }
     }
