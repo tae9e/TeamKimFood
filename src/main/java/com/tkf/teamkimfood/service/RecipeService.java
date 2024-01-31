@@ -54,9 +54,6 @@ public class RecipeService {
                 .writeDate(LocalDateTime.now())
                 .correctionDate(LocalDateTime.now())
                 .build();
-        log.info("레시피 : "+recipe.getTitle());
-        log.info("레시피 : "+recipe.getContent());
-        log.info("레시피 : "+recipe.getWriteDate());
         RecipeCategory recipeCategory = RecipeCategory.builder()
                 .foodNationType(categoryPreferenceDto.getFoodNationType())
                 .foodStuff(categoryPreferenceDto.getFoodStuff())
@@ -160,8 +157,8 @@ public class RecipeService {
     }
 
 
-    public OneRecipeForUpdateVo findOneByEmail(Long recipeId, String email) {
-        return recipeQueryRepository.findOneByEmail(recipeId, email);
+    public OneRecipeForUpdateVo findOneByEmail(Long recipeId, Long userId) {
+        return recipeQueryRepository.findOneByEmail(recipeId, userId);
     }
 
     //    일반적인 메뉴노출(비회원 접속시)
@@ -214,7 +211,7 @@ public class RecipeService {
     public Long updateRecipe(Long memberId,Long recipeId, FoodImgDto foodImgDto, List<String> explanations, List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
         Recipe checking = recipeRepository.findById(recipeId).orElseThrow();
         if (checking.getMember().getId().equals(memberId)) {
-            Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(memberId, recipeId);
+            Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(memberId, recipeId);//findOne처럼 수정해야함
             Recipe updateRecipe = Recipe.builder()
                     .title(recipeDto.getTitle())
                     .content(recipeDto.getContent())
@@ -251,6 +248,7 @@ public class RecipeService {
         return recipeQueryRepository.getAllOrderByViewCount(pageable);
     }
     //레시피 삭제
+    @Transactional
     public Boolean deleteRecipe(Long memberId, Long recipeId) {
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow();
         if (memberId.equals(recipe.getMember().getId())) {

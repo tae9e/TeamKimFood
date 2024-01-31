@@ -68,7 +68,7 @@ const RecipeView = () => {
         if (isAuthor) {
             return (
                 <>
-                    <button onClick={() => navigate(`/editRecipe/${id}`)}
+                    <button onClick={() => navigate(`/api/recipe/${id}/update`)}
                     className={'bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'}>수정</button>
                     <button onClick={handleDelete}
                     className={'bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'}>삭제</button>
@@ -82,7 +82,11 @@ const RecipeView = () => {
     const handleDelete = async () => {
         if (window.confirm('레시피를 삭제하시겠습니까?')) {
             try {
-                await axios.delete(`/api/recipes/${id}`);
+                await axios.delete(`http://localhost:8080/api/recipes/${id}/delete`,{
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
                 alert('레시피가 삭제되었습니다.');
                 navigate(`/main?page=${fromPage}`);
             } catch (error) {

@@ -189,8 +189,8 @@ public class RecipeController {
     @GetMapping("/api/recipes/{id}")
     public ResponseEntity<?> getOneRecipeForUpdate(@PathVariable("id")Long recipeId, @AuthenticationPrincipal UserDetails userDetails) {
 
-        String userEmail = userDetails.getUsername();
-        OneRecipeForUpdateVo recipe = recipeService.findOneByEmail(recipeId, userEmail);
+        Long id = Long.valueOf(userDetails.getUsername());
+        OneRecipeForUpdateVo recipe = recipeService.findOneByEmail(recipeId, id);
         if (recipe != null) {
             return ResponseEntity.ok(recipe);
         } else {
@@ -201,8 +201,8 @@ public class RecipeController {
     //삭제
     @DeleteMapping("/api/recipes/{id}/delete")
     public ResponseEntity<String> deleteRecipe(@PathVariable("id")Long recipeId, @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = getUserId(userDetails);
-        Boolean success = recipeService.deleteRecipe(userId, recipeId);
+        Long id = Long.valueOf(userDetails.getUsername());
+        Boolean success = recipeService.deleteRecipe(id, recipeId);
 
         if (success) {
             return ResponseEntity.ok("성공적으로 삭제했습니다.");

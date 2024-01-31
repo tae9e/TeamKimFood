@@ -43,14 +43,16 @@ public class RecipeCategoryService {
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
             RecipeCategory recipeCategory = recipeCategoryRepository.findByMember(member);
-
+            RecipeCategoryDto recipeCategoryDto = new RecipeCategoryDto();
 //            RecipeCategoryDto recipeCategoryDto = new RecipeCategoryDto();
+                if(recipeCategory == null){
+                    return null;
+                }else {
 
-                RecipeCategoryDto recipeCategoryDto = new RecipeCategoryDto();
-                recipeCategoryDto.setSituation(recipeCategory.getSituation());
-                recipeCategoryDto.setFoodStuff(recipeCategory.getFoodStuff());
-                recipeCategoryDto.setFoodNationType(recipeCategory.getFoodNationType());
-
+                    recipeCategoryDto.setSituation(recipeCategory.getSituation());
+                    recipeCategoryDto.setFoodStuff(recipeCategory.getFoodStuff());
+                    recipeCategoryDto.setFoodNationType(recipeCategory.getFoodNationType());
+                }
 
             return recipeCategoryDto;
         } else {

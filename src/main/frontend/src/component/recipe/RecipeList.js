@@ -46,7 +46,7 @@ const RecipeItem = ({ recipe, navigate, currentPage }) => {
         navigate(`/api/recipe/${recipe.id}`, { state: { fromPage: currentPage } })
     }
     if (!recipe){
-        return (<div>표시할 레시피가 없습니다.</div>);
+        return <div>표시할 레시피가 없습니다.</div>;
     } else {
         return (
             <div>
