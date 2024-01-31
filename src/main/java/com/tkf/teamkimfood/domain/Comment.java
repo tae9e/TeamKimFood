@@ -2,9 +2,9 @@ package com.tkf.teamkimfood.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Table(name = "comments")
 public class Comment {
@@ -35,14 +35,14 @@ public class Comment {
     @LastModifiedDate
     private LocalDateTime correctionDate;
 
-    @BatchSize(size = 100)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "member_id")
-    private Member member;
+//    @BatchSize(size = 100)
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "member_id")
+//    private Member member;
 
 //    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "nickname")
-    private String nickname;
+//    @JoinColumn(name = "nickname")
+//    private Member nickname;
 
     @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -59,8 +59,12 @@ public class Comment {
         this.content = content;
         this.commentDate = commentDate;
         this.correctionDate = correctionDate;
-        this.member = member;
+//        this.member = member;
         this.recipe = recipe;
+    }
+
+    public Comment() {
+
     }
 
     public void update(String content){
@@ -68,12 +72,12 @@ public class Comment {
     }
 
     //연관관계 메서드
-    public void setMember(Member member) {
-        this.member = member;
-        member.getComments().add(this);
-    }
-    public void setRecipe(Recipe recipe){
-        this.recipe = recipe;
-        recipe.getComments().add(this);
-    }
+//    public void setMember(Member member) {
+//        this.member = member;
+//        member.getComments().add(this);
+//    }
+//    public void setRecipe(Recipe recipe){
+//        this.recipe = recipe;
+//        recipe.getComments().add(this);
+//    }
 }

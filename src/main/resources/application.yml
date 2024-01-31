@@ -40,7 +40,6 @@ oauth:
       - profile_nickname
       - account_email
 
-
 logging:
   level:
     root: INFO
