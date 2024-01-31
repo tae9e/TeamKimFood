@@ -48,13 +48,14 @@ const Dashboard = () => {
     };
 
     return (
-        <div>
-            <h2>대시보드</h2>
-            <p>총 사용자 수: {dashboardStats.totalUsers}</p>
-            <p>등록된 레시피 수: {dashboardStats.totalRecipes}</p>
-
-            <h3>일별 활동 통계</h3>
+        <div className={'container mx-auto mt-10'}>
+            <h2 className={'text-2xl font-bold mb-4'}>대시보드</h2>
+            <p className={'font-semibold'}>총 사용자 수: {dashboardStats.totalUsers}</p>
+            <p className={'font-semibold'}>등록된 레시피 수: {dashboardStats.totalRecipes}</p>
+            <div className={'mb-6'}>
+            <h3 className={'text-xl font-bold mb-3'}>일별 활동 통계</h3>
             <Line data={dailyData} />
+            </div>
         </div>
     );
 };

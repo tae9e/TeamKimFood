@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,8 +48,9 @@ public class LoginController {
 //        }
 //
 //    }
+
     @PostMapping("/member")
-    public @ResponseBody ResponseEntity createMember(@Valid MemberFormDto memberFormDto,BindingResult bindingResult){
+    public @ResponseBody ResponseEntity createMember(@Valid @RequestBody MemberFormDto memberFormDto,BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return ResponseEntity.badRequest().body("회원가입에 실패했습니다. 유효성 메시지를 확인해주세요");
         }
@@ -79,7 +81,7 @@ public class LoginController {
 
     //회원 삭제
     @DeleteMapping("/member/{memberId}")
-    public @ResponseBody ResponseEntity deleteCartItem(@PathVariable("memberId") Long memberId,Principal principal){
+    public @ResponseBody ResponseEntity deleteMember(@PathVariable("memberId") Long memberId,Principal principal){
         try {
             memberService.deleteMember(memberId);
             return ResponseEntity.ok("탈퇴되었습니다.");
