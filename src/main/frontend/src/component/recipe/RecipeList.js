@@ -7,11 +7,17 @@ const RecipeList = () => {
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const navigate = useNavigate();
-
+    const authToken = localStorage.getItem('token');
     useEffect(() => {
         const fetchRecipes = async () => {
             try{
-                const response = await axios.get(`/api/recipes/boardList?page=${page}`);
+                const response = await axios.get(`/api/recipes/boardList?page=${page}`,{
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                }
+                );
+
                 setRecipes(response.data.content);
                 setTotalPages(response.data.totalPages);
             } catch (error){

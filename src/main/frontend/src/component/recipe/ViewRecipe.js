@@ -12,6 +12,7 @@ const RecipeView = () => {
         const loadRecipe = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/recipe/${id}`);
+
                 setRecipe(response.data);
             } catch (error) {
                 console.error('레시피를 불러오는 데 실패했습니다.', error);

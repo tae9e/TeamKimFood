@@ -26,11 +26,9 @@ function App() {
                 <Header />
                 <div className={'flex-grow mb-5'}>
                 <Routes>
-                    {/*<Route exact path='/' Component={ BoardList } />*/}
                     <Route path='/login' Component={ LoginForm } />
                     <Route path='/personaltreat' Component={ PersonalTreat } />
                     <Route path={'/signin'} Component={MemberRegistrationForm}/>
-                    {/*<Route path='/BoardContent/:recipe_id' component={ BoardContent } />*/}
                     <Route path={"/api/recipes/save"} Component={RecipeSave}/>
                     <Route path={"/api/recipe/:id"} Component={ViewRecipe}/>
                     <Route path={"/main"} Component={RecipeList}/>

@@ -2,12 +2,14 @@ package com.tkf.teamkimfood.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tkf.teamkimfood.dto.CommentDto;
+import com.tkf.teamkimfood.dto.RecipeCategoryDto;
 import com.tkf.teamkimfood.dto.RecipeNCommentVo;
 import com.tkf.teamkimfood.dto.aboutrecipe.*;
 import com.tkf.teamkimfood.dto.MainpageRecipeDto;
 import com.tkf.teamkimfood.dto.ranks.RankDto;
 import com.tkf.teamkimfood.service.MemberService;
 import com.tkf.teamkimfood.service.RankService;
+import com.tkf.teamkimfood.service.RecipeCategoryService;
 import com.tkf.teamkimfood.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +35,7 @@ public class RecipeController {
     private final RecipeService recipeService;
     private final RankService rankService;
     private final MemberService memberService;
+    private final RecipeCategoryService recipeCategoryService;
     //레시피 저장
 //    @PostMapping("/api/recipes/save")
 //    public ResponseEntity<Long> saveRecipe(@RequestBody RecipeRequestVo request) {
@@ -93,12 +96,16 @@ public class RecipeController {
         if (userDetails != null) {
             Long id = Long.valueOf(userDetails.getUsername());
             Long memberId = memberService.findById(id);
-
-            if (memberId != null) {
+            String email = memberService.findByEmail(id);
+            RecipeCategoryDto surveyResults = recipeCategoryService.getSurveyResults(email);
+            if (surveyResults != null) {
                 // memberId가 존재하는 경우
                 //멤버가 따로 관심사 설정 안했을경우도 만들기.
                 CategoryPreferenceDto categoryPreferenceDto = new CategoryPreferenceDto();
                 categoryPreferenceDto.setId(memberId);
+                categoryPreferenceDto.setSituation(surveyResults.getSituation());
+                categoryPreferenceDto.setFoodStuff(surveyResults.getFoodStuff());
+                categoryPreferenceDto.setFoodNationType(surveyResults.getFoodNationType());
                 return recipeService.getMainForMember(categoryPreferenceDto, recipeSearchDto, pageable);
             } else {
                 //선호도 조사 안했을경우
