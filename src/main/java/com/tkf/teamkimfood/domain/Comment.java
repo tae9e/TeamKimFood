@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Table(name = "comments")
 public class Comment {
@@ -40,9 +38,11 @@ public class Comment {
     @JoinColumn(name = "member_id")
     private Member member;
 
+
 //    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "nickname")
-    private String nickname;
+//    @JoinColumn(name = "nickname")
+//    private String nickname;
+
 
     @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -54,13 +54,16 @@ public class Comment {
 
     //코멘트 데이터 넣을 때
     @Builder
-    public Comment(Long id, String content, LocalDateTime commentDate, LocalDateTime correctionDate, Member member, Recipe recipe) {
+    public Comment(Long id, String content, LocalDateTime commentDate, LocalDateTime correctionDate, Recipe recipe) {
         this.id = id;
         this.content = content;
         this.commentDate = commentDate;
         this.correctionDate = correctionDate;
-        this.member = member;
         this.recipe = recipe;
+    }
+
+    public Comment() {
+
     }
 
     public void update(String content){

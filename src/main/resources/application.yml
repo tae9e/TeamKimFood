@@ -31,8 +31,7 @@ oauth:
     client-id: 69445a05dee5a6928649b416c9df1964
     client-secret: hxEg8JGhjQm7Np8bMd18vQWZhVOjcPm0
     #    redirect-uri: http://localhost:8080/oauth2/authorization/kakao
-    #    redirect-uri: http://localhost:8080/public/auth/kakao/callback
-    redirect-uri: http://localhost:3000/public/auth/kakao/callback
+    redirect-uri: http://localhost:8080/public/auth/kakao/callback
     client-authentication-method: POST
     client-name: kakao
     oauth-url: https://kauth.kakao.com
@@ -40,7 +39,6 @@ oauth:
     scope:
       - profile_nickname
       - account_email
-
 
 logging:
   level:
