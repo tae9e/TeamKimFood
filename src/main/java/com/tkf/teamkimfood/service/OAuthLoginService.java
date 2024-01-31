@@ -8,9 +8,13 @@ import com.tkf.teamkimfood.config.oauth.OAuthInfoResponse;
 import com.tkf.teamkimfood.config.oauth.OAuthLoginParams;
 import com.tkf.teamkimfood.repository.KakaoUserRepository;
 import com.tkf.teamkimfood.repository.MemberRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -46,8 +50,6 @@ public class OAuthLoginService {
         return saveKakaoUserInfo.getId();
 
     }
-
-
 
 
 }
