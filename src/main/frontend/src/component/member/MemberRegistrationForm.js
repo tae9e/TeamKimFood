@@ -60,7 +60,7 @@ const MemberRegistrationForm = () => {
             </div>
             <div className={' mb-1 border p-3 rounded-lg'}>
                 <label className={'block text-gray-700 text-sm font-bold mb-2'}>비밀번호:</label>
-                <input type="password" name="password" value={memberData.password} onChange={handleChange} required
+                <input type="password" name="password" value={memberData.password} onChange={handleChange} required placeholder={'비밀번호를 입력해주세요!'}
                        className={'shadow appearance-none border ${errors.password ? \'border-red-500\' : \'\'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}
                        // style={{ borderColor: errors.password ? 'red' : 'initial' }}
                 />

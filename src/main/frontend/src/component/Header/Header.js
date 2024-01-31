@@ -11,7 +11,7 @@ import '../Css/Common.css';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { KAKAO_AUTH_URL } from '../OAuth';
+
 
 
 function TopNav() {
@@ -50,10 +50,9 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
                                           <li><a href="/signin"><SlPencil /> 회원가입</a></li>
                                           <li><a href="/login"><SlLogin /> 로그인</a></li>
                                            {/* 카카오 로그인 버튼 */}
-                                          <li>  <a href={KAKAO_AUTH_URL} className="kakaobtn">
-                                                           <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />
-                                                         </a>
-</li>
+
+
+
                                       </>
                                   )}
                                   {isLoggedIn && (
