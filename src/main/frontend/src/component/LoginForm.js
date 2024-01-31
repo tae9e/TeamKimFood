@@ -37,44 +37,28 @@ class LoginForm extends Component {
         }
     render () {
         return (
-            <section className="main">
-                <div className="m_login signin">
-                    <h3>LOGIN</h3>
-                    <div className="log_box">
-                        <div className="in_ty1">
-                            <input type="text" id="email_val" placeholder="이메일" />
-                        </div>
-                        <div  className="in_ty1">
-                            <input type="password" id="pwd_val" placeholder="비밀번호" />
-                        </div>
-                        <div><button className="s_bt" type="" onClick={(e) => this.submitClick(e)}>로그인</button></div>
-                        {/*
-                        <ul className="af">
-                            <li><Link to={'/register'}>회원가입</Link></li>
-                            <li className="pwr_b" onClick={this.pwdResetClick}><a href="#n">비밀번호 재설정</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div className="m_login m_pw chgpw">
-                    <h3 className="pw_ls">비밀번호 재설정 <span className="compl1">완료</span></h3>
-                    <div className="log_box">
-                        <div className="pw_one">
-                            <div className="in_ty1">
-                                <input type="text" id="reset_email_val" name="" placeholder="이메일"/>
-                            </div>
-                            <div  className="in_ty1">
-                                <input type="text" id="reset_name_val" name="" placeholder="성명"/>
-                            </div>
-                            <div className="btn_confirm btn_confirm_m">
-                                <div className="bt_ty bt_ty_m bt_ty1 cancel_ty1"
-                                     onClick={this.pwdResetCancleClick}>취소</div>
-                                <a href="#n" className="bt_ty bt_ty_m bt_ty2 submit_ty1"
-                                   onClick={this.pwdResetConfim}>확인</a>
-                            </div>
-                        </div>
-                        */}
-                    </div>
-                </div>
+             <section className="main">
+                 <div className="m_login signin">
+                     <div className="log_box flex flex-col items-center">
+                         <div className="mb-4 mt-4">
+                             <input type="text" id="email_val" placeholder="이메일" className="w-64 py-2 px-3 rounded-md border" />
+                         </div>
+                         <div className="mb-4">
+                             <input type="password" id="pwd_val" placeholder="비밀번호" className="w-64 py-2 px-3 rounded-md border" />
+                         </div>
+                         <div className="mb-4">
+                             <button className="w-64 bg-black hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
+                                 로그인
+                             </button>
+                         </div>
+                         <div className="mt-0.1">
+                             <a href={KAKAO_AUTH_URL} className="kakaobtn w-64 h-10 rounded-lg flex items-center justify-center text-lg"> {/* 글꼴 크기 조절 */}
+                                 <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />
+                             </a>
+                         </div>
+                     </div>
+                 </div>
+             </section>
 
                 <a href={KAKAO_AUTH_URL} className="kakaobtn">
                    <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />
