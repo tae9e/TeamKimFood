@@ -7,11 +7,17 @@ const RecipeList = () => {
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const navigate = useNavigate();
-
+    const authToken = localStorage.getItem('token');
     useEffect(() => {
         const fetchRecipes = async () => {
             try{
-                const response = await axios.get(`/api/recipes/boardList?page=${page}`);
+                const response = await axios.get(`/api/recipes/boardList?page=${page}`,{
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                }
+                );
+
                 setRecipes(response.data.content);
                 setTotalPages(response.data.totalPages);
             } catch (error){
@@ -40,7 +46,7 @@ const RecipeItem = ({ recipe, navigate, currentPage }) => {
         navigate(`/api/recipe/${recipe.id}`, { state: { fromPage: currentPage } })
     }
     if (!recipe){
-        return (<div>표시할 레시피가 없습니다.</div>);
+        return <div>표시할 레시피가 없습니다.</div>;
     } else {
         return (
             <div>
