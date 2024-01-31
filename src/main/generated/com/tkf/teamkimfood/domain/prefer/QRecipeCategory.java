@@ -28,6 +28,8 @@ public class QRecipeCategory extends EntityPathBase<RecipeCategory> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final com.tkf.teamkimfood.domain.QMember member;
+
     public final com.tkf.teamkimfood.domain.QRecipe recipe;
 
     public final StringPath Situation = createString("Situation");
@@ -50,6 +52,7 @@ public class QRecipeCategory extends EntityPathBase<RecipeCategory> {
 
     public QRecipeCategory(Class<? extends RecipeCategory> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.member = inits.isInitialized("member") ? new com.tkf.teamkimfood.domain.QMember(forProperty("member"), inits.get("member")) : null;
         this.recipe = inits.isInitialized("recipe") ? new com.tkf.teamkimfood.domain.QRecipe(forProperty("recipe"), inits.get("recipe")) : null;
     }
 
