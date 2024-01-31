@@ -211,10 +211,10 @@ public class RecipeService {
     }
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
     @Transactional
-    public Long updateRecipe(String email , Long recipeId, FoodImgDto foodImgDto, List<String> explanations, List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
+    public Long updateRecipe(Long memberId,Long recipeId, FoodImgDto foodImgDto, List<String> explanations, List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
         Recipe checking = recipeRepository.findById(recipeId).orElseThrow();
-        if (checking.getMember().getEmail().equals(email)) {
-            Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(email, recipeId);
+        if (checking.getMember().getId().equals(memberId)) {
+            Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(memberId, recipeId);
             Recipe updateRecipe = Recipe.builder()
                     .title(recipeDto.getTitle())
                     .content(recipeDto.getContent())

@@ -14,6 +14,7 @@ public class RecipeNCommentVo {
     private CommentDto commentDto;
     List<OneRecipeImgVo> oneRecipeImgVos;
     List<OneRecipeIngDoVo> oneRecipeIngDoVos;
+    Boolean equalMember = false;
 
     public RecipeNCommentVo(OneRecipeDto oneRecipeDto, CommentDto commentDto, List<OneRecipeImgVo> oneRecipeImgVos, List<OneRecipeIngDoVo> oneRecipeIngDoVos) {
         this.oneRecipeDto = oneRecipeDto;

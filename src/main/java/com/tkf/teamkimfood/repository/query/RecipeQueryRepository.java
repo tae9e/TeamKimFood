@@ -51,14 +51,14 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
     }
 
     //받아온 멤버아이디와 레시피아이디가 일치하는 레시피
-    public Recipe findOneWhereMemberIdAndRecipeId(String email, Long recipeId) {
+    public Recipe findOneWhereMemberIdAndRecipeId(Long memberId, Long recipeId) {
         TypedQuery<Recipe> query = em.createQuery(
                 "select r " +
                         "from Recipe r " +
-                        "where r.member.email = :email and r.id = :recipeId", Recipe.class
+                        "where r.member.id = :memberId and r.id = :recipeId", Recipe.class
         );
 
-        query.setParameter("email", email);
+        query.setParameter("memberId", memberId);
         query.setParameter("recipeId", recipeId);
 
         try {

@@ -90,10 +90,13 @@ public class RecipeController {
     @GetMapping("/api/recipes/boardList")
     public Page<MainpageRecipeDto> getMain(
             @AuthenticationPrincipal UserDetails userDetails,
-            RecipeSearchDto recipeSearchDto, @RequestParam(defaultValue = "0")int page,
+            @RequestParam(required = false) String search, @RequestParam(defaultValue = "0")int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        if (userDetails != null) {
+        RecipeSearchDto recipeSearchDto = new RecipeSearchDto();
+
+        if (userDetails != null && search == null) {//로그인한상태 and 레시피 서치 안한경우
+
             Long id = Long.valueOf(userDetails.getUsername());
             Long memberId = memberService.findById(id);
             String email = memberService.findByEmail(id);
@@ -113,42 +116,63 @@ public class RecipeController {
             } 
             
         }else {
-            // memberId가 없는 경우
+            // memberId가 없는 경우 || 검색 했을 경우
+            recipeSearchDto.setSearchByLike(search);
             return recipeService.getMain(recipeSearchDto, pageable);
         }
         
     }
     //세부조회(댓글 필요)
     @GetMapping("/api/recipe/{id}")
-    public ResponseEntity<RecipeNCommentVo> viewOne(@PathVariable("id")Long recipeId){
+    public ResponseEntity<RecipeNCommentVo> viewOne(@PathVariable("id")Long recipeId, @AuthenticationPrincipal UserDetails userDetails){
         OneRecipeDto oneRecipeDto = recipeService.viewOne(recipeId);
+        boolean equalMember = false;
+        if (userDetails != null) {
+            long id = Long.parseLong(userDetails.getUsername());
+
+            if (id == oneRecipeDto.getMemberId()){
+                equalMember = true;
+            }
+        }
+
         List<OneRecipeImgVo> oneRecipeImgVos = recipeService.viewOneForOne(recipeId);
         List<OneRecipeIngDoVo> oneRecipeIngDoVos = recipeService.getOneForOne(recipeId);
         //현재 댓글은 빈 객체 돌려줌
         CommentDto commentDto = new CommentDto();//코멘트 service 구현 완료시 수정예정.
         RecipeNCommentVo recipeNCommentVo = new RecipeNCommentVo(oneRecipeDto, commentDto, oneRecipeImgVos, oneRecipeIngDoVos);
+        recipeNCommentVo.setEqualMember(equalMember);
         return ResponseEntity.ok(recipeNCommentVo);
     }
     //수정
     @PutMapping("/api/recipes/{recipeId}")
     public ResponseEntity<Long> updateRecipe(@AuthenticationPrincipal UserDetails userDetails,
-                                             @PathVariable("recipeId") Long recipeId,
+                                             @PathVariable("recipeId")Long recipeId,
                                              @RequestParam("recipeRequest") String recipeRequest,
-                                             @RequestParam(required = false) MultipartFile[] foodImgFileList
-                                             ) throws IOException {
-        // JSON 문자열을 RecipeRequestVo 객체로 변환
-        RecipeRequestVo request = new ObjectMapper().readValue(recipeRequest, RecipeRequestVo.class);
+                                             @RequestParam("foodImgFileList") MultipartFile[] foodImgFileList,
+                                             @RequestParam("repImageIndex") int repImageIndex) {
+        try {
+            // JSON 문자열을 RecipeRequestVo 객체로 변환
+            RecipeRequestVo request = new ObjectMapper().readValue(recipeRequest, RecipeRequestVo.class);
 
-        // 파일 리스트를 RecipeRequestVo 객체에 설정
-        request.setFoodImgFileList(Arrays.asList(foodImgFileList));
+            // 파일 리스트를 RecipeRequestVo 객체에 설정
+            request.setFoodImgFileList(Arrays.asList(foodImgFileList));
+            Long id = Long.valueOf(userDetails.getUsername());
+//String email , Long recipeId, FoodImgDto foodImgDto, List<String> explanations, List<MultipartFile> foodImgFileList, RecipeDto recipeDto
+            // 서비스 호출
+            Long saveRecipe = recipeService.updateRecipe(
+                    id,
+                    recipeId,
+                    request.getFoodImgDto(),
+                    request.getExplanations(),
+                    request.getFoodImgFileList(),
+                    request.getRecipeDto()
+            );
 
-        String email = userDetails.getUsername();
-
-        Long updatedRecipe = recipeService.updateRecipe(email, recipeId, request.getFoodImgDto(),request.getExplanations() ,request.getFoodImgFileList(), request.getRecipeDto());
-        if (updatedRecipe != null) {
-            return ResponseEntity.ok(updatedRecipe);
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1L);
+            return ResponseEntity.ok(saveRecipe);
+        } catch (IOException e) {
+            // 예외 처리
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(-1L);
         }
     }
     //로그인한 회원의 Long id 가져오기
