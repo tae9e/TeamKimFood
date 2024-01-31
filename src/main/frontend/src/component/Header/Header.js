@@ -7,13 +7,14 @@ import Navbar from 'react-bootstrap/Navbar';
 import { SlLogin, SlPencil  } from "react-icons/sl";
 import '../Css/Common.css';
 import React, { useState, useEffect } from 'react';
-import { KAKAO_AUTH_URL } from '../OAuth';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { KAKAO_AUTH_URL } from '../OAuth';
+
 
 function TopNav() {
 const [isLoggedIn, setIsLoggedIn] = useState(false);
-const navigate = useNavigate();
+
 
   useEffect(() => {
       const token = localStorage.getItem('userToken');
@@ -26,28 +27,6 @@ const navigate = useNavigate();
       localStorage.removeItem('userToken');
       setIsLoggedIn(false);
     };
-
-    const handleKakaoLogin = async () => {
-      try {
-        const code = new URL(window.location.href).searchParams.get('code');
-        const backendUrl = 'http://localhost:8080';
-
-        const res = await axios({
-          method: 'GET',
-          url: `${backendUrl}/public/auth/kakao/callback?code=${code}`,
-          headers: {
-            'Content-Type': 'application/json;charset=utf-8',
-          },
-        });
-        console.log('Response', res);
-        localStorage.setItem('name', res.data.account.kakaoName);
-        navigate('/boardList'); // navigate 함수를 사용하여 페이지 이동을 처리합니다.
-      } catch (error) {
-        console.error('로그인 에러', error);
-        // 에러 처리 로직
-      }
-    };
-
 
 
     function toggleMenu() {
@@ -79,9 +58,9 @@ const navigate = useNavigate();
                                           <li><a href="/signin"><SlPencil /> 회원가입</a></li>
                                           <li><a href="/login"><SlLogin /> 로그인</a></li>
                                            {/* 카카오 로그인 버튼 */}
-                                           <li> <a href={KAKAO_AUTH_URL} className="kakaobtn">
-                                                                  <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />
-                                                               </a>
+                                          <li>  <a href={KAKAO_AUTH_URL} className="kakaobtn">
+                                                           <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />
+                                                         </a>
 </li>
                                       </>
                                   )}

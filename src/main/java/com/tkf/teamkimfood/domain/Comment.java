@@ -38,6 +38,12 @@ public class Comment {
     @JoinColumn(name = "member_id")
     private Member member;
 
+
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "nickname")
+//    private String nickname;
+
+
     @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
