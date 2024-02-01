@@ -30,6 +30,16 @@ public class CommentController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<CommentDto> updateComment(@PathVariable("id") Long commentId, @RequestBody CommentDto updatedCommentDto) {
+        CommentDto updatedComment = commentService.updateComment(commentId, updatedCommentDto);
+        if (updatedComment != null) {
+            return ResponseEntity.ok(updatedComment);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable("id") Long commentId) {
         commentService.deleteComment(commentId);

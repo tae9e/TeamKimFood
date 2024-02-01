@@ -137,10 +137,13 @@ public class RecipeController {
 
         List<OneRecipeImgVo> oneRecipeImgVos = recipeService.viewOneForOne(recipeId);
         List<OneRecipeIngDoVo> oneRecipeIngDoVos = recipeService.getOneForOne(recipeId);
+        Long rank = rankService.totalRecipeRank(recipeId);
+
         //현재 댓글은 빈 객체 돌려줌
         CommentDto commentDto = new CommentDto();//코멘트 service 구현 완료시 수정예정.
         RecipeNCommentVo recipeNCommentVo = new RecipeNCommentVo(oneRecipeDto, commentDto, oneRecipeImgVos, oneRecipeIngDoVos);
         recipeNCommentVo.setEqualMember(equalMember);
+        recipeNCommentVo.setTotalScore(rank);
         return ResponseEntity.ok(recipeNCommentVo);
     }
     //수정
@@ -218,14 +221,14 @@ public class RecipeController {
     @PostMapping("/api/recipes/{id}/recommend")
     public ResponseEntity<?> recommendRecipe(@PathVariable("id")Long recipeId,
                                              @AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            Long userId = getUserId(userDetails);
-            RankDto rankDto = new RankDto(userId, recipeId);
-            Long totalRecommendation = rankService.recommRecipeVariation(rankDto);
-            return ResponseEntity.ok(totalRecommendation);
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("추천 처리중 오류가 발생했습니다.");
-        }
+            if (userDetails != null) {
+                Long memberId = Long.valueOf(userDetails.getUsername());
+                RankDto rankDto = new RankDto(memberId, recipeId);
+                Long totalRecommendation = rankService.recommRecipeVariation(rankDto);
+                return ResponseEntity.ok(totalRecommendation);
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("로그인을 하셔야 추천 할 수 있습니다.");
+            }
     }
 
 }

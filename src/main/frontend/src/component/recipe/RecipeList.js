@@ -30,11 +30,13 @@ const RecipeList = () => {
     }, [page]);
 
     return (
-        <div>
-            {recipes.map((recipe, index) => (
-                <RecipeItem key={recipe.id} recipe={recipe} navigate={navigate}/>
-            ))}
-            <Pagination currentPage={page} setPage={setPage} />
+        <div className={'flex flex-col min-h-screen container mx-auto mt-10'}>
+            <div className={"flex flex-wrap justify-center gap-4"}>
+                {recipes.map((recipe, index) => (
+                    <RecipeItem key={recipe.id} recipe={recipe} navigate={navigate}/>
+                ))}
+                <Pagination currentPage={page} setPage={setPage} totalPages={totalPages} />
+            </div>
         </div>
     );
 };
@@ -49,15 +51,26 @@ const RecipeItem = ({ recipe, navigate, currentPage }) => {
         return <div>표시할 레시피가 없습니다.</div>;
     } else {
         return (
-            <div>
-                <h3 onClick={handleTitleClick} style={{ cursor: 'pointer' }}>{recipe.title}</h3>
-                <img src={imageUrl} alt={recipe.title} />
-                <div>조회수: {recipe.viewCount}</div>
-                <div>{recipe.nickName}</div>
-                <div>{recipe.writeDate}</div>
+            <div className={"border rounded-lg p-4 w-60 text-center"}>
+                <img onClick={handleTitleClick} src={imageUrl} alt={recipe.title} className={" cursor-pointer w-full h-40 object-cover rounded-t-lg"}/>
+                <div className={"border-t my-2"}></div>
+                <h3 onClick={handleTitleClick}
+                    className={"cursor-pointer mt-2 text-lg font-semibold"}>{recipe.title}</h3>
+                <div>
+
+                    <span className={"text-sm"}>{formatDate(recipe.writeDate)}</span>
+                </div>
+                <div className="flex justify-between items-center mt-2 text-sm">
+                    <span>조회수: {recipe.viewCount}</span>
+                    <span>{recipe.nickName}</span>
+                </div>
             </div>
         );
     }
+};
+const formatDate = (dateString) => {
+    const options = {year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString('ko-KR', options);
 };
 
 const Pagination = ({ currentPage, setPage, totalPages }) => {
@@ -84,7 +97,10 @@ const Pagination = ({ currentPage, setPage, totalPages }) => {
         const pageNumbers = [];
         for (let i = 0; i < totalPages; i++) {
             pageNumbers.push(
-                <button key={i} onClick={() => setPage(i)} disabled={i === currentPage}>
+                <button key={i} onClick={() => setPage(i)} disabled={i === currentPage}
+                        className={`mx-1 px-3 py-2 text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-blue-300 ${
+                            i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-300 hover:bg-gray-400 text-black'
+                        }`}>
                     {i + 1}
                 </button>
             );
@@ -93,10 +109,14 @@ const Pagination = ({ currentPage, setPage, totalPages }) => {
     };
 
     return (
-        <div>
-            <button onClick={handlePrevious}>이전</button>
+        <div className={"flex justify-center items-center mt-auto p-4 border-t border-gray-200 bg-gray-100 w-full"}>
+            <button onClick={handlePrevious}
+            className={"bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-6 rounded mx-2"}
+            >이전</button>
             {renderPageNumbers()}
-            <button onClick={handleNext}>다음</button>
+            <button onClick={handleNext}
+            className={"bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-6 rounded mx-2"}
+            >다음</button>
         </div>
     );
 };

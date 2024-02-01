@@ -22,6 +22,11 @@ import MemberRegistrationForm from "./component/member/MemberRegistrationForm";
 import RecipeList from "./component/recipe/RecipeList";
 import ViewRecipe from "./component/recipe/ViewRecipe";
 import AdminPage from './component/AdminPage';
+import ScoreRecipe from "./component/rank/ScoreRecipe";
+import ViewTotalCountRecipe from "./component/rank/ViewTotalCountRecipe";
+import ScoreMember from "./component/rank/ScoreMember";
+
+
 function App() {
 
     return(
@@ -36,10 +41,14 @@ function App() {
                     <Route path="/api/recipe/:id" element={<ViewRecipe/>} />
                     <Route path='/api/recipe/:id/update' element={<RecipeSave/>} />
                     <Route path="/main" element={<RecipeList/>} />
+                    <Route path="/" element={<RecipeList/>} />
                     <Route path="/admin" element={<ProtectedRoute><ManagePage/></ProtectedRoute>} />
                     <Route path="/admin/members" element={<ProtectedRoute><MemberManagement/></ProtectedRoute>} />
                     <Route path="/admin/recipes" element={<ProtectedRoute><RecipeManagement/></ProtectedRoute>} />
                     <Route path="/admin/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+                    <Route path={"/rank/recipe/recommend"} element={<ScoreRecipe/>}/>
+                    <Route path={"/rank/recipe/totalcount"} element={<ViewTotalCountRecipe/>}/>
+                    <Route path={"/rank/member/recommend"} element={<ScoreMember/>}/>
                 </Routes>
                 </div>
 
