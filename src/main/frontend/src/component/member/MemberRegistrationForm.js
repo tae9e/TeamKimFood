@@ -29,7 +29,7 @@ const MemberRegistrationForm = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('/login/member', memberData);
+            const response = await axios.post('http://localhost:8080/login/member', memberData);
             alert(response.data); // 회원가입 성공 메시지
             navigate('/login'); // 로그인 페이지로 이동
         } catch (error) {

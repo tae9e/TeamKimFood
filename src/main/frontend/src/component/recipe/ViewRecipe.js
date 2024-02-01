@@ -10,9 +10,11 @@ const RecipeView = () => {
     const location = useLocation();
     const fromPage = location.state?.fromPage || 0; // 리스트 페이지에서 전달된 페이지 번호
     const [recommendations, setRecommendations] = useState(0); // 추천 수를 위한 상태
+    const isLoggedIn = true;
     const [comments, setComments] = useState([]);
     const [commentInput, setCommentInput] = useState('');
     const [selectedComment, setSelectedComment] = useState(null);
+
 
     useEffect(() => {
         const loadRecipe = async () => {
