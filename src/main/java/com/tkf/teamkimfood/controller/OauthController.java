@@ -39,7 +39,6 @@ public class OauthController {
     public OauthController(OAuthLoginService oAuthLoginService, KakaoApiClient kakaoApiClient, AuthTokensGenerator authTokensGenerator, MemberService memberService) {
         this.kakaoApiClient = kakaoApiClient;
         this.oAuthLoginService = oAuthLoginService;
-
         this.authTokensGenerator = authTokensGenerator;
         this.memberService = memberService;
     }

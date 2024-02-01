@@ -34,8 +34,6 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final QMember member;
 
-    public final StringPath nickname = createString("nickname");
-
     public final QRecipe recipe;
 
     public QComment(String variable) {
