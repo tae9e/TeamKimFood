@@ -325,6 +325,7 @@ const RecipeForm = () => {
                             type="radio"
                             name="situation"
                             value="TOGETHER"
+                            checked={recipeForm.situation === 'TOGETHER'}
                             onChange={handleInputChange}
                         />
                         같이
@@ -349,6 +350,7 @@ const RecipeForm = () => {
                             type="radio"
                             name="foodStuff"
                             value="EGG"
+                            checked={recipeForm.foodStuff === 'EGG'}
                             onChange={handleInputChange}
                         />
                         계란
@@ -373,6 +375,7 @@ const RecipeForm = () => {
                             type="radio"
                             name="foodNationType"
                             value="CHINESE"
+                            checked={recipeForm.foodNationType === 'CHINESE'}
                             onChange={handleInputChange}
                         />
                         중식
@@ -382,6 +385,7 @@ const RecipeForm = () => {
                             type="radio"
                             name="foodNationType"
                             value="JAPANESE"
+                            checked={recipeForm.foodNationType === 'JAPANESE'}
                             onChange={handleInputChange}
                         />
                         일식
@@ -391,6 +395,7 @@ const RecipeForm = () => {
                             type="radio"
                             name="foodNationType"
                             value="ETCWESTERN"
+                            checked={recipeForm.foodNationType === 'ETCWESTERN'}
                             onChange={handleInputChange}
                         />
                         양식
@@ -400,6 +405,7 @@ const RecipeForm = () => {
                             type="radio"
                             name="foodNationType"
                             value="ETC"
+                            checked={recipeForm.foodNationType === 'ETC'}
                             onChange={handleInputChange}
                         />
                         기타
@@ -464,11 +470,12 @@ const RecipeForm = () => {
                             </div>
                         ))}
                         {isEditMode && (
-                            <input type="file" multiple onChange={(e) => handleNewImageChange(e, pairIndex)}/>
+
+                                <input type="file" multiple onChange={(e) => handleNewImageChange(e, pairIndex)}/>
                         )}
                         {detail.explanations.map((explanation, index) => (
                             <div key={index}>
-                                <legend className={'block text-gray-700 text-sm font-bold mb-2'}>조리과정 설명:</legend>
+                            <legend className={'block text-gray-700 text-sm font-bold mb-2'}>조리과정 설명:</legend>
                                 <input
                                     type="text"
                                     value={explanation}
