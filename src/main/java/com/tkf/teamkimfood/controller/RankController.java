@@ -21,14 +21,14 @@ public class RankController {
     private final RecipeService recipeService;
 
     //추천수 기반 랭크 조회(레시피)
-    @GetMapping("/api/rank/recipeRecommend")
+    @GetMapping("/api/rank/recipe/recommend")
     public Page<MainpageRecipeDto> seeRecipeOrderByTotalRecommend(@RequestParam(defaultValue = "0")int page,
                                                                   @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return recipeService.getAllOrderByRankPoint(pageable);
     }
     //조회수 기반 랭크 조회(레시피)
-    @GetMapping("/api/recipe/recipeTotalView")
+    @GetMapping("/api/rank/recipe/totalView")
     public Page<MainpageRecipeDto> seeRecipeOrderByViewCount(@RequestParam(defaultValue = "0")int page,
                                                              @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);

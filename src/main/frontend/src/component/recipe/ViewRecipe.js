@@ -35,9 +35,9 @@ const RecipeView = () => {
     const renderIngredientsAndDosages = () => {
         if (recipe && recipe.oneRecipeIngDoVos) {
             return recipe.oneRecipeIngDoVos.map((item, index) => (
-                <div key={index}>
-                    <p>재료 : {item.ingredients}</p>
-                    <p>용량 : {item.dosage}</p>
+                <div key={index} className={"min-w-[100px]"}>
+                    <p className={"text-lg"}>재료 : {item.ingredients}</p>
+                    <p className={"text-lg"}>용량 : {item.dosage}</p>
                 </div>
             ));
         }
@@ -47,9 +47,12 @@ const RecipeView = () => {
     const renderImagesAndDescriptions = () => {
         if (recipe && recipe.oneRecipeImgVos) {
             return recipe.oneRecipeImgVos.map((img, index) => (
-                <div key={index}>
-                    <img src={img.imgUrl} alt={`Recipe Image ${index}`} />
-                    조리설명 : {img.explanation}
+                <div key={index} className={"flex my-4 border-b border-gray-200 pb-4"}>
+                    <img src={img.imgUrl} alt={`Recipe Image ${index}`} className={"w-48 h-48 object-cover"}/>
+                    <div className="ml-4">
+                        <p className="text-lg font-semibold">조리설명:</p>
+                        <p className="text-lg">{img.explanation}</p>
+                    </div>
                 </div>
             ));
         }
@@ -60,11 +63,15 @@ const RecipeView = () => {
     }
     const displayDate = () => {
         if (recipe && recipe.oneRecipeDto.writeDate === recipe.oneRecipeDto.correctionDate) {
-            return <p>작성일: {recipe.oneRecipeDto.writeDate}</p>;
+            return <p>작성일: {formatDate(recipe.oneRecipeDto.writeDate)}</p>;
         } else if (recipe) {
-            return <p>수정일: {recipe.oneRecipeDto.correctionDate}</p>;
+            return <p>수정일: {formatDate(recipe.oneRecipeDto.correctionDate)}</p>;
         }
         return null;
+    };
+    const formatDate = (dateString) => {
+        const options = {year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+        return new Date(dateString).toLocaleDateString('ko-KR', options);
     };
 
     const isAuthor = recipe.equalMember; // 현재 사용자가 레시피 작성자인지 확인
@@ -220,7 +227,9 @@ const RecipeView = () => {
                     <p>국가별 : {recipe.oneRecipeDto.foodNationType}</p>
                 </div>
                 <div className="border-t pt-4 mt-4">
-                    {renderIngredientsAndDosages()}
+                    <div className={"flex gap-4 flex-wrap"}>
+                     {renderIngredientsAndDosages()}
+                    </div>
                 </div>
                 <div className="border-t pt-4 mt-4">
                     {renderImagesAndDescriptions()}

@@ -13,7 +13,7 @@ function ScoreRecipe(){
 
     const fetchRecipes = async (currentPage) => {
         try {
-            const res = await axios.get(`/api/recipe/recipeRecommend?page=${currentPage}&size=10`);
+            const res = await axios.get(`http://localhost:8080/api/rank/recipe/recommend?page=${currentPage}&size=10`);
             setInputData(res.data.content);
             setTotalPages(res.data.totalPages);
         } catch (e) {

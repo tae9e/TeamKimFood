@@ -21,7 +21,7 @@ function ViewTotalCountRecipe(){
 
     const fetchRecipes = async (currentPage) => {
         try {
-            const res = await axios.get(`/api/recipe/recipeTotalView?page=${currentPage}&size=10`);
+            const res = await axios.get(`http://localhost:8080/api/rank/recipe/totalView?page=${currentPage}&size=10`);
             setInputData(res.data.content);
             setTotalPages(res.data.totalPages);
         } catch (e) {
