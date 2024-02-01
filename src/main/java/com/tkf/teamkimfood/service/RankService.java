@@ -12,6 +12,7 @@ import com.tkf.teamkimfood.repository.recipe.RecipeRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class RankService {
     //조회수 관련은 RecipeService에서 했습니다.
     //recipe 추천수에따른 조회, 추천수 증가 감소 로직
@@ -37,31 +39,44 @@ public class RankService {
     private final RecipeRepository recipeRepository;
 
     //랭크 생성후 추천 증감시키는 로직
+    @Transactional
     public Long recommRecipeVariation(RankDto rankDto) {
         Member member = memberRepository.findById(rankDto.getMemberId()).orElseThrow(EntityNotFoundException::new);
         Recipe recipe = recipeRepository.findById(rankDto.getRecipeId()).orElseThrow(EntityNotFoundException::new);
 
+        // Member와 Recipe를 기반으로 기존 Rank 찾기
         Optional<Rank> existingRank = rankRepository.findByMemberAndRecipe(member, recipe);
-        Rank rank = Rank.builder().build();
-        rank.setMember(member);
-        rank.setRecipe(recipe);
 
-        if (existingRank.isEmpty()) {
-            Rank saved = rankRepository.save(rank);//reue로 생성. 애초에 추천을 위해 onClick함
-            rankDto.setId(saved.getId());
-            rankDto.setRecipeRecommendation(saved.isRecipeRecommendation());//디폴트값이 true기에
-        } else {
-            //추천을 주기 위해서
-            if (!rankDto.isRecipeRecommendation()) {
-                rankDto.setRecipeRecommendation(true);
-            } else {
-                rankDto.setRecipeRecommendation(false);
-            }
-        }
-        rank.recipeRecommend(rankDto);//추천수 증감시킴
+        Rank rank = getRank(existingRank, member, recipe);
+
+        // Rank 객체 저장
         rankRepository.save(rank);
-        return rankQueryRepository.recommendationTotal(rank.getId());
+
+        Long total = rankQueryRepository.recommendationTotal(rankDto.getRecipeId());
+        log.info("갯수 : "+total);
+        rank.setRecipeRecoTotal(total);
+        rankRepository.save(rank);
+        return rank.getRecipeRecoTotal();
     }
+
+    private static Rank getRank(Optional<Rank> existingRank, Member member, Recipe recipe) {
+        Rank rank;
+        if (existingRank.isEmpty()) {
+            // 새 Rank 객체 생성
+            rank = new Rank();
+            rank.setMember(member);
+            rank.setRecipe(recipe);
+            // 처음 추천하는 경우, recipeRecommend를 true로 설정
+            rank.setRecipeRecommendation(true);
+        } else {
+            // 기존 Rank 객체 사용
+            rank = existingRank.get();
+            // 추천 상태를 반대로 변경 (true -> false, false -> true)
+            rank.setRecipeRecommendation(!rank.isRecipeRecommendation());
+        }
+        return rank;
+    }
+
     //멤버랭킹 추천수 총합으로
     //개인 추천수 총합
     public List<MemberScoreTotalDto> memberScoreTotal() {

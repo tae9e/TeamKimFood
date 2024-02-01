@@ -12,7 +12,7 @@ public class RankDto {
     private Long id;
     private RankSearchStatus rankSearchStatus;
     //레시피 추천 관련 유저가 가지고 있는 값
-    private boolean recipeRecommendation = false;
+    private boolean recipeRecommendation = true;
     //유저 추천 관련 해당 유저에 대한 값
     private boolean userRecommendation = false;
     private Long memberId;

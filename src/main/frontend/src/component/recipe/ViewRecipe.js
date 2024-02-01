@@ -9,6 +9,7 @@ const RecipeView = () => {
     const authToken = localStorage.getItem('token'); // 현재 로그인한 사용자의 ID
     const location = useLocation();
     const fromPage = location.state?.fromPage || 0; // 리스트 페이지에서 전달된 페이지 번호
+    const [recommendations, setRecommendations] = useState(0); // 추천 수를 위한 상태
 
     useEffect(() => {
         const loadRecipe = async () => {
@@ -97,6 +98,23 @@ const RecipeView = () => {
     const navigateBackToList = () => {
         navigate(`/main?page=${fromPage}`);
     };
+    const handleRecommend = async () => {
+        if (!authToken) {
+            alert('로그인이 필요한 기능입니다.');
+            return; // 함수 실행 중단
+        }
+
+        try {
+            const response = await axios.post(`http://localhost:8080/api/recipes/${id}/recommend`, null, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+            setRecommendations(response.data); // 서버로부터 받은 추천 수를 상태에 반영
+        } catch (error) {
+            console.error('추천 처리중 오류가 발생했습니다.', error);
+        }
+    };
 
 
     if (!recipe) {
@@ -137,7 +155,10 @@ const RecipeView = () => {
                 </div>
                 {/*추천버튼*/}
                 <div className="border-t pt-4 mt-4">
-                    추천버튼
+                    <button type="button" onClick={handleRecommend}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        {recommendations} 추천하기
+                    </button>
                 </div>
                 {/*댓글*/}
                 <div>

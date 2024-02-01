@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "ranks")
 @Getter
 public class Rank {
@@ -65,6 +65,15 @@ public class Rank {
             this.recipeRecoTotal -= 1;
         }
     }
+
+    public void setRecipeRecommendation(boolean recipeRecommendation) {
+        this.recipeRecommendation = recipeRecommendation;
+    }
+
+    public void setRecipeRecoTotal(long recipeRecoTotal) {
+        this.recipeRecoTotal = recipeRecoTotal;
+    }
+
     //멤버 추천수 저장
     public void memberRecommend(RankDto rankDto) {
         this.userRecommendation = rankDto.isUserRecommendation();
