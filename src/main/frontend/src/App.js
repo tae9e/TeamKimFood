@@ -1,6 +1,8 @@
 
 import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './component/Css/Common.css';
 
 // import BoardList from './component/BoardList';
 import LoginForm from './component/LoginForm';

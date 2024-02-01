@@ -34,47 +34,47 @@ function LoginForm() {
         }
     };
 
-    return (
-        <section className="main">
-            <div className="m_login signin">
-                <div className="log_box flex flex-col items-center">
-                    <div className="mb-4 mt-4">
-                        <input
-                            type="text"
-                            placeholder="이메일"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-64 py-2 px-3 rounded-md border" />
-                    </div>
-                    <div className="mb-4">
-                        <input
-                            type="password"
-                            placeholder="비밀번호"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-64 py-2 px-3 rounded-md border" />
-                    </div>
-                    <div className="mb-4">
-                        <button
-                            onClick={submitClick}
-                            className="w-64 bg-black hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
-                            로그인
-                        </button>
-                    </div>
-                    {errorMessage && (
-                        <div className="text-red-500">
-                            {errorMessage}
+     return (
+            <section className="main">
+                <div className="m_login signin">
+                    <div className="log_box flex flex-col items-center">
+                        <div className="mb-4 mt-4">
+                            <input
+                                type="text"
+                                placeholder="이메일"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-64 py-2 px-3 rounded-md border" />
                         </div>
-                    )}
-                    <div className="mt-0.1">
-                        <a href={KAKAO_AUTH_URL} className="kakaobtn w-64 h-10 rounded-lg flex items-center justify-center text-lg">
-                            <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />
-                        </a>
+                        <div className="mb-4">
+                            <input
+                                type="password"
+                                placeholder="비밀번호"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-64 py-2 px-3 rounded-md border" />
+                        </div>
+                        <div className="mb-4">
+                            <button
+                                onClick={submitClick}
+                                className="w-64 bg-black hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
+                                로그인
+                            </button>
+                        </div>
+                        {errorMessage && (
+                            <div className="text-red-500">
+                                {errorMessage}
+                            </div>
+                        )}
+                        <div className="mt-0.1">
+                            <a href={KAKAO_AUTH_URL} className="kakaobtn w-64 h-10 rounded-lg flex items-center justify-center text-lg">
+                                <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-    );
-}
+            </section>
+        );
+    }
 
-export default LoginForm;
+    export default LoginForm;

@@ -148,7 +148,7 @@ public class RecipeController {
     public ResponseEntity<Long> updateRecipe(@AuthenticationPrincipal UserDetails userDetails,
                                              @PathVariable("recipeId")Long recipeId,
                                              @RequestParam("recipeRequest") String recipeRequest,
-                                             @RequestParam("foodImgFileList") MultipartFile[] foodImgFileList,
+                                             @RequestParam("newfoodImgFileList") MultipartFile[] foodImgFileList,
                                              @RequestParam("repImageIndex") int repImageIndex) {
         try {
             // JSON 문자열을 RecipeRequestVo 객체로 변환
@@ -188,11 +188,15 @@ public class RecipeController {
     //수정할 레시피 내용 가져오기
     @GetMapping("/api/recipes/{id}")
     public ResponseEntity<?> getOneRecipeForUpdate(@PathVariable("id")Long recipeId, @AuthenticationPrincipal UserDetails userDetails) {
-
+        OneRecipeDto oneRecipeDto = recipeService.viewOne(recipeId);
         Long id = Long.valueOf(userDetails.getUsername());
         OneRecipeForUpdateVo recipe = recipeService.findOneByEmail(recipeId, id);
+        List<OneRecipeImgVo> oneRecipeImgVos = recipeService.viewOneForOne(recipeId);
+        List<OneRecipeIngDoVo> oneForOne = recipeService.getOneForOne(recipeId);
+        CommentDto commentDto = new CommentDto();//필요없는애
+        RecipeNCommentVo recipeNCommentVo = new RecipeNCommentVo(oneRecipeDto, commentDto, oneRecipeImgVos, oneForOne);
         if (recipe != null) {
-            return ResponseEntity.ok(recipe);
+            return ResponseEntity.ok(recipeNCommentVo);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("레시피 정보를 가져오지 못했습니다. 본인이 작성한 레시피가 맞는지 확인해주세요");
         }
