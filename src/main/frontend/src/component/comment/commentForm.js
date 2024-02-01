@@ -195,7 +195,6 @@ const RecipeView = ({ match }) => {
         }
     };
 
-
     return (
         <div className={'container mx-auto mt-10'}>
             <div className={'border p-5 rounded-lg'}>
