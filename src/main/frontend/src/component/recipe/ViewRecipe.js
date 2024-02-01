@@ -9,7 +9,6 @@ const RecipeView = () => {
     const authToken = localStorage.getItem('token'); // 현재 로그인한 사용자의 ID
     const location = useLocation();
     const fromPage = location.state?.fromPage || 0; // 리스트 페이지에서 전달된 페이지 번호
-    const [recommendations, setRecommendations] = useState(0); // 추천 수를 위한 상태
     const [comments, setComments] = useState([]);
     const [commentInput, setCommentInput] = useState('');
     const [selectedComment, setSelectedComment] = useState(null);
@@ -131,19 +130,19 @@ const RecipeView = () => {
         }
     };
 
-    useEffect(() => {
-        const loadComments = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8080/comments`);
-                setComments(response.data);
-            } catch (error) {
-                console.error('댓글을 불러오는 데 실패했습니다.', error);
-            }
-        };
-
-        loadComments();
-    }, []);
-
+    // useEffect(() => {
+    //     const loadComments = async () => {
+    //         try {
+    //             const response = await axios.get(`http://localhost:8080/comments`);
+    //             setComments(response.data);
+    //         } catch (error) {
+    //             console.error('댓글을 불러오는 데 실패했습니다.', error);
+    //         }
+    //     };
+    //
+    //     loadComments();
+    // }, []);
+    const isLoggedIn = true;
     // 댓글 작성
     const saveComment = async () => {
         try {
@@ -204,10 +203,6 @@ const RecipeView = () => {
         }
     };
 
-
-    if (!recipe) {
-        return <div>Loading...</div>;
-    }
     return (
         <div className={'container mx-auto mt-10'}>
             <div className={'border p-5 rounded-lg'}>
