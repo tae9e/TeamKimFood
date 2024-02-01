@@ -9,6 +9,10 @@ const RecipeView = () => {
     const authToken = localStorage.getItem('token'); // 현재 로그인한 사용자의 ID
     const location = useLocation();
     const fromPage = location.state?.fromPage || 0; // 리스트 페이지에서 전달된 페이지 번호
+    const [recommendations, setRecommendations] = useState(0); // 추천 수를 위한 상태
+    const [comments, setComments] = useState([]);
+    const [commentInput, setCommentInput] = useState('');
+    const [selectedComment, setSelectedComment] = useState(null);
 
     useEffect(() => {
         const loadRecipe = async () => {
@@ -69,9 +73,9 @@ const RecipeView = () => {
             return (
                 <>
                     <button onClick={() => navigate(`/api/recipe/${id}/update`)}
-                    className={'bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'}>수정</button>
+                            className={'bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'}>수정</button>
                     <button onClick={handleDelete}
-                    className={'bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'}>삭제</button>
+                            className={'bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'}>삭제</button>
                 </>
             );
         }
@@ -97,81 +101,102 @@ const RecipeView = () => {
     const navigateBackToList = () => {
         navigate(`/main?page=${fromPage}`);
     };
+    const handleRecommend = async () => {
+        if (!authToken) {
+            alert('로그인이 필요한 기능입니다.');
+            return; // 함수 실행 중단
+        }
 
-    //로그인 확인 후 댓글 작성
-    const isLoggedIn = true;
+        try {
+            const response = await axios.post(`http://localhost:8080/api/recipes/${id}/recommend`, null, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+            // setRecommendations(response.data); // 서버로부터 받은 추천 수를 상태에 반영
+            setRecipe(prevRecipe => ({
+                ...prevRecipe,
+                totalScore: response.data
+            }));
+        } catch (error) {
+            console.error('추천 처리중 오류가 발생했습니다.', error);
+            alert('로그인이 필요한 기능입니다.')
+        }
+    };
 
+    useEffect(() => {
+        const loadComments = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/comments`);
+                setComments(response.data);
+            } catch (error) {
+                console.error('댓글을 불러오는 데 실패했습니다.', error);
+            }
+        };
+
+        loadComments();
+    }, []);
+
+    // 댓글 작성
     const saveComment = async () => {
         try {
             if (!isLoggedIn) {
-                alert("로그인 후 댓글을 작성할 수 있습니다.");
+                alert("로그인 후에 댓글을 작성할 수 있습니다.");
                 return;
             }
-            const response = await axios.get(`/api/recipes/comments/${commentId}`, {
-                headers: {
-                    'Authorization': `Bearer ${authToken}`
-                }
+            // 댓글 저장 API 호출
+            const response = await axios.post("http://localhost:8080/comments", {
+                content: commentInput,
+                // 필요에 따라 다른 데이터도 전달 가능
             });
-            const commentData = response.data;
-            setCommentForm({
-                content: commentData.content,
-                nickname: commentData.nickname,
-                recipeId: commentData.recipeId,
-                commentDate: commentData.commentDate
-            })
+            const savedComment = response.data;
+            // 저장된 댓글을 화면에 추가
+            setComments([...comments, savedComment]);
+            // 입력창 초기화
+            setCommentInput('');
         } catch (error) {
-            console.error("알 수 없는 오류로 댓글을 달 수 없습니다.", error);
-        };
-        commentData();
-    }
-
-    //댓글 수정
-    const updateComment = async (commentId, updatedContent) => {
-        try {
-            // 로그인 확인
-            if (!isLoggedIn) {
-                alert("로그인 후 댓글을 수정할 수 있습니다.");
-                return;
-            }
-
-            // 댓글 수정 요청
-            await axios.put(`/api/comments/${commentId}`, {
-                content: updatedContent
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${authToken}`
-                }
-            });
-
-            // 필요한 작업 수행 (예: 수정된 댓글 화면 갱신)
-
-        } catch (error) {
-            console.error("알 수 없는 오류로 댓글을 수정할 수 없습니다.", error);
+            console.error("댓글을 작성하는 중 에러 발생:", error);
         }
     };
 
-    //댓글 삭제
+    // 댓글 수정
+    const updateComment = async (commentId) => {
+        try {
+            if (!isLoggedIn) {
+                alert("로그인 후에 댓글을 수정할 수 있습니다.");
+                return;
+            }
+            // 댓글 수정 API 호출
+            const updatedContent = prompt("댓글을 수정해주세요.", selectedComment.content);
+            if (updatedContent) {
+                await axios.put(`http://localhost:8080/comments/${commentId}`, {
+                    content: updatedContent
+                });
+                // 댓글 목록 다시 불러오기
+                const response = await axios.get(`http://localhost:8080/comments`);
+                setComments(response.data);
+            }
+        } catch (error) {
+            console.error("댓글을 수정하는 중 에러 발생:", error);
+        }
+    };
+
+    // 댓글 삭제
     const deleteComment = async (commentId) => {
         try {
-            // 로그인 확인
             if (!isLoggedIn) {
-                alert("로그인 후 댓글을 삭제할 수 있습니다.");
+                alert("로그인 후에 댓글을 삭제할 수 있습니다.");
                 return;
             }
-
-            // 댓글 삭제 요청
-            await axios.delete(`/api/comments/${commentId}`, {
-                headers: {
-                    'Authorization': `Bearer ${authToken}`
-                }
-            });
-
-            // 필요한 작업 수행 (예: 삭제된 댓글 화면 갱신)
-
+            // 댓글 삭제 API 호출
+            await axios.delete(`http://localhost:8080/comments/${commentId}`);
+            // 삭제된 댓글을 화면에서 제거
+            setComments(comments.filter(comment => comment.id !== commentId));
         } catch (error) {
-            console.error("알 수 없는 오류로 댓글을 삭제할 수 없습니다.", error);
+            console.error("댓글을 삭제하는 중 에러 발생:", error);
         }
     };
+
 
     if (!recipe) {
         return <div>Loading...</div>;
@@ -212,22 +237,55 @@ const RecipeView = () => {
                 </div>
                 {/*추천버튼*/}
                 <div className="border-t pt-4 mt-4">
-                    추천버튼
-                </div>
-                {/*댓글*/}
-                <div className="setCommentForm">
-                    {/* 로그인 상태에 따라 다른 메시지 표시 */}
-                    <input type="textarea" placeholder={isLoggedIn ? "댓글을 작성해주세요" : "로그인 후에 댓글을 쓸 수 있습니다."}/>
-                </div>
-                {/* 댓글 삭제 버튼 */}
-                <div className="flex justify-end mt-4">
-                    <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={() => deleteComment(commentId)}
-                    >
-                        댓글 삭제
+                    <button type="button" onClick={handleRecommend}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        {recipe.totalScore} 추천하기
                     </button>
                 </div>
+                {/*댓글*/}
+                <div className={'container mx-auto mt-10'}>
+                    <div className={'border p-5 rounded-lg'}>
+                        {/* 이전 코드는 여기에 */}
+                        {/* 댓글 작성 폼 */}
+                        <div className="setCommentForm">
+                            {/* 로그인 상태에 따라 다른 메시지 표시 */}
+                            <input type="textarea" placeholder={isLoggedIn ? "댓글을 작성해주세요" : "로그인 후에 댓글을 쓸 수 있습니다."}
+                                   value={commentInput} onChange={(e) => setCommentInput(e.target.value)}/>
+                            {/* 댓글 작성 버튼 */}
+                            <div className="flex justify-end mt-4">
+                                <button
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                                    onClick={saveComment}
+                                >
+                                    댓글 작성
+                                </button>
+                            </div>
+                        </div>
+                        {/* 댓글 목록 */}
+                        <div>
+                            {comments.map(comment => (
+                                <div key={comment.id}>
+                                    <p>{comment.content}</p>
+                                    {/* 로그인한 사용자가 작성한 댓글에만 수정 및 삭제 버튼 표시 */}
+                                    {isLoggedIn && comment.authorId === authToken && (
+                                        <>
+                                            <button className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2"
+                                                    onClick={() => {
+                                                        setSelectedComment(comment);
+                                                        updateComment(comment.id);
+                                                    }}>수정</button>
+                                            <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                                    onClick={() => deleteComment(comment.id)}>삭제</button>
+                                        </>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    </div>
+
+
+
             </div>
         </div>
     );
