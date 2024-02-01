@@ -1,28 +1,32 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Link} from "react-router-dom";
 
-function ScoreRecipe(){
+function ScoreMember(){
     const [inputData, setInputData] = useState([]);
 
-    const fetchRecipes = async () => {
-        try {
-            const res = await axios.get(`/api/rank/users`);
-            setInputData(res.data.content);
-        } catch (e) {
-            console.error(e.message);
-        }
-    };
+    useEffect(()=>{
+        const fetchRecipes = async () => {
+            try {
+                const res = await axios.get(`http://localhost:8080/api/rank/users`);
+                setInputData(res.data);
+            } catch (e) {
+                console.error(e.message);
+            }
+        };
+        fetchRecipes();
+    }, []);
+
 
     return(
         <div>
             <h3>유저 랭킹</h3>
             <div>
-                <table className='listTable'>
+                <table >
                     <tbody>
                     <tr>
-                        <td className='listTableIndex th'>index</td>
-                        <td className='listTableTitle th'>title</td>
+                        <td >닉네임</td>
+                        <td >총추천수</td>
                     </tr>
                     {inputData.length > 0 ? (
                         inputData.map(rowData => (
@@ -37,8 +41,8 @@ function ScoreRecipe(){
                         ))
                     ) : (
                         <tr>
-                            <td className='listTableIndex'></td>
-                            <td className='listTableTitle noData'>충분한 데이터가 없습니다.</td>
+                            <td ></td>
+                            <td >충분한 데이터가 없습니다.</td>
                         </tr>
                     )}
                     </tbody>
@@ -52,4 +56,4 @@ function ScoreRecipe(){
         </div>
     );
 }
-export default ScoreRecipe;
+export default ScoreMember;
