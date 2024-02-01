@@ -17,8 +17,6 @@ input::-ms-clear {display:none}
 button {border:0 none;background-color:transparent;cursor:pointer}
 body {background:#fff;-webkit-text-size-adjust:none}
 body,th,td,input,select,textarea,button {font-size:14px;line-height:1.5;font-family:'SpoqaHanSans', sans-serif;color:#666}
-a {color:#333;text-decoration:none}
-a:active, a:hover {text-decoration:underline}
 a:active {background-color:transparent}z
                                        address,caption,cite,code,dfn,em,var {font-style:normal;font-weight:normal}
 input:checked[type='checkbox']{background-color:#666; -webkit-appearance:checkbox}
