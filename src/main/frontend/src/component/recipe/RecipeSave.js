@@ -19,41 +19,31 @@ const RecipeForm = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate();
     const authToken = localStorage.getItem('token');
+    const [recipe, setRecipe] = useState(null);
 
     useEffect(() => {
         if (id) {
-            setIsEditMode(true); // URL에 recipeId가 있으면 수정 모드로 설정
-            const RecipeData = async () => {
-                try {
-                    const response = await axios.get(`http://localhost:8080/api/recipes/${id}`, {
-                        headers: {
-                            'Authorization': `Bearer ${authToken}`
-                        }
-                    });
-                    const recipeData = response.data;
+            setIsEditMode(true);
+            // 기존 레시피 데이터 불러오기
+            axios.get(`http://localhost:8080/api/recipes/${id}`, { headers: { 'Authorization': `Bearer ${authToken}` }})
+                .then(response => {
+                    const recipeData = response.data.oneRecipeDto;
+                    const imgData = response.data.oneRecipeImgVos;
+                    const ingDoData = response.data.oneRecipeIngDoVos;
+
                     setRecipeForm({
                         title: recipeData.title,
                         content: recipeData.content,
                         situation: recipeData.situation,
                         foodStuff: recipeData.foodStuff,
                         foodNationType: recipeData.foodNationType,
-                        details: recipeData.details.map(detail => ({
-                            ingredients: detail.ingredients,
-                            dosage: detail.dosage
-                        })),
-                        recips: recipeData.recips.map(recip => ({
-                            explanations: recip.explanations,
-                            imgFiles: recip.imgFiles.map(imgFile => imgFile.imgUrl) // imgUrl을 사용
-                        }))
+                        details: ingDoData.map(item => ({ ingredients: [item.ingredients], dosage: [item.dosage] })),
+                        recips: imgData.map(item => ({ explanations: [item.explanation], imgFiles: [item.imgUrl] })),
                     });
-                    console.log(recipeData);
-                } catch (error) {
-                    console.error("레시피 불러오기 실패", error);
-                }
-            };
-            RecipeData();
+                })
+                .catch(error => console.error("레시피 불러오기 실패", error));
         }
-    }, [id]);
+    }, [id, authToken]);
     const handleNewImageChange = (e, pairIndex) => {
         // 새 이미지 파일을 newImages 상태에 추가
         const files = Array.from(e.target.files);
@@ -67,13 +57,19 @@ const RecipeForm = () => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = (readEvent) => {
+            reader.onloadend = () => {
                 setRecipeForm(prevForm => {
                     const updatedRecips = [...prevForm.recips];
-                    updatedRecips[pairIndex].imgFiles[index] = {
-                        dataUrl: readEvent.target.result,
-                        originalName: file.name // 파일의 원래 이름 저장
+                    const updatedImgFiles = [...updatedRecips[pairIndex].imgFiles];
+
+                    // 파일 데이터와 원래 이름을 저장
+                    updatedImgFiles[index] = {
+                        dataUrl: reader.result,
+                        originalName: file.name
                     };
+
+                    updatedRecips[pairIndex].imgFiles = updatedImgFiles;
+
                     return {...prevForm, recips: updatedRecips};
                 });
             };
@@ -257,15 +253,19 @@ const RecipeForm = () => {
 
         });
         try {
-            const response = await axios.put(`/api/recipes/${recipeId}`, formData, {
+            const response = await axios.put(`/api/recipes/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${authToken}`
                 },
             });
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
 
             if (response.status === 200) {
                 console.log('레시피가 성공적으로 수정되었습니다.');
-                navigate(`/api/recipe/${recipeId}`);
+                navigate(`/api/recipe/${id}`);
             } else {
                 console.error('레시피 수정에 실패했습니다.');
             }
@@ -455,7 +455,7 @@ const RecipeForm = () => {
                                      style={{maxWidth: '100px', maxHeight: '100px'}}/>
 
 
-                                <input type="file" onChange={(e) => handleImageChange(e, pairIndex, index)}/>
+                                {!isEditMode &&(<input type="file" onChange={(e) => handleImageChange(e, pairIndex, index)}/>)}
                                 <input
                                     type="checkbox"
                                     checked={repImageIndex && repImageIndex.pairIndex === pairIndex && repImageIndex.index === index}

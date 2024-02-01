@@ -131,7 +131,7 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 )
                 .from(recipe)
                 .join(recipe.member, member)
-                .join(recipe.foodImgs, foodImg)
+//                .join(recipe.foodImgs, foodImg)
                 .join(recipe.recipeCategory, recipeCategory)
                 .where(recipe.id.eq(recipeId))
                 .fetchOne();
@@ -339,31 +339,6 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 .where(recipe.id.eq(recipeId))
                 .where(recipe.member.id.eq(userId))
                 .fetchOne();
-        List<OneRecipeImgVo> addImgNExp = queryFactory.select(
-                        new QOneRecipeImgVo(
-                                foodImg.imgUrl,
-                                foodImg.explanation
-                        )
-                )
-                .from(recipe)
-                .join(recipe.foodImgs, foodImg)
-                .where(recipe.id.eq(recipeId))
-                .where(recipe.member.id.eq(userId))
-                .fetch();
-        List<OneRecipeIngDoVo> oneRecipeIngDoVos = queryFactory.select(
-                        new QOneRecipeIngDoVo(
-                                recipeDetail.ingredients,
-                                recipeDetail.dosage
-                        )
-                )
-                .from(recipe)
-                .join(recipe.recipeDetails, recipeDetail)
-                .where(recipe.id.eq(recipeId))
-                .where(recipe.member.id.eq(userId))
-                .fetch();
-        assert oneRecipeForUpdateVo != null;
-        oneRecipeForUpdateVo.insertRecipes(addImgNExp);
-        oneRecipeForUpdateVo.insertIngreDosage(oneRecipeIngDoVos);
         return oneRecipeForUpdateVo;
     }
 

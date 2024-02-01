@@ -16,17 +16,13 @@ public class OneRecipeForUpdateVo {
     private LocalDateTime writeDate;
     private LocalDateTime correctionDate;
 
-    private List<String> imgUrls;
 
     private String nickName;
     //용법
-    private List<String> ingredients;
-    //용량
-    private List<String> dosage;
     private String situation;//상황 : 혼밥,연인, 가족 등등
     private String foodStuff;//음식재료 : 육류 어류 등등
     private String foodNationType;//음식타입 : 한식 중식 일식 등
-    private List<String> explanations;
+
 
     //1개 조회용
     @QueryProjection
@@ -42,18 +38,5 @@ public class OneRecipeForUpdateVo {
         this.foodStuff = foodStuff;
         this.foodNationType = foodNationType;
         this.memberId = memberId;
-    }
-
-    public void insertRecipes(List<OneRecipeImgVo> oneRecipeImgVos) {
-        oneRecipeImgVos.forEach(oiv->{
-            this.imgUrls.add(oiv.getImgUrl());
-            this.explanations.add(oiv.getExplanation());
-        });
-    }
-    public void insertIngreDosage(List<OneRecipeIngDoVo> oneRecipeIngDoVos) {
-        oneRecipeIngDoVos.forEach(oriv->{
-            this.ingredients.add(oriv.getIngredients());
-            this.dosage.add(oriv.getDosage());
-        });
     }
 }
