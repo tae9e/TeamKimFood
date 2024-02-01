@@ -49,8 +49,8 @@ public class Comment {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
-    @OneToMany
-    private List<Comment> comments = new ArrayList<>();
+//    @OneToMany
+//    private List<Comment> comments = new ArrayList<>();
 
     //코멘트 데이터 넣을 때
     @Builder

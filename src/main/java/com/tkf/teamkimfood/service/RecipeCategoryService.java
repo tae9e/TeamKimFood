@@ -38,22 +38,23 @@ public class RecipeCategoryService {
 
     //설문조사 LIST 불러오기
     @Transactional(readOnly = true)
-    public List<RecipeCategoryDto> getSurveyResults(String email) {
+    public RecipeCategoryDto getSurveyResults(String email) {
         Optional<Member> memberOptional = memberRepository.findByEmail(email);
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
-            List<RecipeCategory> recipeCategoryList = recipeCategoryRepository.findByMember(member);
+            RecipeCategory recipeCategory = recipeCategoryRepository.findByMember(member);
+            RecipeCategoryDto recipeCategoryDto = new RecipeCategoryDto();
+//            RecipeCategoryDto recipeCategoryDto = new RecipeCategoryDto();
+                if(recipeCategory == null){
+                    return null;
+                }else {
 
-            List<RecipeCategoryDto> recipeCategoryDtos = new ArrayList<>();
-            for (RecipeCategory category : recipeCategoryList) {
-                RecipeCategoryDto recipeCategoryDto = new RecipeCategoryDto();
-                recipeCategoryDto.setSituation(category.getSituation());
-                recipeCategoryDto.setFoodStuff(category.getFoodStuff());
-                recipeCategoryDto.setFoodNationType(category.getFoodNationType());
-                recipeCategoryDtos.add(recipeCategoryDto);
-            }
+                    recipeCategoryDto.setSituation(recipeCategory.getSituation());
+                    recipeCategoryDto.setFoodStuff(recipeCategory.getFoodStuff());
+                    recipeCategoryDto.setFoodNationType(recipeCategory.getFoodNationType());
+                }
 
-            return recipeCategoryDtos;
+            return recipeCategoryDto;
         } else {
             throw new IllegalArgumentException("회원 정보를 찾을 수 없습니다.");
         }

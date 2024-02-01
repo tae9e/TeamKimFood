@@ -27,14 +27,13 @@ function App() {
                 <Header />
                 <div className={'flex-grow mb-5'}>
                 <Routes>
-                    {/*<Route exact path='/' Component={ BoardList } />*/}
-                    <Route path='/login' Component={ LoginForm } />
-                    <Route path='/personaltreat' Component={ PersonalTreat } />
-                    <Route path={'/signin'} Component={MemberRegistrationForm}/>
-                    {/*<Route path='/BoardContent/:recipe_id' component={ BoardContent } />*/}
-                    <Route path={"/api/recipes/save"} Component={RecipeSave}/>
-                    <Route path={"/api/recipe/:id"} Component={ViewRecipe}/>
-                    <Route path={"/main"} Component={RecipeList}/>
+                    <Route path='/login' element={ <LoginForm/> } />
+                    <Route path='/personaltreat' element={ <PersonalTreat/> } />
+                    <Route path="/signin" element={<MemberRegistrationForm/>} />
+                    <Route path="/api/recipes/save" element={<RecipeSave/>} />
+                    <Route path="/api/recipe/:id" element={<ViewRecipe/>} />
+                    <Route path='/api/recipe/:id/update' element={<RecipeSave/>} />
+                    <Route path="/main" element={<RecipeList/>} />
                     <Route path="/admin" element={<ProtectedRoute><ManagePage/></ProtectedRoute>} />
                     <Route path="/admin/members" element={<ProtectedRoute><MemberManagement/></ProtectedRoute>} />
                     <Route path="/admin/recipes" element={<ProtectedRoute><RecipeManagement/></ProtectedRoute>} />

@@ -13,7 +13,7 @@ const RecipeForm = () => {
         recips : [{explanations: [''], imgFiles: [null], repImageIndex: null }],
     });
 
-    const {recipeId} = useParams();//recipeId 파라미터에서 가져옴
+    const {id} = useParams();//recipeId 파라미터에서 가져옴
     const [repImageIndex, setRepImageIndex] = useState(null);
     const [newImages, setNewImages] = useState([]);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -21,11 +21,11 @@ const RecipeForm = () => {
     const authToken = localStorage.getItem('token');
 
     useEffect(() => {
-        if (recipeId) {
+        if (id) {
             setIsEditMode(true); // URL에 recipeId가 있으면 수정 모드로 설정
             const RecipeData = async () => {
                 try {
-                    const response = await axios.get(`/api/recipes/${recipeId}`, {
+                    const response = await axios.get(`http://localhost:8080/api/recipes/${id}`, {
                         headers: {
                             'Authorization': `Bearer ${authToken}`
                         }
@@ -46,13 +46,14 @@ const RecipeForm = () => {
                             imgFiles: recip.imgFiles.map(imgFile => imgFile.imgUrl) // imgUrl을 사용
                         }))
                     });
+                    console.log(recipeData);
                 } catch (error) {
                     console.error("레시피 불러오기 실패", error);
                 }
             };
             RecipeData();
         }
-    }, [recipeId]);
+    }, [id]);
     const handleNewImageChange = (e, pairIndex) => {
         // 새 이미지 파일을 newImages 상태에 추가
         const files = Array.from(e.target.files);

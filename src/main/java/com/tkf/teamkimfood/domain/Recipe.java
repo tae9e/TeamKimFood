@@ -38,8 +38,8 @@ public class Recipe {
 //    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
 //    private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Where(clause = "parent_id is null")
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+//    @Where(clause = "parent_id is null")
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -53,7 +53,7 @@ public class Recipe {
     private List<FoodImg> foodImgs = new ArrayList<>();
 
     @BatchSize(size = 100)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

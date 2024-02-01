@@ -14,5 +14,5 @@ public interface RecipeCategoryRepository extends JpaRepository<RecipeCategory, 
     @Query("select rc from RecipeCategory rc where rc.recipe.id = :id")
     public RecipeCategory findWhereRecipeId(@Param("id") Long id);
 
-    List<RecipeCategory> findByMember(Member member);
+    RecipeCategory findByMember(Member member);
 }
