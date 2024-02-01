@@ -37,6 +37,7 @@ function App() {
                     <Route path="/api/recipe/:id" element={<ViewRecipe/>} />
                     <Route path='/api/recipe/:id/update' element={<RecipeSave/>} />
                     <Route path="/main" element={<RecipeList/>} />
+                    <Route path="/" element={<RecipeList/>} />
                     <Route path="/admin" element={<ProtectedRoute><ManagePage/></ProtectedRoute>} />
                     <Route path="/admin/members" element={<ProtectedRoute><MemberManagement/></ProtectedRoute>} />
                     <Route path="/admin/recipes" element={<ProtectedRoute><RecipeManagement/></ProtectedRoute>} />

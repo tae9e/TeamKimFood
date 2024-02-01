@@ -14,6 +14,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,6 +35,7 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 @Getter
+@Slf4j
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -108,6 +110,7 @@ public class MemberService implements UserDetailsService {
 
     //로그인을위한 멤버 불러오기 -김원성
     public Long findMemberForLogin(String email, String password) {
+        log.info("이메일(서비스) : "+email);
         Member member = memberRepository.findByEmail(email).orElseThrow();
         if (member != null && passwordEncoder.matches(password, member.getPassword())) {
             return member.getId();

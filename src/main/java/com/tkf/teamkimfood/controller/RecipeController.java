@@ -137,10 +137,13 @@ public class RecipeController {
 
         List<OneRecipeImgVo> oneRecipeImgVos = recipeService.viewOneForOne(recipeId);
         List<OneRecipeIngDoVo> oneRecipeIngDoVos = recipeService.getOneForOne(recipeId);
+        Long rank = rankService.totalRecipeRank(recipeId);
+
         //현재 댓글은 빈 객체 돌려줌
         CommentDto commentDto = new CommentDto();//코멘트 service 구현 완료시 수정예정.
         RecipeNCommentVo recipeNCommentVo = new RecipeNCommentVo(oneRecipeDto, commentDto, oneRecipeImgVos, oneRecipeIngDoVos);
         recipeNCommentVo.setEqualMember(equalMember);
+        recipeNCommentVo.setTotalScore(rank);
         return ResponseEntity.ok(recipeNCommentVo);
     }
     //수정

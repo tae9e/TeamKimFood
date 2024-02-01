@@ -77,6 +77,10 @@ public class RankService {
         return rank;
     }
 
+    public Long totalRecipeRank(Long recipeId) {
+        return rankQueryRepository.recommendationTotal(recipeId);
+    }
+
     //멤버랭킹 추천수 총합으로
     //개인 추천수 총합
     public List<MemberScoreTotalDto> memberScoreTotal() {

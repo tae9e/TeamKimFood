@@ -110,9 +110,14 @@ const RecipeView = () => {
                     'Authorization': `Bearer ${authToken}`
                 }
             });
-            setRecommendations(response.data); // 서버로부터 받은 추천 수를 상태에 반영
+            // setRecommendations(response.data); // 서버로부터 받은 추천 수를 상태에 반영
+            setRecipe(prevRecipe => ({
+                ...prevRecipe,
+                totalScore: response.data
+            }));
         } catch (error) {
             console.error('추천 처리중 오류가 발생했습니다.', error);
+            alert('로그인이 필요한 기능입니다.')
         }
     };
 
@@ -232,7 +237,7 @@ const RecipeView = () => {
                 <div className="border-t pt-4 mt-4">
                     <button type="button" onClick={handleRecommend}
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        {recommendations} 추천하기
+                        {recipe.totalScore} 추천하기
                     </button>
                 </div>
                 {/*댓글*/}
