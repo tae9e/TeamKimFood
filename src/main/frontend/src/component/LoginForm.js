@@ -1,80 +1,68 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { KAKAO_AUTH_URL } from './OAuth';
 
-function LoginForm() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+const LoginForm = () => {
+    const [loginData, setLoginData] = useState({
+        username: '',
+        password: '',
+    });
+    const [errors, setErrors] = useState({}); // 유효성 검사 오류를 저장할 상태
     const navigate = useNavigate();
 
-    const submitClick = async (e) => {
+    const handleChange = (e) => {
+        setLoginData({ ...loginData, [e.target.name]: e.target.value });
+        setErrors({ ...errors, [e.target.name]: '' });
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const loginData = { username: email, password: password };
 
         try {
-            const response = await fetch('http://localhost:8080/public/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(loginData),
-            });
-
-            if(response.ok) {
-                const data = await response.json();
-                localStorage.setItem('token', data.token);
-                navigate('/boardlist');
-            } else {
-                setErrorMessage('로그인 실패. 이메일 또는 비밀번호를 확인해주세요.');
+            const response = await axios.post('/public/login', loginData);
+            localStorage.setItem('token', response.data.token);
+            alert('방문해주셔서 감사합니다.'); // 로그인 성공 메시지
+            navigate('/'); // 성공적으로 로그인되면 홈페이지로 이동
+        } catch (error) {
+            if (error.response && error.response.data) {
+                // 서버로부터 받은 오류 메시지를 상태에 저장
+                setErrors(error.response.data);
             }
-        } catch(error) {
-            console.error('로그인 요청 중 오류 발생: ', error);
-            setErrorMessage('로그인 중 문제가 발생했습니다. 나중에 다시 시도해주세요.');
         }
     };
 
-     return (
-            <section className="main">
-                <div className="m_login signin">
-                    <div className="log_box flex flex-col items-center">
-                        <div className="mb-4 mt-4">
-                            <input
-                                type="text"
-                                placeholder="이메일"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-64 py-2 px-3 rounded-md border" />
-                        </div>
-                        <div className="mb-4">
-                            <input
-                                type="password"
-                                placeholder="비밀번호"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-64 py-2 px-3 rounded-md border" />
-                        </div>
-                        <div className="mb-4">
-                            <button
-                                onClick={submitClick}
-                                className="w-64 bg-black hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
-                                로그인
-                            </button>
-                        </div>
-                        {errorMessage && (
-                            <div className="text-red-500">
-                                {errorMessage}
-                            </div>
-                        )}
-                        <div className="mt-0.1">
-                            <a href={KAKAO_AUTH_URL} className="kakaobtn w-64 h-10 rounded-lg flex items-center justify-center text-lg">
-                                <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />
-                            </a>
-                        </div>
-                    </div>
+    return (
+        <div className={'flex justify-center items-center my-20'}>
+            <form onSubmit={handleSubmit} className={'w-full max-w-xs border p-3 rounded-lg'}>
+                <div className={'mb-1 border p-3 rounded-lg'}>
+                    <label className={'block text-gray-700 text-sm font-bold mb-2'}>이메일:</label>
+                    <input
+                        type="email"
+                        name="username"
+                        value={loginData.username}
+                        onChange={handleChange}
+                        required
+                        placeholder={'ex) example@example.com'}
+                        className={'shadow appearance-none border ${errors.email ? \'border-red-500\' : \'\'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}
+                    />
+                    {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
                 </div>
-            </section>
-        );
-    }
+                <div className={' mb-1 border p-3 rounded-lg'}>
+                    <label className={'block text-gray-700 text-sm font-bold mb-2'}>비밀번호:</label>
+                    <input type="password" name="password" value={loginData.password} onChange={handleChange} required
+                           className={'shadow appearance-none border ${errors.password ? \'border-red-500\' : \'\'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}
+                    />
+                    {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
+                </div>
+                <div className={'mb-4'}>
+                    <button type="submit"
+                            className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"}
+                    >로그인</button>
+                </div>
 
-    export default LoginForm;
+            </form>
+        </div>
+    );
+};
+
+export default LoginForm;
