@@ -334,7 +334,7 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 )
                 .from(recipe)
                 .join(recipe.member, member)
-                .join(recipe.foodImgs, foodImg)
+//                .join(recipe.foodImgs, foodImg)
                 .join(recipe.recipeCategory, recipeCategory)
                 .where(recipe.id.eq(recipeId))
                 .where(recipe.member.id.eq(userId))

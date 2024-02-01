@@ -9,12 +9,9 @@ const RecipeView = () => {
     const authToken = localStorage.getItem('token'); // 현재 로그인한 사용자의 ID
     const location = useLocation();
     const fromPage = location.state?.fromPage || 0; // 리스트 페이지에서 전달된 페이지 번호
-    const [recommendations, setRecommendations] = useState(0); // 추천 수를 위한 상태
-
     const [comments, setComments] = useState([]);
     const [commentInput, setCommentInput] = useState('');
     const [selectedComment, setSelectedComment] = useState(null);
-
 
     useEffect(() => {
         const loadRecipe = async () => {
@@ -136,52 +133,16 @@ const RecipeView = () => {
     // useEffect(() => {
     //     const loadComments = async () => {
     //         try {
-    //             const response = await axios.get(`/comments`);
+    //             const response = await axios.get(`http://localhost:8080/comments`);
     //             setComments(response.data);
     //         } catch (error) {
     //             console.error('댓글을 불러오는 데 실패했습니다.', error);
     //         }
     //     };
+    //
     //     loadComments();
     // }, []);
-
-    // 댓글 작성
-    // const saveComment = async () => {
-    //     try {
-    //         if (!authToken) {
-    //             alert("로그인 후에 댓글을 작성할 수 있습니다.");
-    //             return;
-    //         }
-    //
-    //         // 현재 시각 구하기
-    //         const commentDate = new Date().toISOString();
-    //         // 현재 페이지의 아이디
-    //         const recipeId = id;
-    //         // 해당 글을 작성한 사용자의 정보
-    //         const memberId = recipe.oneRecipeDto.authorId;
-    //
-    //         // 댓글 저장 API 호출
-    //         const response = await axios.post("/comments", {
-    //             content: commentInput,
-    //             commentDate: commentDate,
-    //             recipeId: recipeId,
-    //             memberId: memberId
-    //         });
-    //
-    //         const savedComment = response.data;
-    //
-    //         // 저장된 댓글을 화면에 추가
-    //         setComments([...comments, savedComment]);
-    //
-    //         // 입력창 초기화
-    //         setCommentInput('');
-    //     } catch (error) {
-    //         console.error("댓글을 작성하는 중 에러 발생:", error);
-    //         // 에러 처리 코드 추가
-    //     }
-    // };
-
-    // 댓글 작성
+    const isLoggedIn = true;
     // 댓글 작성
     const saveComment = async () => {
         try {
@@ -221,7 +182,6 @@ const RecipeView = () => {
             setCommentInput('');
         } catch (error) {
             console.error("댓글을 작성하는 중 에러 발생:", error);
-            // 에러 처리 코드 추가
         }
     };
 
@@ -263,10 +223,6 @@ const RecipeView = () => {
         }
     };
 
-
-    if (!recipe) {
-        return <div>Loading...</div>;
-    }
     return (
         <div className={'container mx-auto mt-10'}>
             <div className={'border p-5 rounded-lg'}>
@@ -286,7 +242,7 @@ const RecipeView = () => {
                 </div>
                 <div className="border-t pt-4 mt-4">
                     <div className={"flex gap-4 flex-wrap"}>
-                        {renderIngredientsAndDosages()}
+                     {renderIngredientsAndDosages()}
                     </div>
                 </div>
                 <div className="border-t pt-4 mt-4">
