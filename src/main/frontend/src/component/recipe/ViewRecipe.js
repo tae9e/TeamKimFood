@@ -98,6 +98,80 @@ const RecipeView = () => {
         navigate(`/main?page=${fromPage}`);
     };
 
+    //로그인 확인 후 댓글 작성
+    const isLoggedIn = true;
+
+    const saveComment = async () => {
+        try {
+            if (!isLoggedIn) {
+                alert("로그인 후 댓글을 작성할 수 있습니다.");
+                return;
+            }
+            const response = await axios.get(`/api/recipes/comments/${commentId}`, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+            const commentData = response.data;
+            setCommentForm({
+                content: commentData.content,
+                nickname: commentData.nickname,
+                recipeId: commentData.recipeId,
+                commentDate: commentData.commentDate
+            })
+        } catch (error) {
+            console.error("알 수 없는 오류로 댓글을 달 수 없습니다.", error);
+        };
+        commentData();
+    }
+
+    //댓글 수정
+    const updateComment = async (commentId, updatedContent) => {
+        try {
+            // 로그인 확인
+            if (!isLoggedIn) {
+                alert("로그인 후 댓글을 수정할 수 있습니다.");
+                return;
+            }
+
+            // 댓글 수정 요청
+            await axios.put(`/api/comments/${commentId}`, {
+                content: updatedContent
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+
+            // 필요한 작업 수행 (예: 수정된 댓글 화면 갱신)
+
+        } catch (error) {
+            console.error("알 수 없는 오류로 댓글을 수정할 수 없습니다.", error);
+        }
+    };
+
+    //댓글 삭제
+    const deleteComment = async (commentId) => {
+        try {
+            // 로그인 확인
+            if (!isLoggedIn) {
+                alert("로그인 후 댓글을 삭제할 수 있습니다.");
+                return;
+            }
+
+            // 댓글 삭제 요청
+            await axios.delete(`/api/comments/${commentId}`, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+
+            // 필요한 작업 수행 (예: 삭제된 댓글 화면 갱신)
+
+        } catch (error) {
+            console.error("알 수 없는 오류로 댓글을 삭제할 수 없습니다.", error);
+        }
+    };
 
     if (!recipe) {
         return <div>Loading...</div>;
@@ -130,7 +204,8 @@ const RecipeView = () => {
                     <div className="flex justify-between border-t pt-4 mt-4">
                         <button
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            type="button" onClick={navigateBackToList}>리스트 보기</button>
+                            type="button" onClick={navigateBackToList}>리스트 보기
+                        </button>
                         {renderEditAndDeleteButtons()}
                     </div>
 
@@ -140,8 +215,18 @@ const RecipeView = () => {
                     추천버튼
                 </div>
                 {/*댓글*/}
-                <div>
-
+                <div className="setCommentForm">
+                    {/* 로그인 상태에 따라 다른 메시지 표시 */}
+                    <input type="textarea" placeholder={isLoggedIn ? "댓글을 작성해주세요" : "로그인 후에 댓글을 쓸 수 있습니다."}/>
+                </div>
+                {/* 댓글 삭제 버튼 */}
+                <div className="flex justify-end mt-4">
+                    <button
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => deleteComment(commentId)}
+                    >
+                        댓글 삭제
+                    </button>
                 </div>
             </div>
         </div>
