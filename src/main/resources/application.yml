@@ -14,7 +14,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       # 프로젝트 시작시 create로 두시고 진행중엔 none나 validate로 해주세요
     properties:
       hibernate:
