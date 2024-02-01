@@ -14,7 +14,9 @@ import com.tkf.teamkimfood.repository.query.RecipeQueryRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeCategoryRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeDetailRepository;
 import com.tkf.teamkimfood.repository.recipe.RecipeRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class RecipeService {
 
     private final FoodImgService foodImgService;
@@ -42,14 +45,18 @@ public class RecipeService {
 
     //레시피 저장...
     @Transactional
-    public Long saveRecipe(String email, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto,List<String> explanations, List<MultipartFile> foodImgFileList, int repImageIndex) throws IOException {
-        Member member = memberRepository.findByEmail(email).orElseThrow();
+    public Long saveRecipe(Long userId, RecipeDto recipeDto, CategoryPreferenceDto categoryPreferenceDto, List<RecipeDetailListDto> recipeDetailListDto,List<String> explanations, List<MultipartFile> foodImgFileList, int repImageIndex) throws IOException {
+        log.info("이메일 : "+userId);
+        Member member = memberRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Member with email " + userId + " not found"));
         Recipe recipe = Recipe.builder()
                 .title(recipeDto.getTitle())
                 .content(recipeDto.getContent())
                 .writeDate(LocalDateTime.now())
                 .correctionDate(LocalDateTime.now())
                 .build();
+        log.info("레시피 : "+recipe.getTitle());
+        log.info("레시피 : "+recipe.getContent());
+        log.info("레시피 : "+recipe.getWriteDate());
         RecipeCategory recipeCategory = RecipeCategory.builder()
                 .foodNationType(categoryPreferenceDto.getFoodNationType())
                 .foodStuff(categoryPreferenceDto.getFoodStuff())
@@ -67,6 +74,14 @@ public class RecipeService {
         }
 
         Recipe savedRecipe = recipe.createRecipe(recipeDetails, member, recipeCategory);
+        savedRecipe = Recipe.builder()
+                        .title(recipe.getTitle())
+                                .content(recipe.getContent())
+                                        .writeDate(recipe.getWriteDate())
+                                                .correctionDate(recipe.getCorrectionDate())
+                                                        .build();
+        savedRecipe.setMember(member);
+
 
         recipeRepository.save(savedRecipe);
         recipeCategory.setRecipe(savedRecipe);//연관관계 메소드 영속성 유지를 위해 꼭 해줘야함. 아니면 NullPointException납니다.+JPA save시 레시피 아이디값이 안들어갑니다.
@@ -118,16 +133,33 @@ public class RecipeService {
 //                .foodImgDtos(foodImgDtos)
 //                .build();
 //    }
+    @Transactional
     public OneRecipeDto viewOne(Long recipeId) {
         OneRecipeDto recipeDto = recipeQueryRepository.getOne(recipeId);
-        if (recipeDto != null) {
-            Recipe recipe = recipeRepository.addViewCount(recipeId);
-            recipeDto.setViewCount(recipe.getViewCount());
-            return recipeDto;
+
+        // 조회 수를 업데이트
+        recipeRepository.addViewCount(recipeId);
+
+        // 업데이트된 Recipe 객체를 다시 가져옴
+        Recipe updatedRecipe = recipeRepository.findById(recipeId).orElse(null);
+
+        if (updatedRecipe != null) {
+            recipeDto.setViewCount(updatedRecipe.getViewCount());
         } else {
-            return null;
+            // Recipe가 존재하지 않는 경우에 대한 처리
+            // 예를 들어, 적절한 에러 메시지를 설정하거나 예외를 던질 수 있습니다.
         }
+
+        return recipeDto;
     }
+    public List<OneRecipeImgVo> viewOneForOne(Long recipeId) {
+        return recipeQueryRepository.getImgExp(recipeId);
+    }
+    public List<OneRecipeIngDoVo> getOneForOne(Long recipeId) {
+        return recipeQueryRepository.getIngDo(recipeId);
+    }
+
+
     public OneRecipeForUpdateVo findOneByEmail(Long recipeId, String email) {
         return recipeQueryRepository.findOneByEmail(recipeId, email);
     }
@@ -171,9 +203,10 @@ public class RecipeService {
 //    }
     public Page<MainpageRecipeDto> getMainForMember(CategoryPreferenceDto categoryPreferenceDto, RecipeSearchDto recipeSearchDto, Pageable pageable) {
         Member member = memberQueryRepository.findOne(categoryPreferenceDto.getId());
-        categoryPreferenceDto.setSituation(member.getMemberPreference().getSituation());
-        categoryPreferenceDto.setFoodStuff(member.getMemberPreference().getFoodStuff());
-        categoryPreferenceDto.setFoodNationType(member.getMemberPreference().getFoodNationType());
+//
+//        categoryPreferenceDto.setSituation(member.getMemberPreference().getSituation());
+//        categoryPreferenceDto.setFoodStuff(member.getMemberPreference().getFoodStuff());
+//        categoryPreferenceDto.setFoodNationType(member.getMemberPreference().getFoodNationType());
         return recipeQueryRepository.getAllWhereTypesOrderByWriteDay(categoryPreferenceDto, recipeSearchDto, pageable);
     }
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음

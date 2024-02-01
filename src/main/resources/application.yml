@@ -40,7 +40,6 @@ oauth:
       - profile_nickname
       - account_email
 
-
 logging:
   level:
     root: INFO
@@ -50,7 +49,7 @@ logging:
 #    org.hibernate.SQL: debug
 #    org.hibernate.type: trace
 
-recipeImgLocation: c:/recipe/images
+recipeImgLocation: C:/BootIntelijComSpace/TeamKimFood/src/main/frontend/public/images/recipe
 
 server:
   servlet:

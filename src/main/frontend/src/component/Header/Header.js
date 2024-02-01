@@ -9,6 +9,7 @@ import { DropdownSubmenu, NavDropdownMenu} from "react-bootstrap-submenu";
 import { SlLogin, SlPencil  } from "react-icons/sl";
 import '../Css/Common.css';
 import React, { useState, useEffect } from 'react';
+import { KAKAO_AUTH_URL } from '../OAuth';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,19 +17,43 @@ import { useNavigate } from 'react-router-dom';
 
 function TopNav() {
 const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+const [isAdmin, setIsAdmin] = useState(false);
+const navigate = useNavigate();
 
   useEffect(() => {
-      const token = localStorage.getItem('userToken');
+      const token = localStorage.getItem('token');
       if (token) {
         setIsLoggedIn(true);
       }
     }, []);
 
-    const handleLogout = () => {
-      localStorage.removeItem('userToken');
-      setIsLoggedIn(false);
+   const handleLogin = (loginCredentials) => {
+      axios.post('/login', loginCredentials)
+        .then(response => {
+          localStorage.setItem('token', response.data.token);
+          setIsLoggedIn(true);
+          setIsAdmin(response.data.isAdmin === 'true'); // 여기서 관리자 여부 설정
+        })
+        .catch(error => {
+          console.log('에러 발생');
+        });
     };
+0
+    const handleLogout = () => {
+      localStorage.removeItem('token');
+      setIsLoggedIn(false);
+      setIsAdmin(false);
+    };
+
+   const handleAdminOrMyPageClick = () => {
+       if (isAdmin) {
+           navigate('/admin');
+       } else {
+           navigate('/mypage');
+       }
+   };
+
+
 
 
     return (
@@ -49,12 +74,15 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
                                       <>
                                           <li><a href="/signin"><SlPencil /> 회원가입</a></li>
                                           <li><a href="/login"><SlLogin /> 로그인</a></li>
-                                           {/* 카카오 로그인 버튼 */}
-
-
 
                                       </>
                                   )}
+
+                                 {isLoggedIn && isAdmin && (
+                                       <li><a onClick={handleAdminOrMyPageClick}>
+                                       {isAdmin ? '관리자 페이지' : '마이 페이지'}</a></li>
+                                   )}
+
                                   {isLoggedIn && (
                                       <li><a href="/" onClick={handleLogout}><SlLogin /> 로그아웃</a></li>
                                   )}

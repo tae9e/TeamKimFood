@@ -112,7 +112,7 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
         QRecipe recipe = QRecipe.recipe;
         QFoodImg foodImg = QFoodImg.foodImg;
         QMember member = QMember.member;
-        QRecipeDetail recipeDetail = QRecipeDetail.recipeDetail;
+
         QRecipeCategory recipeCategory = QRecipeCategory.recipeCategory;
         OneRecipeDto oneRecipeDto = queryFactory.select(
                         new QOneRecipeDto(
@@ -135,17 +135,16 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 .join(recipe.recipeCategory, recipeCategory)
                 .where(recipe.id.eq(recipeId))
                 .fetchOne();
-        List<OneRecipeImgVo> addImgNExp = queryFactory.select(
-                        new QOneRecipeImgVo(
-                                foodImg.imgUrl,
-                                foodImg.explanation
-                        )
-                )
-                .from(recipe)
-                .join(recipe.foodImgs, foodImg)
-                .where(recipe.id.eq(recipeId))
-                .fetch();
-        List<OneRecipeIngDoVo> oneRecipeIngDoVos = queryFactory.select(
+
+        assert oneRecipeDto != null;
+        return oneRecipeDto;
+    }
+
+    public List<OneRecipeIngDoVo> getIngDo(Long recipeId) {
+        QRecipe recipe = QRecipe.recipe;
+        QRecipeDetail recipeDetail = QRecipeDetail.recipeDetail;
+
+        return queryFactory.select(
                         new QOneRecipeIngDoVo(
                                 recipeDetail.ingredients,
                                 recipeDetail.dosage
@@ -155,10 +154,22 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                 .join(recipe.recipeDetails, recipeDetail)
                 .where(recipe.id.eq(recipeId))
                 .fetch();
-        assert oneRecipeDto != null;
-        oneRecipeDto.insertIngreDosage(oneRecipeIngDoVos);
-        oneRecipeDto.insertRecipes(addImgNExp);
-        return oneRecipeDto;
+    }
+
+    public List<OneRecipeImgVo> getImgExp(Long recipeId) {
+        QRecipe recipe = QRecipe.recipe;
+        QFoodImg foodImg = QFoodImg.foodImg;
+
+        return queryFactory.select(
+                        new QOneRecipeImgVo(
+                                foodImg.imgUrl,
+                                foodImg.explanation
+                        )
+                )
+                .from(recipe)
+                .join(recipe.foodImgs, foodImg)
+                .where(recipe.id.eq(recipeId))
+                .fetch();
     }
 
     //내가 쓴 글 조회
@@ -176,16 +187,16 @@ public class RecipeQueryRepository implements RecipeCustomRepository{
                         )
                 )
                 .from(recipe)
-                .join(recipe.member, member)
-                .join(recipe.foodImgs, foodImg)
+                .join(recipe.member, member)//연관된 멤버 정보 조인
+                .join(recipe.foodImgs, foodImg)//url이미지주소 조인
                 .where(recipe.member.id.eq(memberId))
-                .where(foodImg.repImgYn.eq("Y"))
+                .where(foodImg.repImgYn.eq("Y"))//대표이미지만 가져옴
                 .orderBy(recipe.writeDate.desc())
-                .offset(pageable.getOffset())
+                .offset(pageable.getOffset())//페이징처리
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        Long result = queryFactory
+        Long result = queryFactory//총 갯수 카운트
                 .select(Wildcard.count)
                 .from(foodImg)
                 .join(foodImg.recipe, recipe)

@@ -58,7 +58,6 @@ public class RecipeCategoryService {
             throw new IllegalArgumentException("회원 정보를 찾을 수 없습니다.");
         }
     }
-
     //설문조사 수정
     @Transactional
     public void updateSurvey(RecipeCategoryDto recipeCategoryDto){
