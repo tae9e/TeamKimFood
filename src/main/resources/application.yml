@@ -1,6 +1,7 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/foodtest?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    # '&serverTimezone=UTC' 부분 떼야 DB에 우리나라 시간으로 입력됩니다.
+    url: jdbc:mysql://localhost:3306/foodtest?useSSL=false&characterEncoding=UTF-8
     username: root
     password: mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -49,7 +50,7 @@ logging:
 #    org.hibernate.SQL: debug
 #    org.hibernate.type: trace
 
-recipeImgLocation: C:/BootIntelijComSpace/TeamKimFood/src/main/frontend/public/images/recipe
+recipeImgLocation: ./src/main/frontend/public/images/recipe
 
 server:
   servlet:
