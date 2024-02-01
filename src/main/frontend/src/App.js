@@ -21,9 +21,11 @@ import RecipeSave from "./component/recipe/RecipeSave";
 import MemberRegistrationForm from "./component/member/MemberRegistrationForm";
 import RecipeList from "./component/recipe/RecipeList";
 import ViewRecipe from "./component/recipe/ViewRecipe";
+import AdminPage from './component/AdminPage';
 import ScoreRecipe from "./component/rank/ScoreRecipe";
 import ViewTotalCountRecipe from "./component/rank/ViewTotalCountRecipe";
 import ScoreMember from "./component/rank/ScoreMember";
+
 
 function App() {
 
