@@ -130,7 +130,8 @@ const RecipeView = () => {
                     <div className="flex justify-between border-t pt-4 mt-4">
                         <button
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            type="button" onClick={navigateBackToList}>리스트 보기</button>
+                            type="button" onClick={navigateBackToList}>리스트 보기
+                        </button>
                         {renderEditAndDeleteButtons()}
                     </div>
 
@@ -140,8 +141,18 @@ const RecipeView = () => {
                     추천버튼
                 </div>
                 {/*댓글*/}
-                <div>
-
+                <div className="setCommentForm">
+                    {/* 로그인 상태에 따라 다른 메시지 표시 */}
+                    <input type="textarea" placeholder={isLoggedIn ? "댓글을 작성해주세요" : "로그인 후에 댓글을 쓸 수 있습니다."}/>
+                </div>
+                {/* 댓글 삭제 버튼 */}
+                <div className="flex justify-end mt-4">
+                    <button
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => deleteComment(commentId)}
+                    >
+                        댓글 삭제
+                    </button>
                 </div>
             </div>
         </div>
