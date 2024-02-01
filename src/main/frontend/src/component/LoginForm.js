@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
     const [loginData, setLoginData] = useState({
-        email: '',
+        username: '',
         password: '',
     });
     const [errors, setErrors] = useState({}); // 유효성 검사 오류를 저장할 상태
@@ -12,7 +12,6 @@ const LoginForm = () => {
 
     const handleChange = (e) => {
         setLoginData({ ...loginData, [e.target.name]: e.target.value });
-        // 오류 상태 업데이트 (해당 필드의 오류 제거)
         setErrors({ ...errors, [e.target.name]: '' });
     };
 
@@ -20,8 +19,9 @@ const LoginForm = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('/login', loginData);
-            alert(response.data); // 로그인 성공 메시지
+            const response = await axios.post('/public/login', loginData);
+            localStorage.setItem('token', response.data.token);
+            alert('방문해주셔서 감사합니다.'); // 로그인 성공 메시지
             navigate('/'); // 성공적으로 로그인되면 홈페이지로 이동
         } catch (error) {
             if (error.response && error.response.data) {
@@ -38,8 +38,8 @@ const LoginForm = () => {
                     <label className={'block text-gray-700 text-sm font-bold mb-2'}>이메일:</label>
                     <input
                         type="email"
-                        name="email"
-                        value={loginData.email}
+                        name="username"
+                        value={loginData.username}
                         onChange={handleChange}
                         required
                         placeholder={'ex) example@example.com'}

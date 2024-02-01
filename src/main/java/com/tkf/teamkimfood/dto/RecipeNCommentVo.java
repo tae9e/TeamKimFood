@@ -15,6 +15,7 @@ public class RecipeNCommentVo {
     List<OneRecipeImgVo> oneRecipeImgVos;
     List<OneRecipeIngDoVo> oneRecipeIngDoVos;
     Boolean equalMember = false;
+    Long totalScore;
 
     public RecipeNCommentVo(OneRecipeDto oneRecipeDto, CommentDto commentDto, List<OneRecipeImgVo> oneRecipeImgVos, List<OneRecipeIngDoVo> oneRecipeIngDoVos) {
         this.oneRecipeDto = oneRecipeDto;
@@ -22,4 +23,5 @@ public class RecipeNCommentVo {
         this.oneRecipeImgVos = oneRecipeImgVos;
         this.oneRecipeIngDoVos = oneRecipeIngDoVos;
     }
+
 }

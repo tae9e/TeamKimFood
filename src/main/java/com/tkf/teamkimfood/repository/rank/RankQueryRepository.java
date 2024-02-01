@@ -30,7 +30,7 @@ public class RankQueryRepository {
         QRecipe recipe = QRecipe.recipe;
         return queryFactory.select(Wildcard.count)
                 .from(rank)
-                .where(recipe.id.eq(id))
+                .where(rank.recipe.id.eq(id))
                 .where(rank.recipeRecommendation.eq(true))
                 .fetchOne();
     }
