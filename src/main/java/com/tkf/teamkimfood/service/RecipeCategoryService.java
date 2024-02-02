@@ -42,9 +42,9 @@ public class RecipeCategoryService {
 
 
     //설문조사 LIST 불러오기
-    @Transactional(readOnly = true)
-    public RecipeCategoryDto getSurveyResults(String email) {
-        Optional<Member> memberOptional = memberRepository.findByEmail(email);
+    @Transactional
+    public RecipeCategoryDto getSurveyResults(Long memberId) {
+        Optional<Member> memberOptional = memberRepository.findById(memberId);
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
             RecipeCategory recipeCategory = recipeCategoryRepository.findByMember(member);

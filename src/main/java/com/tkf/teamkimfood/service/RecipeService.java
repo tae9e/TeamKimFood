@@ -201,7 +201,7 @@ public class RecipeService {
 //                .toList();
 //    }
     public Page<MainpageRecipeDto> getMainForMember(CategoryPreferenceDto categoryPreferenceDto, RecipeSearchDto recipeSearchDto, Pageable pageable) {
-        Member member = memberQueryRepository.findOne(categoryPreferenceDto.getId());
+//        Member member = memberQueryRepository.findOne(categoryPreferenceDto.getId());
 //
 //        categoryPreferenceDto.setSituation(member.getMemberPreference().getSituation());
 //        categoryPreferenceDto.setFoodStuff(member.getMemberPreference().getFoodStuff());

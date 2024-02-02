@@ -98,7 +98,7 @@ public class OauthController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", redirectUrl);
         return new ResponseEntity<>(headers, HttpStatus.FOUND); // HttpStatus.FOUND: 302 응답 코드
-
+    }
 
 //    @PostMapping("/login")
 //    public ResponseEntity<?> login(@RequestBody LoginCredentialsVo loginCredentialsVo) {
