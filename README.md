@@ -18,7 +18,7 @@
 
 ## :high_brightness: 개발환경
 - JAVA 17
-- IntelliJ
+- IntelliJ Ultimate
 - SpringBoot 3.2.0
 - Node.js 20.10.0
 - DB: MySQL 8
