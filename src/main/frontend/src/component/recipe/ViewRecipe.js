@@ -9,6 +9,7 @@ const RecipeView = () => {
     const authToken = localStorage.getItem('token'); // 현재 로그인한 사용자의 ID
     const location = useLocation();
     const fromPage = location.state?.fromPage || 0; // 리스트 페이지에서 전달된 페이지 번호
+    
     const [comments, setComments] = useState([]);
     const [commentInput, setCommentInput] = useState('');
     const [selectedComment, setSelectedComment] = useState(null);
@@ -142,7 +143,7 @@ const RecipeView = () => {
     //
     //     loadComments();
     // }, []);
-    const isLoggedIn = true;
+
     // 댓글 작성
     const saveComment = async () => {
         try {
@@ -169,7 +170,7 @@ const RecipeView = () => {
             const commentResponse = await axios.post("/comments", {
                 content: commentInput,
                 commentDate: commentDate,
-                recipeId: recipeId,
+                recipeId: {id},
                 memberId: memberId
             });
 
