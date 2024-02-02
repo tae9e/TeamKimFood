@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class FoodImgDto {
 
+    private Long foodId;
     private String imgName;
     private String originImgName;
     private String imgUrl;

@@ -8,6 +8,7 @@ import com.tkf.teamkimfood.domain.prefer.RecipeCategory;
 import com.tkf.teamkimfood.dto.*;
 import com.tkf.teamkimfood.dto.aboutrecipe.*;
 import com.tkf.teamkimfood.exception.NoAuthorityException;
+import com.tkf.teamkimfood.repository.FoodImgRepository;
 import com.tkf.teamkimfood.repository.MemberRepository;
 import com.tkf.teamkimfood.repository.query.MemberQueryRepository;
 import com.tkf.teamkimfood.repository.query.RecipeQueryRepository;
@@ -41,6 +42,7 @@ public class RecipeService {
     private final MemberQueryRepository memberQueryRepository;
     private final RecipeDetailRepository recipeDetailRepository;
     private final RecipeCategoryRepository recipeCategoryRepository;
+    private final FoodImgRepository foodImgRepository;
 
 
     //레시피 저장...
@@ -208,7 +210,7 @@ public class RecipeService {
     }
     //게시글 수정. 사진도 파라미터로 추가해야함 챗 지피티를 활용해 좀 더 안전하게 만들어봤음
     @Transactional
-    public Long updateRecipe(Long memberId,Long recipeId, FoodImgDto foodImgDto, List<String> explanations, List<MultipartFile> foodImgFileList, RecipeDto recipeDto) throws IOException {
+    public Long updateRecipe(Long memberId,Long recipeId, List<String> explanations, List<MultipartFile> foodImgFileList, RecipeDto recipeDto, int repImageIndex,List<String> existingImgUrlList, List<String> existingExplanations) throws IOException {
         Recipe checking = recipeRepository.findById(recipeId).orElseThrow();
         if (checking.getMember().getId().equals(memberId)) {
             Recipe recipe = recipeQueryRepository.findOneWhereMemberIdAndRecipeId(memberId, recipeId);//findOne처럼 수정해야함
@@ -219,10 +221,26 @@ public class RecipeService {
                     .build();
             //레시피 수정 적용
             recipe.updateWith(updateRecipe);
+//            foodImgDto.setRepImgYn(String.valueOf(repImageIndex));
+
+            List<FoodImgDto> foodImgDto = new ArrayList<>();
+            List<FoodImg> foodImgs = foodImgRepository.findByRecipeIdOrderByIdAsc(recipeId);
+            for (FoodImg foodImg : foodImgs) {
+                FoodImgDto imgDto = new FoodImgDto();
+                imgDto.setRepImgYn(foodImg.getRepImgYn());
+                imgDto.setImgName(foodImg.getImgName());
+                imgDto.setImgUrl(foodImg.getImgUrl());
+                imgDto.setOriginImgName(foodImg.getOriginImgName());
+                imgDto.setFoodId(foodImg.getId());
+                foodImgDto.add(imgDto);
+            }
+
             if (foodImgDto != null) {
-                List<Long> foodImgIds = foodImgDto.getFoodImgIds();
+                List<Long> foodImgIds = foodImgDto.stream().map(fid->fid.getFoodId()).toList();
+                log.info("아이디값 확인"+foodImgIds);
                 //이미지수정
-                for (int i = 0; i < foodImgFileList.size(); i++) {
+                for (int i = 0; i < foodImgIds.size(); i++) {
+
                     foodImgService.updateFoodImg(foodImgIds.get(i), explanations.get(i), foodImgFileList.get(i));
                 }
             }
