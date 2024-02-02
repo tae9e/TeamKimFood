@@ -36,6 +36,11 @@ public class RecipeCategoryService {
 
     }
 
+
+
+
+
+
     //설문조사 LIST 불러오기
     @Transactional(readOnly = true)
     public RecipeCategoryDto getSurveyResults(String email) {

@@ -25,7 +25,7 @@ import AdminPage from './component/AdminPage';
 import ScoreRecipe from "./component/rank/ScoreRecipe";
 import ViewTotalCountRecipe from "./component/rank/ViewTotalCountRecipe";
 import ScoreMember from "./component/rank/ScoreMember";
-import MyPage from "./component/mypage/MyPage";
+import Survey from './component/recipe/RecipePreferenceSurvey';
 
 
 function App() {
@@ -38,7 +38,6 @@ function App() {
                     <Route path='/login' element={ <LoginForm/> } />
                     <Route path='/personaltreat' element={ <PersonalTreat/> } />
                     <Route path="/signin" element={<MemberRegistrationForm/>} />
-                    <Route path="/mypage" element={<MyPage/>} />
                     <Route path="/api/recipes/save" element={<RecipeSave/>} />
                     <Route path="/api/recipe/:id" element={<ViewRecipe/>} />
                     <Route path='/api/recipe/:id/update' element={<RecipeSave/>} />
@@ -51,6 +50,7 @@ function App() {
                     <Route path={"/rank/recipe/recommend"} element={<ScoreRecipe/>}/>
                     <Route path={"/rank/recipe/totalcount"} element={<ViewTotalCountRecipe/>}/>
                     <Route path={"/rank/member/recommend"} element={<ScoreMember/>}/>
+                    <Route path="/survey" element={<Survey/>} />
                 </Routes>
                 </div>
 

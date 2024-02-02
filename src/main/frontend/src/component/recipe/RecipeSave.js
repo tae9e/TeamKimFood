@@ -20,7 +20,8 @@ const RecipeForm = () => {
     const navigate = useNavigate();
     const authToken = localStorage.getItem('token');
     const [recipe, setRecipe] = useState(null);
-
+    // 기존 이미지를 추적하기 위한 새로운 state 추가
+    const [existingImages, setExistingImages] = useState([]);
     useEffect(() => {
         if (id) {
             setIsEditMode(true);
@@ -38,8 +39,9 @@ const RecipeForm = () => {
                         foodStuff: recipeData.foodStuff,
                         foodNationType: recipeData.foodNationType,
                         details: ingDoData.map(item => ({ ingredients: [item.ingredients], dosage: [item.dosage] })),
-                        recips: imgData.map(item => ({ explanations: [item.explanation], imgFiles: [item.imgUrl] })),
+                        recips: imgData.map(item => ({ explanations: [item.explanation], imgFiles: [{dataUrl:item.imgUrl}] })),
                     });
+                    setExistingImages(imgData.map(item => ({ imgUrl: item.imgUrl, explanation: item.explanation })));
                 })
                 .catch(error => console.error("레시피 불러오기 실패", error));
         }
@@ -49,7 +51,7 @@ const RecipeForm = () => {
         const files = Array.from(e.target.files);
         setNewImages((prev) => {
             const updated = [...prev];
-            updated[pairIndex] = files;
+            updated[pairIndex] = files.map(file => ({ index: pairIndex, file: file }));
             return updated;
         });
     };
@@ -157,7 +159,11 @@ const RecipeForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        // 기존 이미지를 formData에 추가
+        existingImages.forEach((img, index) => {
+            formData.append(`existingImgUrlList`, img.imgUrl);
+            formData.append(`existingExplanations`, img.explanation);
+        });
 
         // API변수 변환
         const formData = new FormData();
@@ -245,23 +251,34 @@ const RecipeForm = () => {
             })),
             explanations: recipeForm.recips.map((recip) => recip.explanations[0])
         }));
-        //이미지 파일 추가
-        newImages.forEach((files, index) => {
-            files.forEach((file, fileIndex) => {
-                formData.append(`newFoodImgFileList[${index}][${fileIndex}]`, file);
-            });
-
+        // 기존 이미지를 formData에 추가
+        existingImages.forEach((img, index) => {
+            formData.append(`existingImgUrlList`, img.imgUrl);
+            formData.append(`existingExplanations`, img.explanation);
         });
+        //이미지 파일 추가
+        if (newImages && newImages.length > 0) {
+            newImages.forEach((files) => {
+                files.forEach((fileObj) => {
+                    if (fileObj && fileObj.file) {
+                        formData.append('foodImgFileList', fileObj.file);
+                    }
+                });
+            });
+        }
+        const repIndex = repImageIndex ? repImageIndex.pairIndex : null;
+        console.log("repImageIndex:", repIndex); // 디버깅을 위한 로그 출력
+        formData.append('repImageIndex', repIndex);
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+        }
         try {
-            const response = await axios.put(`/api/recipes/${id}`, formData, {
+            const response = await axios.put(`http://localhost:8080/api/recipes/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${authToken}`
                 },
             });
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
 
             if (response.status === 200) {
                 console.log('레시피가 성공적으로 수정되었습니다.');
