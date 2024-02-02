@@ -11,6 +11,7 @@ import com.tkf.teamkimfood.service.MemberService;
 import com.tkf.teamkimfood.service.OAuthLoginService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -63,15 +65,32 @@ public class OauthController {
 
         //DB에 User정보 담기
         Long userId = oAuthLoginService.findOrCreateMember(userInfo);
-        String redirectUrl = "http://localhost:3000/boardList"; // 리디렉션할 페이지의 URL
+
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("accessToken", accessToken);
         responseBody.put("userInfo", userInfo);
-        responseBody.put("redirectUrl", redirectUrl); // 리디렉션 URL을 응답에 추가
+        responseBody.put("success", true);
         // 여기서 리다이렉트 하지말고 토큰 값이랑 프론트에서 필요한 사용자 정보를 보내주면 됨
+
+
         return ResponseEntity.ok(responseBody);
     }
 
+
+
+
+    @GetMapping("/v2/user/me")
+    public OAuthInfoResponse requestOauthInfo(String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        String url = "https://kapi.kakao.com/v2/user/me";
+        ResponseEntity<OAuthInfoResponse> response = restTemplate.postForEntity(url, entity, OAuthInfoResponse.class);
+
+        return response.getBody();
+    }
 
     @GetMapping("/redirect")
     public ResponseEntity<Void> performRedirection(@RequestParam String redirectUrl) {
@@ -79,15 +98,6 @@ public class OauthController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", redirectUrl);
         return new ResponseEntity<>(headers, HttpStatus.FOUND); // HttpStatus.FOUND: 302 응답 코드
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginCredentialsVo loginCredentialsVo) {
-
-        Long memberForToken = memberService.findMemberForLogin(loginCredentialsVo.getUsername(), loginCredentialsVo.getPassword());
-        log.info("이메일 : "+loginCredentialsVo.getUsername());
-        AuthTokens tokens = authTokensGenerator.generate(memberForToken);
-        log.info("토큰 : "+tokens.getAccessToken());
-
 
 
     }
