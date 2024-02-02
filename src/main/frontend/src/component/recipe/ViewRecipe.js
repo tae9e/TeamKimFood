@@ -232,11 +232,12 @@ const RecipeView = () => {
                     <h1 className="text-2xl font-bold">{recipe.oneRecipeDto.title}</h1>
                     <p>조회수 : {recipe.oneRecipeDto.viewCount}</p>
                     {displayDate()}
-                    <p>작성자 {recipe.oneRecipeDto.nickName}</p>
+                    <p>작성자 : {recipe.oneRecipeDto.nickName}</p>
+                    <p className={'mt-3 text-lg font-[SpoqaHanSansNeo-B]'}>레시피 설명:</p>
                     <p>{recipe.oneRecipeDto.content}</p>
                 </div>
                 <div className={'border-t pt-4 mt-4'}>
-                    <p>#태그</p>
+                    <p className={'text-lg'}>#태그</p>
                     <p>상황 : {recipe.oneRecipeDto.situation}</p>
                     <p>주재료 : {recipe.oneRecipeDto.foodStuff}</p>
                     <p>국가별 : {recipe.oneRecipeDto.foodNationType}</p>
