@@ -151,8 +151,10 @@ public class RecipeController {
     public ResponseEntity<Long> updateRecipe(@AuthenticationPrincipal UserDetails userDetails,
                                              @PathVariable("recipeId")Long recipeId,
                                              @RequestParam("recipeRequest") String recipeRequest,
-                                             @RequestParam("newfoodImgFileList") MultipartFile[] foodImgFileList,
-                                             @RequestParam("repImageIndex") int repImageIndex) {
+                                             @RequestParam("foodImgFileList") MultipartFile[] foodImgFileList,
+                                             @RequestParam("repImageIndex") int repImageIndex,
+                                             @RequestParam(value = "existingImgUrlList", required = false) List<String> existingImgUrlList,
+                                             @RequestParam(value = "existingExplanations", required = false) List<String> existingExplanations) {
         try {
             // JSON 문자열을 RecipeRequestVo 객체로 변환
             RecipeRequestVo request = new ObjectMapper().readValue(recipeRequest, RecipeRequestVo.class);
@@ -165,10 +167,12 @@ public class RecipeController {
             Long saveRecipe = recipeService.updateRecipe(
                     id,
                     recipeId,
-                    request.getFoodImgDto(),
                     request.getExplanations(),
                     request.getFoodImgFileList(),
-                    request.getRecipeDto()
+                    request.getRecipeDto(),
+                    repImageIndex,
+                    existingImgUrlList,
+                    existingExplanations
             );
 
             return ResponseEntity.ok(saveRecipe);

@@ -155,30 +155,18 @@ function TopNav() {
 
             </div>
 
-            <Navbar expand="lg" className="bg-body-navbar">
+            <Navbar expand="lg" className="navbar">
                 <Container fluid="true" id="contNav">
 
-                    <Navbar.Toggle aria-controls="navbarScroll" />
-                    <Navbar.Collapse id="navbarScroll">
-                        <Nav
-                            className="navbar-text"
-                            style={{ maxHeight: '100px' }}
-                            navbarScroll>
+                    <ul className="navbar-nav" >
+                        <li className="depth-1 navbar-text"><a href="#">오늘의 요리</a></li>
+                        <li className="depth-1 navbar-text"><a href="#">인기 레시피</a></li>
+                        <li className="depth-1 navbar-text"><a href="#">매거진</a></li>
+                    </ul>
 
-                            <NavDropdown title="카테고리" id="navbarScrollingDropdown" className="menulist">
-                                <NavDropdown.Item href="#action1">종류별
-                                    밑반찬 | 메인반찬 | 국/탕/찌개 | 디저트 | 면상황별/만두 | 밥/죽/떡 | 퓨전 | 김치/젓갈 | 장류/양념/소스/잼 | 양식 | 샐러드 | 스프 | 빵/과자 | 차/음료/술 | 기타</NavDropdown.Item>
-                                <NavDropdown.Item href="#action2">상황별</NavDropdown.Item>
-                                <NavDropdown.Item href="#action3">재료별</NavDropdown.Item>
-                            </NavDropdown>
-                            <Nav.Link href="#action4" className="menulist">오늘의 요리</Nav.Link>
-                            <Nav.Link href="#action5" className="menulist">인기 레시피</Nav.Link>
-                            <Nav.Link href="#action6" className="menulist">매거진</Nav.Link>
-
-                        </Nav>
-                    </Navbar.Collapse>
                 </Container>
             </Navbar>
+
         </header>
     );
 }

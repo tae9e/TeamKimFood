@@ -100,8 +100,14 @@ public class OauthController {
         return new ResponseEntity<>(headers, HttpStatus.FOUND); // HttpStatus.FOUND: 302 응답 코드
 
 
-    }
-
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody LoginCredentialsVo loginCredentialsVo) {
+//
+//        Long memberForToken = memberService.findMemberForLogin(loginCredentialsVo.getUsername(), loginCredentialsVo.getPassword());
+//        log.info("이메일 : "+loginCredentialsVo.getUsername());
+//        AuthTokens tokens = authTokensGenerator.generate(memberForToken);
+//        log.info("토큰 : "+tokens.getAccessToken());
+//    }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginCredentialsVo loginCredentialsVo) {
         try {
