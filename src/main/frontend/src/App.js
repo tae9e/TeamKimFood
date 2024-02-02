@@ -49,6 +49,7 @@ function App() {
                     <Route path={"/rank/recipe/recommend"} element={<ScoreRecipe/>}/>
                     <Route path={"/rank/recipe/totalcount"} element={<ViewTotalCountRecipe/>}/>
                     <Route path={"/rank/member/recommend"} element={<ScoreMember/>}/>
+                    <Route path="/survey" element={<Survey/>} />
                 </Routes>
                 </div>
 

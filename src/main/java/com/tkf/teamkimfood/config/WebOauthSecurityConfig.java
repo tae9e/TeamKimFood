@@ -77,7 +77,7 @@ public class WebOauthSecurityConfig {
                         .loginPage("/login"))// 로그인 페이지 경로
                 .oauth2Login(
                         oauth2 -> oauth2
-                                .loginPage("/login")
+                                .loginPage("/boardlist")
                                 .authorizationEndpoint(authorizationEndpoint -> {
                                     authorizationEndpoint
                                             .baseUri("/oauth2/authorization")
