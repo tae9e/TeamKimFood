@@ -5,11 +5,13 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { SlLogin, SlPencil } from "react-icons/sl";
+import { SlLogin, SlLogout , SlPencil, SlSettings, SlWrench } from "react-icons/sl";
 import '../Css/Common.css';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { TiThMenu } from "react-icons/ti";
+import { IconContext } from "react-icons";
 
 //JWT 디코딩
 function TopNav() {
@@ -114,20 +116,30 @@ function TopNav() {
                 <ul className="signInUp">
                     {!isLoggedIn ? (
                         <>
-                            <li><a href="/signin"><SlPencil /> 회원가입</a></li>
-                            <li><a href="/login" onClick={handleLoginClick}><SlLogin /> 로그인</a></li>
+                            <li><a href="/signin"><span className="SlPencil"><SlPencil/></span>회원가입</a></li>
+                            <li><a href="/login" onClick={handleLoginClick}>
+                                <span className="SlLogin"><SlLogin className="SlLogin"/></span>로그인</a></li>
                         </>
                     ) : (
                         <>
                             {isAdmin ? (
-                                <li><a onClick={handleAdminOrMyPageClick}>관리자 페이지</a></li>
+                                <li><a onClick={handleAdminOrMyPageClick}>
+                                    <span className="SlWrench"><SlWrench/><span className="SlWrench"/></span>관리자 페이지</a></li>
                             ) : (
-                                <li><a onClick={handleAdminOrMyPageClick}>마이 페이지</a></li>
-                            )}
-                            <li><a href="/" onClick={handleLogout}><SlLogin /> 로그아웃</a></li>
-                        </>
+                                <li><a href="/mypage" onClick={handleAdminOrMyPageClick}>
+                                    <span className="SlSettings"><SlSettings/></span>마이 페이지</a></li>
+                                )}
+                            <li><a href="/main" onClick={handleLogout}>
+                                <span className="SlLogout"><SlLogout /></span>로그아웃</a></li>
+                </>
                     )}
                 </ul>
+                <IconContext.Provider value={{ className: "small-nav", size: 45 }}>
+                    <>
+                        <TiThMenu />
+                    </>
+                </IconContext.Provider>
+
             </div>
 
             <Navbar expand="lg" className="navbar">

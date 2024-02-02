@@ -28,9 +28,24 @@ public class CommentService {
         return commentOptional.map(this::toDto).orElse(null);
     }
 
+//    @Transactional
+//    public CommentDto updateComment(Long commentId, CommentDto updatedCommentDto) {
+//        Optional<Comment> optionalComment = commentRepository.findById(commentId);
+//        if (optionalComment.isPresent()) {
+//            Comment comment = optionalComment.get();
+//            // 업데이트할 내용 설정
+//            comment.setContent(updatedCommentDto.getContent());
+//            // 필요한 경우 다른 필드도 업데이트
+//            Comment updatedComment = commentRepository.save(comment);
+//            return toDto(updatedComment);
+//        } else {
+//            return null;
+//        }
+//    }
+
     @Transactional
-    public CommentDto updateComment(Long commentId, CommentDto updatedCommentDto) {
-        Optional<Comment> optionalComment = commentRepository.findById(commentId);
+    public CommentDto updateComment(Long memberId, CommentDto updatedCommentDto) {
+        Optional<Comment> optionalComment = commentRepository.findById(memberId);
         if (optionalComment.isPresent()) {
             Comment comment = optionalComment.get();
             // 업데이트할 내용 설정

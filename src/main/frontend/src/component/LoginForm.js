@@ -22,7 +22,7 @@ const LoginForm = () => {
             const response = await axios.post('/public/login', loginData);
             localStorage.setItem('token', response.data.token);
             alert('방문해주셔서 감사합니다.'); // 로그인 성공 메시지
-            navigate('/'); // 성공적으로 로그인되면 홈페이지로 이동
+            window.location.href = '/';//redirect
         } catch (error) {
             if (error.response && error.response.data) {
                 // 서버로부터 받은 오류 메시지를 상태에 저장
