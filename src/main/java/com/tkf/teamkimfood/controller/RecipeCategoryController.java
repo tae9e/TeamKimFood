@@ -23,6 +23,7 @@ public class RecipeCategoryController {
         if(result.hasErrors()){
             return ResponseEntity.badRequest().body("설문을 하나 이상 선택해주세요.");
         }
+
         recipeCategoryService.submitSurvey(recipeCategoryDto);
         return ResponseEntity.ok("설문조사 완료");
     }
