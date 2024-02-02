@@ -12,7 +12,6 @@ import ProtectedRoute from "./component/manage/ProtectedRoute";
 import ManagePage from "./component/manage/ManagePage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './component/Css/Common.css';
-import './component/Css/Layout.css';
 import MemberManagement from "./component/manage/MemberManagement";
 import RecipeManagement from "./component/manage/RecipeManagement";
 import Dashboard from "./component/manage/Dashboard";
