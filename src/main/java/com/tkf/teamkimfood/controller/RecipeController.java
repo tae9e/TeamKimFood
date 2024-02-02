@@ -151,7 +151,7 @@ public class RecipeController {
     public ResponseEntity<Long> updateRecipe(@AuthenticationPrincipal UserDetails userDetails,
                                              @PathVariable("recipeId")Long recipeId,
                                              @RequestParam("recipeRequest") String recipeRequest,
-                                             @RequestParam("newfoodImgFileList") MultipartFile[] foodImgFileList,
+                                             @RequestParam("foodImgFileList") MultipartFile[] foodImgFileList,
                                              @RequestParam("repImageIndex") int repImageIndex) {
         try {
             // JSON 문자열을 RecipeRequestVo 객체로 변환

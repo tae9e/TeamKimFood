@@ -38,7 +38,7 @@ const RecipeForm = () => {
                         foodStuff: recipeData.foodStuff,
                         foodNationType: recipeData.foodNationType,
                         details: ingDoData.map(item => ({ ingredients: [item.ingredients], dosage: [item.dosage] })),
-                        recips: imgData.map(item => ({ explanations: [item.explanation], imgFiles: [item.imgUrl] })),
+                        recips: imgData.map(item => ({ explanations: [item.explanation], imgFiles: [{dataUrl:item.imgUrl}] })),
                     });
                 })
                 .catch(error => console.error("레시피 불러오기 실패", error));
@@ -246,22 +246,22 @@ const RecipeForm = () => {
             explanations: recipeForm.recips.map((recip) => recip.explanations[0])
         }));
         //이미지 파일 추가
-        newImages.forEach((files, index) => {
-            files.forEach((file, fileIndex) => {
-                formData.append(`newFoodImgFileList[${index}][${fileIndex}]`, file);
+        newImages.forEach((files ) => {
+            files.forEach((file ) => {
+                formData.append('foodImgFileList', file);
             });
 
         });
+        // for (let [key, value] of formData.entries()) {
+        //     console.log(`${key}:`, value);
+        // }
         try {
-            const response = await axios.put(`/api/recipes/${id}`, formData, {
+            const response = await axios.put(`http://localhost:8080/api/recipes/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${authToken}`
                 },
             });
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
 
             if (response.status === 200) {
                 console.log('레시피가 성공적으로 수정되었습니다.');
