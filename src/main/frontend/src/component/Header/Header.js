@@ -134,12 +134,13 @@ function TopNav() {
                 </>
                     )}
                 </ul>
-                <IconContext.Provider value={{ className: "small-nav", size: 45 }}>
+                <div className="small-nav">
+                <IconContext.Provider value={{ className: "nav-menu", size: 45 }}>
                     <>
                         <TiThMenu />
                     </>
                 </IconContext.Provider>
-
+                </div>
             </div>
 
             <Navbar expand="lg" className="navbar">

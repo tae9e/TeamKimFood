@@ -65,9 +65,8 @@ header {
     margin-right: 5px;
 }
 
-.smail-nav {
-    color: var(--beige);
-
+IconContext {
+    display: none;
 }
 
 .navbar {
@@ -490,11 +489,16 @@ h6 {
 
 /* xxxl */
 @media (max-width: 1799.98px) {
-
+    .smail-nav {
+        display: none;
+    }
 }
 
 /* xxl */
 @media (max-width: 1539.98px) {
+    .smail-nav {
+        display: none;
+    }
     .d-flex {
         margin-right: 11rem;
     }
