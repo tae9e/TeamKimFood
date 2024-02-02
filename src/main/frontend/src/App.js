@@ -25,6 +25,7 @@ import AdminPage from './component/AdminPage';
 import ScoreRecipe from "./component/rank/ScoreRecipe";
 import ViewTotalCountRecipe from "./component/rank/ViewTotalCountRecipe";
 import ScoreMember from "./component/rank/ScoreMember";
+import Survey from './component/recipe/RecipePreferenceSurvey';
 
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
                     <Route path={"/rank/recipe/recommend"} element={<ScoreRecipe/>}/>
                     <Route path={"/rank/recipe/totalcount"} element={<ViewTotalCountRecipe/>}/>
                     <Route path={"/rank/member/recommend"} element={<ScoreMember/>}/>
+                    <Route path="/survey" element={<Survey/>} />
                 </Routes>
                 </div>
 

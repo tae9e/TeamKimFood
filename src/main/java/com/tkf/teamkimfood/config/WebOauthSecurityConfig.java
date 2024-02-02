@@ -65,6 +65,7 @@ public class WebOauthSecurityConfig {
                                     , "/error"
                                     ,"/api/**"
                                     ,"/images/**"
+                                    ,"/auth/kakao/callback"
                                     ,"/recipe/**"
                             ).permitAll() // 특정 경로에 대한 접근 허용
                             .anyRequest().authenticated(); // 다른 모든 요청은 인증 필요
@@ -77,7 +78,7 @@ public class WebOauthSecurityConfig {
                         .loginPage("/login"))// 로그인 페이지 경로
                 .oauth2Login(
                         oauth2 -> oauth2
-                                .loginPage("/login")
+                                .loginPage("/boardlist")
                                 .authorizationEndpoint(authorizationEndpoint -> {
                                     authorizationEndpoint
                                             .baseUri("/oauth2/authorization")
