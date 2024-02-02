@@ -27,7 +27,6 @@ public class RankQueryRepository {
     //추천갯수 세주는 로직
     public Long recommendationTotal(Long id) {
         QRank rank = QRank.rank;
-        QRecipe recipe = QRecipe.recipe;
         return queryFactory.select(Wildcard.count)
                 .from(rank)
                 .where(rank.recipe.id.eq(id))

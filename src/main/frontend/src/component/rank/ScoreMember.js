@@ -18,42 +18,38 @@ function ScoreMember(){
     }, []);
 
 
-    return(
-        <div>
-            <h3>유저 랭킹</h3>
-            <div>
-                <table >
-                    <tbody>
-                    <tr>
-                        <td >닉네임</td>
-                        <td >총추천수</td>
-                    </tr>
-                    {inputData.length > 0 ? (
-                        inputData.map(rowData => (
-                            <tr key={rowData.id}>
-                                <td>
-                                    {rowData.nickname}
-                                </td>
-                                <td>
-                                    {rowData.totalScore}
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
+    return (
+        <div className="container mx-auto px-4 sm:px-8">
+            <h3 className="text-xl font-semibold leading-tight my-6">유저 랭킹</h3>
+            <div className="py-4">
+                <div className="shadow overflow-hidden rounded border-b border-gray-200">
+                    <table className="min-w-full bg-white">
+                        <thead className="bg-emerald-200 text-white">
                         <tr>
-                            <td ></td>
-                            <td >충분한 데이터가 없습니다.</td>
+                            <th className="text-left py-3 px-4 uppercase font-semibold text-sm">닉네임</th>
+                            <th className="text-left py-3 px-4 uppercase font-semibold text-sm">총 추천수</th>
                         </tr>
-                    )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="text-gray-700">
+                        {inputData.length > 0 ? (
+                            inputData.map((rowData, index) => (
+                                <tr key={rowData.id}>
+                                    <td className="text-left py-3 px-4">{rowData.nickname}</td>
+                                    <td className="text-left py-3 px-4">{rowData.totalScore}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="2" className="text-center py-3 px-4">충분한 데이터가 없습니다.</td>
+                            </tr>
+                        )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            {/*{Array.from({length: totalPages}, (_, index) => (*/}
-            {/*    <button key={index} onClick={() => handlePageChange(index)}>*/}
-            {/*        {index + 1}*/}
-            {/*    </button>*/}
-            {/*))}*/}
         </div>
+
     );
 }
+
 export default ScoreMember;

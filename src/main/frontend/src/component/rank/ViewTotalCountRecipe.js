@@ -7,14 +7,6 @@ function ViewTotalCountRecipe(){
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
-    // const [inputData, setInputData] = useState([{
-    //     view_count: '',
-    //     recipe_id: '',
-    //     imgUrl:'',
-    //     title: '',
-    //     nick_name: '',
-    //     write_date:''
-    // }]);
     useEffect(() => {
         fetchRecipes(page);
     }, [page]);
@@ -33,79 +25,72 @@ function ViewTotalCountRecipe(){
         setPage(newPage);
     }
 
-    // const [lastIdx, setLastIdx] = useState(0)
-    //
-    // useEffect(async () => {
-    //     try {
-    //         // 데이터를 받아오는 동안 시간이 소요되므로 await 로 대기
-    //         const res = await axios.get("/api/recipe/recipeTotalView")
-    //
-    //         // 받아온 데이터로 다음 작업을 진행하기 위해 await 로 대기
-    //         // 받아온 데이터를 map 해주어 rowData 별로 _inputData 선언
-    //         const _inputData = await res.data.map((rowData) => ({
-    //             view_count: rowData.viewCount,
-    //             recipe_id: rowData.id,
-    //             imgUrl:rowData.imgUrl,
-    //             title: rowData.title,
-    //             nick_name: rowData.nickname,
-    //             write_date: rowData.writeDate
-    //             })
-    //         )
-    //         // 선언된 _inputData 를 최초 선언한 inputData 에 concat 으로 추가
-    //         setInputData(inputData.concat(_inputData))
-    //     } catch (e) {
-    //         console.error(e.message)
-    //     }
-    // }, [])
-
     return(
-        <div>
-            <h3>레시피 조회수 랭킹</h3>
-            <div>
-                <table className='listTable'>
-                    <tbody>
+        <div className="container mx-auto px-4 mt-10">
+            <h3 className="text-lg font-semibold mb-4">레시피 조회수 랭킹</h3>
+            <div className="overflow-x-auto">
+                <table className="min-w-full border border-gray-200 divide-y divide-gray-200">
+                    <thead>
                     <tr>
-                        <td className='listTableIndex th'>index</td>
-                        <td className='listTableTitle th'>title</td>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">순위</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">제목</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">닉네임</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">조회수</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">작성일</th>
                     </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
                     {inputData.length > 0 ? (
-                        inputData.map(rowData => (
+                        inputData.map((rowData, index) => (
                             <tr key={rowData.id}>
-                                <td>
-                                    <img src={rowData.imgUrl} alt="레시피사진"/>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    {index + 1}
                                 </td>
-                                <td className='listTableIndex'>
-                                    <Link to={`/BoardContent/${rowData.id}`}>{rowData.id}</Link>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="flex items-center">
+                                        <div className="flex-shrink-0 h-10 w-10">
+                                            <img className="h-10 w-10 rounded-full" src={rowData.imgUrl} alt="레시피사진"/>
+                                        </div>
+                                        <div className="ml-4">
+                                            <Link to={`/api/recipe/${rowData.id}`}
+                                                  className="text-sm font-medium text-gray-900">{rowData.title}</Link>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td className='listTableTitle'>
-                                    <Link to={`/BoardContent/${rowData.id}`}>{rowData.title}</Link>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {rowData.nickName}
                                 </td>
-                                <td>
-                                    {rowData.nickname}
-                                </td>
-                                <td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {rowData.viewCount}
                                 </td>
-                                <td>
-                                    {rowData.writeDate}
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {new Date(rowData.writeDate).toLocaleDateString('ko-KR', {
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit'
+                                    })}
                                 </td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td className='listTableIndex'></td>
-                            <td className='listTableTitle noData'>작성된 글이 없습니다.</td>
+                            <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">작성된 글이 없습니다.</td>
                         </tr>
                     )}
                     </tbody>
                 </table>
             </div>
-            {Array.from({length: totalPages}, (_, index) => (
-                <button key={index} onClick={() => handlePageChange(index)}>
-                    {index + 1}
-                </button>
-            ))}
+            <div className="flex justify-center space-x-2 mt-4">
+                {Array.from({length: totalPages}, (_, index) => (
+                    <button key={index} onClick={() => handlePageChange(index)}
+                            className="px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-100">
+                        {index + 1}
+                    </button>
+                ))}
+            </div>
         </div>
+
     );
 }
+
 export default ViewTotalCountRecipe;

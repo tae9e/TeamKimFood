@@ -53,7 +53,6 @@ public class RankService {
         rankRepository.save(rank);
 
         Long total = rankQueryRepository.recommendationTotal(rankDto.getRecipeId());
-        log.info("갯수 : "+total);
         rank.setRecipeRecoTotal(total);
         rankRepository.save(rank);
         return rank.getRecipeRecoTotal();

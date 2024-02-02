@@ -42,7 +42,6 @@ const RecipeList = () => {
 };
 
 const RecipeItem = ({ recipe, navigate, currentPage }) => {
-    console.log("이미지 : ", recipe.imgUrl);
     const imageUrl = `${process.env.PUBLIC_URL}${recipe.imgUrl}`;
     const handleTitleClick = () => {
         navigate(`/api/recipe/${recipe.id}`, { state: { fromPage: currentPage } })

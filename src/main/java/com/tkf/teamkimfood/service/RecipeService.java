@@ -240,7 +240,6 @@ public class RecipeService {
                 log.info("아이디값 확인"+foodImgIds);
                 //이미지수정
                 for (int i = 0; i < foodImgIds.size(); i++) {
-
                     foodImgService.updateFoodImg(foodImgIds.get(i), explanations.get(i), foodImgFileList.get(i));
                 }
             }
