@@ -35,7 +35,7 @@ const RecipeList = () => {
                 {recipes.map((recipe, index) => (
                     <RecipeItem key={recipe.id} recipe={recipe} navigate={navigate}/>
                 ))}
-                <Pagination currentPage={page} setPage={setPage} totalPages={totalPages} />
+                <Pagination currentPage={page} setPage={setPage} totalPages={totalPages} authToken={authToken} />
             </div>
         </div>
     );
@@ -44,7 +44,7 @@ const RecipeList = () => {
 const RecipeItem = ({ recipe, navigate, currentPage }) => {
     const imageUrl = `${process.env.PUBLIC_URL}${recipe.imgUrl}`;
     const handleTitleClick = () => {
-        navigate(`/api/recipe/${recipe.id}`, { state: { fromPage: currentPage } })
+        navigate(`/recipe/${recipe.id}`, { state: { fromPage: currentPage } })
     }
     if (!recipe){
         return <div>표시할 레시피가 없습니다.</div>;
@@ -72,7 +72,7 @@ const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('ko-KR', options);
 };
 
-const Pagination = ({ currentPage, setPage, totalPages }) => {
+const Pagination = ({ currentPage, setPage, totalPages, authToken }) => {
     // 이전 페이지 이동 함수
     const handlePrevious = () => {
         if (currentPage > 0) {
@@ -81,6 +81,14 @@ const Pagination = ({ currentPage, setPage, totalPages }) => {
             alert('이전 페이지가 없습니다.');
         }
     };
+
+    // 글쓰기 버튼 클릭 이벤트 핸들러
+    const handleWriteClick = () => {
+        navigate('/recipe/write');
+    };
+
+    // 로그인 여부 확인
+    const isLoggedIn = !!authToken;
 
     // 다음 페이지 이동 함수
     const handleNext = () => {
@@ -116,6 +124,12 @@ const Pagination = ({ currentPage, setPage, totalPages }) => {
             <button onClick={handleNext}
             className={"bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-6 rounded mx-2"}
             >다음</button>
+            {/* 로그인 시에만 보이는 글쓰기 버튼 */}
+            {isLoggedIn && (
+                <button onClick={handleWriteClick}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded mx-2"
+                >글쓰기</button>
+            )}
         </div>
     );
 };

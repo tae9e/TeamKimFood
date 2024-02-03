@@ -37,9 +37,9 @@ function App() {
                     <Route path='/login' element={ <LoginForm/> } />
                     <Route path='/personaltreat' element={ <PersonalTreat/> } />
                     <Route path="/signin" element={<MemberRegistrationForm/>} />
-                    <Route path="/api/recipes/save" element={<RecipeSave/>} />
-                    <Route path="/api/recipe/:id" element={<ViewRecipe/>} />
-                    <Route path='/api/recipe/:id/update' element={<RecipeSave/>} />
+                    <Route path="/recipe/write" element={<RecipeSave/>} />
+                    <Route path="/recipe/:id" element={<ViewRecipe/>} />
+                    <Route path='/recipe/:id/update' element={<RecipeSave/>} />
                     <Route path="/main" element={<RecipeList/>} />
                     <Route path="/" element={<RecipeList/>} />
                     <Route path="/admin" element={<ProtectedRoute><ManagePage/></ProtectedRoute>} />

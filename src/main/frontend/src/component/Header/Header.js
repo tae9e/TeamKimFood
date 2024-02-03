@@ -162,9 +162,33 @@ function TopNav() {
             <Navbar expand="lg" className="navbar">
                 <Container fluid="true" id="contNav">
 
-                    <ul className="navbar-nav" >
+                    <ul className="navbar-nav">
                         <li className="depth-1 navbar-text"><a href="#">오늘의 요리</a></li>
-                        <li className="depth-1 navbar-text"><a href="#">인기 레시피</a></li>
+                        <div className="relative group">
+                            <a href="#"
+                               className="inline-block mt-1 py-2 px-4 text-sm font-medium font-[SpoqaHanSansNeo-B]">인기
+                                레시피</a>
+                            <div
+                                className="absolute hidden group-hover:block z-10 bg-white divide-y divide-gray-100 rounded shadow w-40">
+                                <ul className="py-1 text-center">
+                                    <li>
+                                        <a href="/rank/recipe/recommend"
+                                           className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900">추천수
+                                            랭킹</a>
+                                    </li>
+                                    <li>
+                                        <a href="/rank/recipe/totalcount"
+                                           className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900">조회수
+                                            랭킹</a>
+                                    </li>
+                                    <li>
+                                        <a href="/rank/member/recommend"
+                                           className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900">유저
+                                            랭킹</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                         <li className="depth-1 navbar-text"><a href="#">매거진</a></li>
                     </ul>
 

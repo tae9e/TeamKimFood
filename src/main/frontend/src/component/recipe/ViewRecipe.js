@@ -121,7 +121,7 @@ const RecipeView = () => {
         if (isAuthor) {
             return (
                 <>
-                    <button onClick={() => navigate(`/api/recipe/${id}/update`)}
+                    <button onClick={() => navigate(`/recipe/${id}/update`)}
                             className={'bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'}>수정</button>
                     <button onClick={handleDelete}
                             className={'bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'}>삭제</button>
