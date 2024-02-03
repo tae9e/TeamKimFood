@@ -331,8 +331,8 @@ const RecipeForm = () => {
                         <input
                             type="radio"
                             name="situation"
-                            value="ALONE"
-                            checked={recipeForm.situation === 'ALONE'}
+                            value="혼자"
+                            checked={recipeForm.situation === '혼자'}
                             onChange={handleInputChange}
                         />
                         혼자
@@ -341,11 +341,51 @@ const RecipeForm = () => {
                         <input
                             type="radio"
                             name="situation"
-                            value="TOGETHER"
-                            checked={recipeForm.situation === 'TOGETHER'}
+                            value="가족"
+                            checked={recipeForm.situation === '가족'}
                             onChange={handleInputChange}
                         />
-                        같이
+                        가족
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="situation"
+                            value="친구"
+                            checked={recipeForm.situation === '친구'}
+                            onChange={handleInputChange}
+                        />
+                        친구
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="situation"
+                            value="연인"
+                            checked={recipeForm.situation === '연인'}
+                            onChange={handleInputChange}
+                        />
+                        연인
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="situation"
+                            value="일상"
+                            checked={recipeForm.situation === '일상'}
+                            onChange={handleInputChange}
+                        />
+                        일상
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="situation"
+                            value="상차림"
+                            checked={recipeForm.situation === '상차림'}
+                            onChange={handleInputChange}
+                        />
+                        상차림
                     </label>
                     {/* 이야기 해보고 이름 맞춰서 넣기 */}
                 </fieldset>
@@ -356,8 +396,8 @@ const RecipeForm = () => {
                         <input
                             type="radio"
                             name="foodStuff"
-                            value="MEAT"
-                            checked={recipeForm.foodStuff === 'MEAT'}
+                            value="고기"
+                            checked={recipeForm.foodStuff === '고기'}
                             onChange={handleInputChange}
                         />
                         고기
@@ -366,23 +406,63 @@ const RecipeForm = () => {
                         <input
                             type="radio"
                             name="foodStuff"
-                            value="EGG"
-                            checked={recipeForm.foodStuff === 'EGG'}
+                            value="해산물"
+                            checked={recipeForm.foodStuff === '해산물'}
                             onChange={handleInputChange}
                         />
-                        계란
+                        해산물
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="foodStuff"
+                            value="채소"
+                            checked={recipeForm.foodStuff === '채소'}
+                            onChange={handleInputChange}
+                        />
+                        채소
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="foodStuff"
+                            value="과일"
+                            checked={recipeForm.foodStuff === '과일'}
+                            onChange={handleInputChange}
+                        />
+                        과일
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="foodStuff"
+                            value="디저트"
+                            checked={recipeForm.foodStuff === '디저트'}
+                            onChange={handleInputChange}
+                        />
+                        디저트
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="foodStuff"
+                            value="음료"
+                            checked={recipeForm.foodStuff === '음료'}
+                            onChange={handleInputChange}
+                        />
+                        음료
                     </label>
                     {/* 이야기 해보고 이름 맞춰서 넣기 */}
                 </fieldset>
 
                 <fieldset>
-                    <legend className={'block text-gray-700 text-sm font-bold mb-2'}>분류:</legend>
+                    <legend className={'block text-gray-700 text-sm font-bold mb-2'}>타입:</legend>
                     <label>
                         <input
                             type="radio"
                             name="foodNationType"
-                            value="KOREAN"
-                            checked={recipeForm.foodNationType === 'KOREAN'}
+                            value="한식"
+                            checked={recipeForm.foodNationType === '한식'}
                             onChange={handleInputChange}
                         />
                         한식
@@ -391,8 +471,8 @@ const RecipeForm = () => {
                         <input
                             type="radio"
                             name="foodNationType"
-                            value="CHINESE"
-                            checked={recipeForm.foodNationType === 'CHINESE'}
+                            value="중식"
+                            checked={recipeForm.foodNationType === '중식'}
                             onChange={handleInputChange}
                         />
                         중식
@@ -401,8 +481,8 @@ const RecipeForm = () => {
                         <input
                             type="radio"
                             name="foodNationType"
-                            value="JAPANESE"
-                            checked={recipeForm.foodNationType === 'JAPANESE'}
+                            value="일식"
+                            checked={recipeForm.foodNationType === '일식'}
                             onChange={handleInputChange}
                         />
                         일식
@@ -411,8 +491,8 @@ const RecipeForm = () => {
                         <input
                             type="radio"
                             name="foodNationType"
-                            value="ETCWESTERN"
-                            checked={recipeForm.foodNationType === 'ETCWESTERN'}
+                            value="양식"
+                            checked={recipeForm.foodNationType === '양식'}
                             onChange={handleInputChange}
                         />
                         양식
@@ -421,8 +501,8 @@ const RecipeForm = () => {
                         <input
                             type="radio"
                             name="foodNationType"
-                            value="ETC"
-                            checked={recipeForm.foodNationType === 'ETC'}
+                            value="기타"
+                            checked={recipeForm.foodNationType === '기타'}
                             onChange={handleInputChange}
                         />
                         기타

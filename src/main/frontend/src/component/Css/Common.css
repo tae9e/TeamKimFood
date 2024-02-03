@@ -563,3 +563,63 @@ input[type='search']::-webkit-search-cancel-button,textarea{-webkit-appearance:n
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'SpoqaHanSansNeo-B';
+    src: url('fonts/SpoqaHanSansNeo-Bold.eot'); /* IE9 Compat Modes */
+    src: url('fonts/SpoqaHanSansNeo-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('fonts/SpoqaHanSansNeo-Bold.woff2') format('woff2'), /* Super Modern Browsers */
+    url('fonts/SpoqaHanSansNeo-Bold.woff') format('woff'), /* Pretty Modern Browsers */
+    url('fonts/SpoqaHanSansNeo-Bold.ttf')  format('truetype'); /* Safari, Android, iOS */
+    font-weight: 700;
+    font-style: normal;
+    font-stretch: normal;
+}
+
+@font-face {
+    font-family: 'SpoqaHanSansNeo-R';
+    src: url('fonts/SpoqaHanSansNeo-Regular.eot'); /* IE9 Compat Modes */
+    src: url('fonts/SpoqaHanSansNeo-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('fonts/SpoqaHanSansNeo-Regular.woff2') format('woff2'), /* Super Modern Browsers */
+    url('fonts/SpoqaHanSansNeo-Regular.woff') format('woff'), /* Pretty Modern Browsers */
+    url('fonts/SpoqaHanSansNeo-Regular.ttf')  format('truetype'); /* Safari, Android, iOS */
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+}
+
+@font-face {
+    font-family: 'GmarketSans-B';
+    src: url('fonts/GmarketSansTTFBold.eot'); /* IE9 Compat Modes */
+    src: url('fonts/GmarketSansTTFBold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('fonts/GmarketSansTTFBold.woff2') format('woff2'), /* Super Modern Browsers */
+    url('fonts/GmarketSansTTFBold.woff') format('woff'), /* Pretty Modern Browsers */
+    url('fonts/GmarketSansTTFBold.ttf')  format('truetype'); /* Safari, Android, iOS */
+    font-weight: 700;
+    font-style: normal;
+    font-stretch: normal;
+}
+
+@font-face {
+    font-family: 'GmarketSans-M';
+    src: url('fonts/GmarketSansTTFMedium.eot'); /* IE9 Compat Modes */
+    src: url('fonts/GmarketSansTTFMedium.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('fonts/GmarketSansTTFMedium.woff2') format('woff2'), /* Super Modern Browsers */
+    url('fonts/GmarketSansTTFMedium.woff') format('woff'), /* Pretty Modern Browsers */
+    url('fonts/GmarketSansTTFMedium.ttf')  format('truetype'); /* Safari, Android, iOS */
+    font-weight: 700;
+    font-style: normal;
+    font-stretch: normal;
+}
+
+@font-face {
+    font-family: 'NanumMyeongjo';
+    src: url('fonts/NanumMyeongjo.eot'); /* IE9 Compat Modes */
+    src: url('fonts/NanumMyeongjo.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('fonts/NanumMyeongjo.woff2') format('woff2'), /* Super Modern Browsers */
+    url('fonts/NanumMyeongjo.woff') format('woff'), /* Pretty Modern Browsers */
+    url('fonts/NanumMyeongjo.ttf')  format('truetype'); /* Safari, Android, iOS */
+    font-weight: 700;
+    font-style: normal;
+    font-stretch: normal;
+}

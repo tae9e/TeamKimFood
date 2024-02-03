@@ -12,6 +12,7 @@ import com.tkf.teamkimfood.service.RankService;
 import com.tkf.teamkimfood.service.RecipeCategoryService;
 import com.tkf.teamkimfood.service.RecipeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor()
+@Slf4j
 public class RecipeController {
 
     private final RecipeService recipeService;
@@ -97,15 +99,14 @@ public class RecipeController {
 
         if (userDetails != null && search == null) {//로그인한상태 and 레시피 서치 안한경우
 
+            log.info("ㅇㅇ"+userDetails.getUsername());
             Long id = Long.valueOf(userDetails.getUsername());
-            Long memberId = memberService.findById(id);
-            String email = memberService.findByEmail(id);
-            RecipeCategoryDto surveyResults = recipeCategoryService.getSurveyResults(email);
+            RecipeCategoryDto surveyResults = recipeCategoryService.getSurveyResults(id);
             if (surveyResults != null) {
                 // memberId가 존재하는 경우
                 //멤버가 따로 관심사 설정 안했을경우도 만들기.
                 CategoryPreferenceDto categoryPreferenceDto = new CategoryPreferenceDto();
-                categoryPreferenceDto.setId(memberId);
+                categoryPreferenceDto.setId(id);
                 categoryPreferenceDto.setSituation(surveyResults.getSituation());
                 categoryPreferenceDto.setFoodStuff(surveyResults.getFoodStuff());
                 categoryPreferenceDto.setFoodNationType(surveyResults.getFoodNationType());

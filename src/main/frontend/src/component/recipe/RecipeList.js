@@ -42,7 +42,6 @@ const RecipeList = () => {
 };
 
 const RecipeItem = ({ recipe, navigate, currentPage }) => {
-    console.log("이미지 : ", recipe.imgUrl);
     const imageUrl = `${process.env.PUBLIC_URL}${recipe.imgUrl}`;
     const handleTitleClick = () => {
         navigate(`/api/recipe/${recipe.id}`, { state: { fromPage: currentPage } })
@@ -51,16 +50,16 @@ const RecipeItem = ({ recipe, navigate, currentPage }) => {
         return <div>표시할 레시피가 없습니다.</div>;
     } else {
         return (
-            <div className={"border rounded-lg p-4 w-60 text-center"}>
+            <div className={"border rounded-lg p-4 w-60 text-center "}>
                 <img onClick={handleTitleClick} src={imageUrl} alt={recipe.title} className={" cursor-pointer w-full h-40 object-cover rounded-t-lg"}/>
-                <div className={"border-t my-2"}></div>
+                <div className={"border-t my-2 "}></div>
                 <h3 onClick={handleTitleClick}
-                    className={"cursor-pointer mt-2 text-lg font-semibold"}>{recipe.title}</h3>
+                    className={"cursor-pointer mt-2 text-lg font-semibold font-[SpoqaHanSansNeo-B]"}>{recipe.title}</h3>
                 <div>
 
-                    <span className={"text-sm"}>{formatDate(recipe.writeDate)}</span>
+                    <span className={"text-sm font-[NanumMyeongjo]"}>{formatDate(recipe.writeDate)}</span>
                 </div>
-                <div className="flex justify-between items-center mt-2 text-sm">
+                <div className="flex justify-between items-center mt-2 text-sm font-[GmarketSans-M]">
                     <span>조회수: {recipe.viewCount}</span>
                     <span>{recipe.nickName}</span>
                 </div>
