@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Css/Common.css';
-import '../Css/Layout.css';
 
 class PersonalTreat extends Component {
     render () {

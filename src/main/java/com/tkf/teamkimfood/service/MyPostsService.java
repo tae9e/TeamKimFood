@@ -13,7 +13,7 @@ public class MyPostsService {
 
     public MyPosts getPostById(Long id) {
         return myPostsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("작성한 댓글이 없습니다." + id));
+                .orElseThrow(() -> new RuntimeException("작성한 글이 없습니다." + id));
     }
 
     public void deletePost(Long id) {

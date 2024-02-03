@@ -9,10 +9,40 @@ const RecipeView = () => {
     const authToken = localStorage.getItem('token'); // 현재 로그인한 사용자의 ID
     const location = useLocation();
     const fromPage = location.state?.fromPage || 0; // 리스트 페이지에서 전달된 페이지 번호
-    
+    const [recommendations, setRecommendations] = useState(0); // 추천 수를 위한 상태
+
     const [comments, setComments] = useState([]);
     const [commentInput, setCommentInput] = useState('');
     const [selectedComment, setSelectedComment] = useState(null);
+
+
+    useEffect(() => {
+        const loadRecipe = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/recipe/${id}`,{
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                setRecipe(response.data);
+            } catch (error) {
+                console.error('레시피를 불러오는 데 실패했습니다.', error);
+            }
+            const loadComments = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:8080/api/comments/recipe/${id}`, {
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        }
+                    });
+                    setComments(response.data);
+                } catch (error) {
+                    console.error('댓글을 불러오는 데 실패했습니다.', error);
+                }
+            };
+        };
+        loadRecipe();
+    }, [id]);
 
     useEffect(() => {
         const loadRecipe = async () => {
@@ -27,9 +57,21 @@ const RecipeView = () => {
                 console.error('레시피를 불러오는 데 실패했습니다.', error);
             }
         };
-
+        const loadComments = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/comments/recipe/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                setComments(response.data);
+            } catch (error) {
+                console.error('댓글을 불러오는 데 실패했습니다.', error);
+            }
+        };
         loadRecipe();
     }, [id]);
+
     const renderIngredientsAndDosages = () => {
         if (recipe && recipe.oneRecipeIngDoVos) {
             return recipe.oneRecipeIngDoVos.map((item, index) => (
@@ -131,59 +173,81 @@ const RecipeView = () => {
         }
     };
 
-    // useEffect(() => {
-    //     const loadComments = async () => {
-    //         try {
-    //             const response = await axios.get(`http://localhost:8080/comments`);
-    //             setComments(response.data);
-    //         } catch (error) {
-    //             console.error('댓글을 불러오는 데 실패했습니다.', error);
+    // const saveComment = async () => {
+    //     try {
+    //         if (!authToken) {
+    //             alert("로그인 후에 댓글을 작성할 수 있습니다.");
+    //             return;
     //         }
-    //     };
+    //         const commentData = {
+    //             content: commentInput,
+    //             commentDate: new Date().toISOString(),
+    //             recipeId: id, // 현재 페이지의 레시피 ID를 사용합니다.
+    //             // memberId는 서버 측에서 처리합니다.
+    //         };
     //
-    //     loadComments();
-    // }, []);
+    //         axios.post('http://localhost:8080/api/comments', commentData, {
+    //             headers: {
+    //                 'Authorization': `Bearer ${authToken}`
+    //             }
+    //         })
+    //             .then(response => {
+    //                 // 요청이 성공적으로 처리됐을 때의 처리
+    //                 console.log(response.data);
+    //                 alert('댓글이 성공적으로 작성되었습니다.');
+    //             })
+    //             .catch(error => {
+    //                 // 요청 처리 중 에러가 발생했을 때의 처리
+    //                 console.error('에러 발생', error.response);
+    //
+    //                 let errorMessage = '댓글 작성 중 문제가 발생했습니다.';
+    //                 if (error.response && error.response.data && error.response.data.message) {
+    //                     // 서버로부터 받은 에러 메시지가 있을 경우 사용자에게 보여주기
+    //                     errorMessage += `\n서버 메시지: ${error.response.data.message}`;
+    //                 } else if (error.response && error.response.status) {
+    //                     // HTTP 상태 코드를 포함한 기본 메시지 제공
+    //                     errorMessage += `\nHTTP 상태 코드: ${error.response.status}`;
+    //                 }
+    //                 alert(errorMessage);
+    //             });
+    //
+    //     } catch (error) {
+    //         console.error("댓글을 작성하는 중 에러 발생:", error);
+    //     }
+    // };
 
-    // 댓글 작성
     const saveComment = async () => {
-        try {
-            if (!authToken) {
-                alert("로그인 후에 댓글을 작성할 수 있습니다.");
-                return;
-            }
-
-            // 현재 시각 구하기
-            const commentDate = new Date().toISOString();
-
-            // 레시피 정보 로드
-            const response = await axios.get(`http://localhost:8080/api/recipe/${id}`, {
-                headers: {
-                    'Authorization': `Bearer ${authToken}`
-                }
-            });
-
-            const recipeData = response.data;
-            const recipeId = recipeData.oneRecipeDto.id;
-            const memberId = recipeData.oneRecipeDto.authorId;
-
-            // 댓글 저장 API 호출
-            const commentResponse = await axios.post("/comments", {
-                content: commentInput,
-                commentDate: commentDate,
-                recipeId: {id},
-                memberId: memberId
-            });
-
-            const savedComment = commentResponse.data;
-
-            // 저장된 댓글을 화면에 추가
-            setComments([...comments, savedComment]);
-
-            // 입력창 초기화
-            setCommentInput('');
-        } catch (error) {
-            console.error("댓글을 작성하는 중 에러 발생:", error);
+        if (!authToken) {
+            alert("로그인 후에 댓글을 작성할 수 있습니다.");
+            return;
         }
+
+        const commentData = {
+            content: commentInput,
+            commentDate: new Date().toISOString(),
+            recipeId: id, // URL에서 추출한 현재 페이지의 레시피 ID
+        };
+
+        axios.post('http://localhost:8080/api/comments', commentData, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        })
+            .then(response => {
+                console.log(response.data);
+                alert('댓글이 성공적으로 작성되었습니다.');
+                // 댓글 목록을 새로고침하는 로직 추가
+            })
+            .catch(error => {
+                console.error('에러 발생', error.response);
+                let errorMessage = '댓글 작성 중 문제가 발생했습니다.';
+                if (error.response && error.response.data && error.response.data.message) {
+                    errorMessage += `\n서버 메시지: ${error.response.data.message}`;
+                } else if (error.response && error.response.status) {
+                    errorMessage += `\nHTTP 상태 코드: ${error.response.status}`;
+                }
+                alert(errorMessage);
+            });
     };
 
     // 댓글 수정
@@ -196,11 +260,11 @@ const RecipeView = () => {
             // 댓글 수정 API 호출
             const updatedContent = prompt("댓글을 수정해주세요.", selectedComment.content);
             if (updatedContent) {
-                await axios.put(`/comments/${commentId}`, {
+                await axios.put(`http://localhost:8080/api/comments/${commentId}`, {
                     content: updatedContent
                 });
                 // 댓글 목록 다시 불러오기
-                const response = await axios.get(`/comments`);
+                const response = await axios.get(`http://localhost:8080/api/comments`);
                 setComments(response.data);
             }
         } catch (error) {
@@ -216,7 +280,7 @@ const RecipeView = () => {
                 return;
             }
             // 댓글 삭제 API 호출
-            await axios.delete(`/comments/${commentId}`);
+            await axios.delete(`http://localhost:8080/api/comments/${commentId}`);
             // 삭제된 댓글을 화면에서 제거
             setComments(comments.filter(comment => comment.id !== commentId));
         } catch (error) {
@@ -224,6 +288,10 @@ const RecipeView = () => {
         }
     };
 
+
+    if (!recipe) {
+        return <div>Loading...</div>;
+    }
     return (
         <div className={'container mx-auto mt-10'}>
             <div className={'border p-5 rounded-lg'}>
@@ -244,7 +312,7 @@ const RecipeView = () => {
                 </div>
                 <div className="border-t pt-4 mt-4">
                     <div className={"flex gap-4 flex-wrap"}>
-                     {renderIngredientsAndDosages()}
+                        {renderIngredientsAndDosages()}
                     </div>
                 </div>
                 <div className="border-t pt-4 mt-4">
@@ -293,8 +361,7 @@ const RecipeView = () => {
                                 <div key={comment.id}>
                                     <p>{comment.content}</p>
                                     {/* 로그인한 사용자가 작성한 댓글에만 수정 및 삭제 버튼 표시 */}
-                                    {/*{authToken && comment.authorId === authToken && (*/}
-                                    {authToken && isAuthor === authToken && (
+                                    {authToken && comment.authorId === authToken && (
                                         <>
                                             <button className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2"
                                                     onClick={() => {

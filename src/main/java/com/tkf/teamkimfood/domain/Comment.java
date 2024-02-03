@@ -19,6 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "comments")
+@Builder
 public class Comment {
 
     @Id @Column(name = "comment_id")
@@ -42,17 +43,10 @@ public class Comment {
     @JoinColumn(name = "member_id")
     private Member member;
 
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "nickname")
-//    private Member nickname;
-
     @BatchSize(size = 100)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
-
-//    @OneToMany
-//    private List<Comment> comments = new ArrayList<>();
 
     //코멘트 데이터 넣을 때
     @Builder
