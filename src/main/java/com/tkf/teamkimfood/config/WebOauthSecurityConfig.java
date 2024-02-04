@@ -16,7 +16,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
@@ -41,7 +40,7 @@ public class WebOauthSecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomClientRegistration customClientRegistration;
     private final UserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
+
 
 
     public void configure(AuthenticationManagerBuilder auth) throws Exception{
@@ -65,8 +64,9 @@ public class WebOauthSecurityConfig {
                                     , "/error"
                                     ,"/api/**"
                                     ,"/images/**"
-                                    ,"/auth/kakao/callback"
                                     ,"/recipe/**"
+                                    ,"/css/**"
+                                    ,"/js/**"
                             ).permitAll() // 특정 경로에 대한 접근 허용
                             .anyRequest().authenticated(); // 다른 모든 요청은 인증 필요
                 })
@@ -78,13 +78,15 @@ public class WebOauthSecurityConfig {
                         .loginPage("/login"))// 로그인 페이지 경로
                 .oauth2Login(
                         oauth2 -> oauth2
-                                .loginPage("/boardlist")
+                                .loginPage("/login")
+
                                 .authorizationEndpoint(authorizationEndpoint -> {
                                     authorizationEndpoint
                                             .baseUri("/oauth2/authorization")
                                             .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository());
                                 })
                                 .redirectionEndpoint(redirection->redirection.baseUri("/oauth2/authorization/kakao")
+
 
                                 )
                                 .successHandler(oAuth2SuccessHandler())

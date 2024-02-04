@@ -59,38 +59,31 @@ public class OauthController {
         log.info("code : {}", code);
         kakaoLoginParams.setAuthorizationCode(code);
 
+        //카카오로부터 액세스 토큰 요청
         String accessToken = kakaoApiClient.requestAccessToken(kakaoLoginParams);
+
+        //카카오로부터 사용자 정보 요청
         OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
         log.info("{}", userInfo.getEmail());
 
         //DB에 User정보 담기
         Long userId = oAuthLoginService.findOrCreateMember(userInfo);
 
+        //jwt 토큰 생성
+        AuthTokens jwtToken = authTokensGenerator.generate(userId);
+
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("accessToken", accessToken);
         responseBody.put("userInfo", userInfo);
+        responseBody.put("jwtToken",jwtToken.getAccessToken());
         responseBody.put("success", true);
         // 여기서 리다이렉트 하지말고 토큰 값이랑 프론트에서 필요한 사용자 정보를 보내주면 됨
+
 
 
         return ResponseEntity.ok(responseBody);
     }
 
-
-
-
-    @GetMapping("/v2/user/me")
-    public OAuthInfoResponse requestOauthInfo(String accessToken) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        String url = "https://kapi.kakao.com/v2/user/me";
-        ResponseEntity<OAuthInfoResponse> response = restTemplate.postForEntity(url, entity, OAuthInfoResponse.class);
-
-        return response.getBody();
-    }
 
     @GetMapping("/redirect")
     public ResponseEntity<Void> performRedirection(@RequestParam String redirectUrl) {

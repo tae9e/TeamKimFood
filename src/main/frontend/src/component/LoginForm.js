@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import {KAKAO_AUTH_URL} from './OAuth';
 
 const LoginForm = () => {
     const [loginData, setLoginData] = useState({
@@ -58,6 +59,9 @@ const LoginForm = () => {
                     <button type="submit"
                             className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"}
                     >로그인</button>
+                      <a href={KAKAO_AUTH_URL} className="kakaobtn">
+                                       <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />
+                                    </a>
                 </div>
 
             </form>
