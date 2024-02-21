@@ -24,8 +24,6 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final DateTimePath<java.time.LocalDateTime> commentDate = createDateTime("commentDate", java.time.LocalDateTime.class);
 
-    public final ListPath<Comment, QComment> comments = this.<Comment, QComment>createList("comments", Comment.class, QComment.class, PathInits.DIRECT2);
-
     public final StringPath content = createString("content");
 
     public final DateTimePath<java.time.LocalDateTime> correctionDate = createDateTime("correctionDate", java.time.LocalDateTime.class);

@@ -74,7 +74,7 @@ public class KakaoApiClient implements OauthApiClient {
     public String requestAccessToken(OAuthLoginParams params) {
       try {
           String url = authUrl + "/oauth/token";
-          log.info("url : {}", url);
+          log.info("Request access token: {}", url);
 
           HttpHeaders httpHeaders = new HttpHeaders();
           httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -90,12 +90,7 @@ public class KakaoApiClient implements OauthApiClient {
           body.add("redirect_uri", redirectUrl);
           body.add("client_secret", clientSecret);
 
-          log.info("client_id: {}", clientId);
-          log.info("redirect_uri: {}", redirectUrl);
-
-
-          log.info("request: {}", body);
-          HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
+          HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, httpHeaders);
 
           KakaoTokens response = restTemplate.postForObject(url, request, KakaoTokens.class);
           log.info("response : {}", response);
@@ -103,6 +98,7 @@ public class KakaoApiClient implements OauthApiClient {
 
           return response != null ? response.getAccessToken() : null;
       }catch(RestClientException e){
+          log.error("Error while requesting access token: {}", e.getMessage());
           return null;
       }
 
@@ -111,25 +107,27 @@ public class KakaoApiClient implements OauthApiClient {
     //액세스 토큰을 이용해 사용자 정보 요청
     @Override
     public OAuthInfoResponse requestOauthInfo(String accessToken) {
-        String url = apiUrl + "/v2/user/me";
-        log.info("apiUrl url{}" + apiUrl);
+        try {
+            String url = apiUrl + "/v2/user/me";
+            log.info("apiUrl url{}" + apiUrl);
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        log.info("httpHeaders{}: " + httpHeaders);
-        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        httpHeaders.set("Authorization", "Bearer " + accessToken);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            httpHeaders.set("Authorization", "Bearer " + accessToken);
 
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("property_keys", "[\"kakao_account.email\", \"kakao_account.profile\"]");
-        log.info("body{}" + body);
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            body.add("property_keys", "[\"kakao_account.email\", \"kakao_account.profile\"]");
+            log.info("body{}" + body);
 
-        HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
-        log.info("request{}" + request);
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, httpHeaders);
 
-        return restTemplate.postForObject(url, request, KakaoInfoResponse.class);
+            return restTemplate.postForObject(url, request, KakaoInfoResponse.class);
+        } catch (RestClientException e) {
+            log.error("사용자 요청 시 에러 발생", e.getMessage());
+            return null;
+        }
+
     }
-
-
 
 
 }
