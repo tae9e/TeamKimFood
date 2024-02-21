@@ -16,9 +16,7 @@ import java.util.Base64;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -112,16 +110,14 @@ public class KakaoApiClient implements OauthApiClient {
             log.info("apiUrl url{}" + apiUrl);
 
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             httpHeaders.set("Authorization", "Bearer " + accessToken);
 
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            body.add("property_keys", "[\"kakao_account.email\", \"kakao_account.profile\"]");
-            log.info("body{}" + body);
+            HttpEntity<String> request = new HttpEntity<>(httpHeaders);
 
-            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, httpHeaders);
+            ResponseEntity<KakaoInfoResponse> response = restTemplate.exchange(
+                    url, HttpMethod.GET, request, KakaoInfoResponse.class);
 
-            return restTemplate.postForObject(url, request, KakaoInfoResponse.class);
+            return response.getBody();
         } catch (RestClientException e) {
             log.error("사용자 요청 시 에러 발생", e.getMessage());
             return null;
