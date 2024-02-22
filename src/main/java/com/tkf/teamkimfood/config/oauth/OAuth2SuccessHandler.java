@@ -3,6 +3,7 @@ package com.tkf.teamkimfood.config.oauth;
 import com.tkf.teamkimfood.config.jwt.AuthTokens;
 import com.tkf.teamkimfood.config.jwt.AuthTokensGenerator;
 
+import com.tkf.teamkimfood.infra.KakaoInfoResponse;
 import com.tkf.teamkimfood.service.OAuthLoginService;
 import com.tkf.teamkimfood.util.CookieUtil;
 import jakarta.servlet.http.Cookie;
@@ -20,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
@@ -47,14 +49,17 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         redirectStrategy.sendRedirect(request, response, REDIRECT_PATH);
     }
     private OAuthInfoResponse extractOAuthInfo(OAuth2User oAuth2User) {
-        String email = (String) oAuth2User.getAttributes().get("email");
-        String nickName = (String) oAuth2User.getAttributes().get("nickName");
+        Map<String, Object> attributes = oAuth2User.getAttributes();
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+        String email = kakaoAccount != null ? (String)kakaoAccount.get("email"):null;
+        Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+        String nickName = profile != null? (String) profile.get("nickname") : null;
 
         if(email == null && nickName == null){
             throw new IllegalArgumentException("존재하지 않는 회원정보입니다.");
         }
         OAuthProvider oAuthProvider = OAuthProvider.KAKAO;
-        return new OAuthInfoResponseImpl(email, nickName, oAuthProvider);
+        return new KakaoInfoResponse(email, nickName, oAuthProvider);
     }
 
     private void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {

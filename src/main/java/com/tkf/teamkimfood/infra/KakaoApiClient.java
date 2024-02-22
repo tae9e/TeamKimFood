@@ -1,9 +1,6 @@
 package com.tkf.teamkimfood.infra;
 
-import com.tkf.teamkimfood.config.oauth.OAuthInfoResponse;
-import com.tkf.teamkimfood.config.oauth.OAuthLoginParams;
-import com.tkf.teamkimfood.config.oauth.OAuthProvider;
-import com.tkf.teamkimfood.config.oauth.OauthApiClient;
+import com.tkf.teamkimfood.config.oauth.*;
 import com.tkf.teamkimfood.domain.KakaoUserInfo;
 import com.tkf.teamkimfood.dto.KakaoMemberDto;
 import com.tkf.teamkimfood.repository.KakaoUserRepository;
@@ -113,11 +110,19 @@ public class KakaoApiClient implements OauthApiClient {
             httpHeaders.set("Authorization", "Bearer " + accessToken);
 
             HttpEntity<String> request = new HttpEntity<>(httpHeaders);
-
             ResponseEntity<KakaoInfoResponse> response = restTemplate.exchange(
                     url, HttpMethod.GET, request, KakaoInfoResponse.class);
 
-            return response.getBody();
+            KakaoInfoResponse kakaoInfo = response.getBody();
+            if (kakaoInfo != null) {
+                // KakaoInfoResponse에서 필요한 정보를 추출하여 OAuthInfoResponseImpl 객체 생성
+                return new KakaoInfoResponse(
+                        kakaoInfo.getEmail(),
+                        kakaoInfo.getNickName(),
+                        OAuthProvider.KAKAO
+                );
+            }
+            return null;
         } catch (RestClientException e) {
             log.error("사용자 요청 시 에러 발생", e.getMessage());
             return null;

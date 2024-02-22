@@ -1,8 +1,15 @@
 package com.tkf.teamkimfood.config.oauth;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 //사용자 정보 저장
-public interface OAuthInfoResponse {
-    String getEmail();
-    String getNickName();
-    OAuthProvider getOAuthProvider();
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class OAuthInfoResponse {
+ private String email;
+ private String nickName;
+ private OAuthProvider oAuthProvider;
 }
