@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './component/Css/Common.css';
 
-// import BoardList from './component/BoardList';
+import BoardList from './component/BoardList';
 import LoginForm from './component/LoginForm';
 import Header from './component/Header/Header';
 import Footer from './component/Footer/Footer';
@@ -35,6 +35,7 @@ function App() {
                 <div className={'flex-grow mb-5'}>
                 <Routes>
                     <Route path='/login' element={ <LoginForm/> } />
+                    <Route path='/boardlist' element={<BoardList />} />
                     <Route path='/personaltreat' element={ <PersonalTreat/> } />
                     <Route path="/signin" element={<MemberRegistrationForm/>} />
                     <Route path="/recipe/write" element={<RecipeSave/>} />

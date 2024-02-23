@@ -11,6 +11,7 @@ import com.tkf.teamkimfood.service.MemberService;
 import com.tkf.teamkimfood.service.OAuthLoginService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -64,6 +65,11 @@ public class OauthController {
 
         //카카오로부터 사용자 정보 요청
         OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
+        if(userInfo == null){
+            Map<String, Object> error = new HashMap<>();
+            error.put("error","카카오로부터의 정보 요청에 실패했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
         log.info("{}", userInfo.getEmail());
 
         //DB에 User정보 담기
