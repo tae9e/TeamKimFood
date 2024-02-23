@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,6 +8,10 @@ function LoginHandler() {
   const handleKakaoLogin = async () => {
     try {
       const code = new URL(window.location.href).searchParams.get('code');
+      if(!code){
+      console.log('인증 코드가 없습니다.')
+      return;
+      }
       const backendUrl = 'http://localhost:8080';
 
       //카카오 인증 코드 전달
@@ -19,19 +23,20 @@ function LoginHandler() {
                 // JWT 토큰 저장 및 사용자 정보 처리
                 localStorage.setItem('jwtToken', res.data.jwtToken);
                 localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo));
-                navigate('/BoardList');
+                navigate('/boardlist');
+                console.log('Navigating to /boardlist')
               } else {
                 console.error('로그인 실패');
               }
             } catch (error) {
               console.error('카카오 로그인 에러', error);
-              // 에러 처리 로직
+
             }
           };
 
-          React.useEffect(()=>{
-          handleKakaoLogin();
-          },[]);
+            useEffect(() => {
+               handleKakaoLogin();
+             }, [navigate]);
 
           return(
                 <div className="LoginHandler">
@@ -41,3 +46,5 @@ function LoginHandler() {
                     </div>
           );
           }
+
+          export default LoginHandler;
