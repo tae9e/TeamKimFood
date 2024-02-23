@@ -13,7 +13,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { TiThMenu } from "react-icons/ti";
 import { IconContext } from "react-icons";
-import { KAKAO_AUTH_URL } from '../OAuth';
+import {KAKAO_AUTH_URL} from '../OAuth';
 
 //JWT 디코딩
 function TopNav() {
@@ -41,7 +41,7 @@ function TopNav() {
     };
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token') || localStorage.getItem('jwtToken');
         if (token) {
             const decodedToken = decodeToken(token);
             if (decodedToken) {
@@ -71,6 +71,8 @@ function TopNav() {
                 console.log('에러 발생');
             });
     };
+
+
 
     //로그아웃
     const handleLogout = () => {
@@ -117,49 +119,31 @@ function TopNav() {
                     </Form>
                     <ul className="signInUp flex items-center space-x-4">
                         {!isLoggedIn ? (
-                            <>
-                                <li><a href="/signin"><SlPencil /> 회원가입</a></li>
-                                <li className="flex items-center space-x-2">
-                                    <a href="/login" onClick={handleLoginClick}><SlLogin /> 로그인</a>
-                                    <a
-                                        href="/survey"
-                                        className="hover:underline"
-                                        onClick={(e) => { e.preventDefault(); navigate('/survey'); }}>
-                                        <BsFillQuestionCircleFill /> 설문조사
-                                    </a>
-                                </li>
-                                {/*<li>*/}
-                                {/*    <a href={KAKAO_AUTH_URL} className="kakaobtn w-64 h-10 rounded-lg flex items-center justify-center text-lg">*/}
-                                {/*        <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />*/}
-                                {/*    </a>*/}
-                                {/*</li>*/}
-                                {/* 카카오 로그인 버튼 */}
-                                <li> <a href={KAKAO_AUTH_URL} className="kakaobtn">
-                                    <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />
-                                </a>
-                                </li>
-                            </>
-                        ) : (
-                            <>
-                                <li className="flex items-center space-x-2">
+                                <>
+                                    <li><a href="/signin"><SlPencil /> 회원가입</a></li>
+                                    <li><a href="/login" onClick={handleLoginClick}><SlLogin /> 로그인</a></li>
+                                    <li>
+                                        <a href={KAKAO_AUTH_URL} className="kakaobtn">
+                                            <img src={`${process.env.PUBLIC_URL}/kakao_login.png`} alt="카카오 로그인" />
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/survey" onClick={(e) => { e.preventDefault(); navigate('/survey'); }}>
+                                            <BsFillQuestionCircleFill /> 설문조사
+                                        </a>
+                                    </li>
+                                </>
+                            ) : (
+                                <>
                                     {isAdmin ? (
-                                        <a onClick={handleAdminOrMyPageClick}>관리자 페이지</a>
+                                        <li><a onClick={handleAdminOrMyPageClick}>관리자 페이지</a></li>
                                     ) : (
-                                        <a onClick={handleAdminOrMyPageClick}>마이 페이지</a>
+                                        <li><a onClick={handleAdminOrMyPageClick}>마이 페이지</a></li>
                                     )}
-                                    <a
-                                        href="/survey"
-                                        className="hover:underline"
-                                        onClick={(e) => { e.preventDefault(); navigate('/survey'); }}>
-                                        <BsFillQuestionCircleFill /> 설문조사
-                                    </a>
-                                </li>
-                                <li><a href="/" onClick={handleLogout}><SlLogin /> 로그아웃</a></li>
-                            </>
-                        )}
+                                    <li><a href="/" onClick={handleLogout}><SlLogout /> 로그아웃</a></li>
+                                </>
+                            )}
                     </ul>
-                    <img src={`${process.env.PUBLIC_URL}/menu-icon.png`} className="ui-menu-icon" />
-
                 </div>
 
                 <Navbar expand="lg" className="navbar">

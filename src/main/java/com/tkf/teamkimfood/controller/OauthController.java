@@ -51,53 +51,82 @@ public class OauthController {
         response.sendRedirect(kakaoApiClient.getAuthorizeUrl());
     }
 
-    @GetMapping("/auth/kakao/callback")
-    public ResponseEntity<Map<String, Object>> kakaoCallback(@RequestParam("code") String code) {
 
-        KakaoLoginParams kakaoLoginParams = new KakaoLoginParams();
-        log.info("KakaoParams : {}", kakaoLoginParams);
-        //로그는 (+) 쓰지말고 아래처럼 "" 안에는 {} 로 변수 위치 잡아주고 (,) 뒤에다가 해당 위치에 넣을 변수 지정해주면 됨
-        log.info("code : {}", code);
-        kakaoLoginParams.setAuthorizationCode(code);
+@GetMapping("/auth/kakao/callback")
+public ResponseEntity<Map<String, Object>> kakaoCallback(@RequestParam("code") String code) {
+    KakaoLoginParams kakaoLoginParams = new KakaoLoginParams();
+    log.info("KakaoParams : {}", kakaoLoginParams);
+    log.info("code : {}", code);
+    kakaoLoginParams.setAuthorizationCode(code);
 
-        //카카오로부터 액세스 토큰 요청
-        String accessToken = kakaoApiClient.requestAccessToken(kakaoLoginParams);
+    // 카카오로부터 액세스 토큰 요청
+    String accessToken = kakaoApiClient.requestAccessToken(kakaoLoginParams);
 
-        //카카오로부터 사용자 정보 요청
-        OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
-        if(userInfo == null){
-            Map<String, Object> error = new HashMap<>();
-            error.put("error","카카오로부터의 정보 요청에 실패했습니다.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-        }
-        log.info("{}", userInfo.getEmail());
-
-        //DB에 User정보 담기
-        Long userId = oAuthLoginService.findOrCreateMember(userInfo);
-
-        //jwt 토큰 생성
-        AuthTokens jwtToken = authTokensGenerator.generate(userId);
-
-        Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("accessToken", accessToken);
-        responseBody.put("userInfo", userInfo);
-        responseBody.put("jwtToken",jwtToken.getAccessToken());
-        responseBody.put("success", true);
-        // 여기서 리다이렉트 하지말고 토큰 값이랑 프론트에서 필요한 사용자 정보를 보내주면 됨
-
-
-
-        return ResponseEntity.ok(responseBody);
+    // 카카오로부터 사용자 정보 요청
+    OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
+    if (userInfo == null) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", "카카오로부터의 정보 요청에 실패했습니다.");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
+    log.info("{}", userInfo.getEmail());
 
+    // DB에 User 정보 담기
+    Long userId = oAuthLoginService.findOrCreateMember(userInfo);
 
-    @GetMapping("/redirect")
-    public ResponseEntity<Void> performRedirection(@RequestParam String redirectUrl) {
-        // 리디렉션을 수행하는 302 응답 생성
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", redirectUrl);
-        return new ResponseEntity<>(headers, HttpStatus.FOUND); // HttpStatus.FOUND: 302 응답 코드
-    }
+    // JWT 토큰 생성
+    AuthTokens jwtToken = authTokensGenerator.generate(userId);
+
+    Map<String, Object> responseBody = new HashMap<>();
+    responseBody.put("accessToken", accessToken);
+    responseBody.put("userInfo", userInfo);
+    responseBody.put("jwtToken", jwtToken.getAccessToken());
+    responseBody.put("success", true);
+
+    return ResponseEntity.ok(responseBody);
+}
+
+//    @GetMapping("/auth/kakao/callback")
+//    public ResponseEntity<Map<String, Object>> kakaoCallback(@RequestParam("code") String code) {
+//
+//        KakaoLoginParams kakaoLoginParams = new KakaoLoginParams();
+//        log.info("KakaoParams : {}", kakaoLoginParams);
+//        //로그는 (+) 쓰지말고 아래처럼 "" 안에는 {} 로 변수 위치 잡아주고 (,) 뒤에다가 해당 위치에 넣을 변수 지정해주면 됨
+//        log.info("code : {}", code);
+//        kakaoLoginParams.setAuthorizationCode(code);
+//
+//        //카카오로부터 액세스 토큰 요청
+//        String accessToken = kakaoApiClient.requestAccessToken(kakaoLoginParams);
+//
+//        //카카오로부터 사용자 정보 요청
+//        OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
+//        if (userInfo == null) {
+//            Map<String, Object> error = new HashMap<>();
+//            error.put("error", "카카오로부터의 정보 요청에 실패했습니다.");
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+//        }
+//        log.info("{}", userInfo.getEmail());
+//
+//        //DB에 User정보 담기
+//        Long userId = oAuthLoginService.findOrCreateMember(userInfo);
+//
+//        //jwt 토큰 생성
+//        AuthTokens jwtToken = authTokensGenerator.generate(userId);
+//
+//        String redirectUrl = "http://localhost:3000/boardlist";
+//
+//        Map<String, Object> responseBody = new HashMap<>();
+//        responseBody.put("accessToken", accessToken);
+//        responseBody.put("userInfo", userInfo);
+//        responseBody.put("jwtToken", jwtToken.getAccessToken());
+//        responseBody.put("success", true);
+//        // 여기서 리다이렉트 하지말고 토큰 값이랑 프론트에서 필요한 사용자 정보를 보내주면 됨
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("Location", redirectUrl);
+//        return new ResponseEntity<>(headers, HttpStatus.FOUND); // HttpStatus.FOUND: 302 응답 코드
+//    }
+
 
 
 //    @PostMapping("/login")

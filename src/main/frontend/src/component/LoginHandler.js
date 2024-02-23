@@ -19,12 +19,12 @@ function LoginHandler() {
                 // JWT 토큰 저장 및 사용자 정보 처리
                 localStorage.setItem('jwtToken', res.data.jwtToken);
                 localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo));
-                navigate('/boardlist');
+                navigate('/BoardList');
               } else {
                 console.error('로그인 실패');
               }
             } catch (error) {
-              console.error('로그인 에러', error);
+              console.error('카카오 로그인 에러', error);
               // 에러 처리 로직
             }
           };
@@ -36,7 +36,7 @@ function LoginHandler() {
           return(
                 <div className="LoginHandler">
                       <div className="notice">
-                        <p>로그인 처리 중...</p>
+                        <p>카카오 로그인 처리 중...</p>
                       </div>
                     </div>
           );
