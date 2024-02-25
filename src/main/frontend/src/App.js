@@ -25,6 +25,7 @@ import ScoreRecipe from "./component/rank/ScoreRecipe";
 import ViewTotalCountRecipe from "./component/rank/ViewTotalCountRecipe";
 import ScoreMember from "./component/rank/ScoreMember";
 import Survey from './component/recipe/RecipePreferenceSurvey';
+import LoginHandler from './component/LoginHandler';
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
                 <Routes>
                     <Route path='/login' element={ <LoginForm/> } />
                     <Route path='/boardlist' element={<BoardList />} />
+                     <Route path='/login-handler' element={<LoginHandler />} />
                     <Route path='/personaltreat' element={ <PersonalTreat/> } />
                     <Route path="/signin" element={<MemberRegistrationForm/>} />
                     <Route path="/recipe/write" element={<RecipeSave/>} />

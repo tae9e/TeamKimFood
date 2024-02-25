@@ -3,25 +3,23 @@ package com.tkf.teamkimfood.controller;
 import com.tkf.teamkimfood.config.jwt.AuthTokens;
 import com.tkf.teamkimfood.config.jwt.AuthTokensGenerator;
 import com.tkf.teamkimfood.config.oauth.OAuthInfoResponse;
-import com.tkf.teamkimfood.domain.status.MemberRole;
+import com.tkf.teamkimfood.config.oauth.OAuthLoginParams;
 import com.tkf.teamkimfood.dto.LoginCredentialsVo;
 import com.tkf.teamkimfood.infra.KakaoApiClient;
 import com.tkf.teamkimfood.infra.KakaoLoginParams;
 import com.tkf.teamkimfood.service.MemberService;
 import com.tkf.teamkimfood.service.OAuthLoginService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -52,91 +50,39 @@ public class OauthController {
     }
 
 
-@GetMapping("/auth/kakao/callback")
-public ResponseEntity<Map<String, Object>> kakaoCallback(@RequestParam("code") String code) {
-    KakaoLoginParams kakaoLoginParams = new KakaoLoginParams();
-    log.info("KakaoParams : {}", kakaoLoginParams);
-    log.info("code : {}", code);
-    kakaoLoginParams.setAuthorizationCode(code);
+    @GetMapping("/auth/kakao/callback")
+    public RedirectView kakaoCallback(@RequestParam("code") String code, HttpServletRequest request) {
 
-    // 카카오로부터 액세스 토큰 요청
-    String accessToken = kakaoApiClient.requestAccessToken(kakaoLoginParams);
+        KakaoLoginParams kakaoLoginParams = new KakaoLoginParams();
+        log.info("KakaoParams : {}", kakaoLoginParams);
+        //로그는 (+) 쓰지말고 아래처럼 "" 안에는 {} 로 변수 위치 잡아주고 (,) 뒤에다가 해당 위치에 넣을 변수 지정해주면 됨
+        log.info("code : {}", code);
+        kakaoLoginParams.setAuthorizationCode(code);
 
-    // 카카오로부터 사용자 정보 요청
-    OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
-    if (userInfo == null) {
-        Map<String, Object> error = new HashMap<>();
-        error.put("error", "카카오로부터의 정보 요청에 실패했습니다.");
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        //카카오로부터 액세스 토큰 요청
+        String accessToken = kakaoApiClient.requestAccessToken(kakaoLoginParams);
+
+        //카카오로부터 사용자 정보 요청
+        OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
+
+
+        if (userInfo != null) {
+            Long userId = oAuthLoginService.findOrCreateMember(userInfo);
+            AuthTokens jwtToken = authTokensGenerator.generate(userId);
+
+            // 세션에 사용자 정보와 토큰 저장
+            HttpSession session = request.getSession();
+            session.setAttribute("userInfo", userInfo);
+            session.setAttribute("jwtToken", jwtToken.getAccessToken());
+
+            String redirectUrl = "http://localhost:3000/boardlist";
+            return new RedirectView(redirectUrl);
+        } else {
+            return new RedirectView("/error");
+        }
     }
-    log.info("{}", userInfo.getEmail());
-
-    // DB에 User 정보 담기
-    Long userId = oAuthLoginService.findOrCreateMember(userInfo);
-
-    // JWT 토큰 생성
-    AuthTokens jwtToken = authTokensGenerator.generate(userId);
-
-    Map<String, Object> responseBody = new HashMap<>();
-    responseBody.put("accessToken", accessToken);
-    responseBody.put("userInfo", userInfo);
-    responseBody.put("jwtToken", jwtToken.getAccessToken());
-    responseBody.put("success", true);
-
-    return ResponseEntity.ok(responseBody);
-}
-
-//    @GetMapping("/auth/kakao/callback")
-//    public ResponseEntity<Map<String, Object>> kakaoCallback(@RequestParam("code") String code) {
-//
-//        KakaoLoginParams kakaoLoginParams = new KakaoLoginParams();
-//        log.info("KakaoParams : {}", kakaoLoginParams);
-//        //로그는 (+) 쓰지말고 아래처럼 "" 안에는 {} 로 변수 위치 잡아주고 (,) 뒤에다가 해당 위치에 넣을 변수 지정해주면 됨
-//        log.info("code : {}", code);
-//        kakaoLoginParams.setAuthorizationCode(code);
-//
-//        //카카오로부터 액세스 토큰 요청
-//        String accessToken = kakaoApiClient.requestAccessToken(kakaoLoginParams);
-//
-//        //카카오로부터 사용자 정보 요청
-//        OAuthInfoResponse userInfo = kakaoApiClient.requestOauthInfo(accessToken);
-//        if (userInfo == null) {
-//            Map<String, Object> error = new HashMap<>();
-//            error.put("error", "카카오로부터의 정보 요청에 실패했습니다.");
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-//        }
-//        log.info("{}", userInfo.getEmail());
-//
-//        //DB에 User정보 담기
-//        Long userId = oAuthLoginService.findOrCreateMember(userInfo);
-//
-//        //jwt 토큰 생성
-//        AuthTokens jwtToken = authTokensGenerator.generate(userId);
-//
-//        String redirectUrl = "http://localhost:3000/boardlist";
-//
-//        Map<String, Object> responseBody = new HashMap<>();
-//        responseBody.put("accessToken", accessToken);
-//        responseBody.put("userInfo", userInfo);
-//        responseBody.put("jwtToken", jwtToken.getAccessToken());
-//        responseBody.put("success", true);
-//        // 여기서 리다이렉트 하지말고 토큰 값이랑 프론트에서 필요한 사용자 정보를 보내주면 됨
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Location", redirectUrl);
-//        return new ResponseEntity<>(headers, HttpStatus.FOUND); // HttpStatus.FOUND: 302 응답 코드
-//    }
 
 
-
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody LoginCredentialsVo loginCredentialsVo) {
-//
-//        Long memberForToken = memberService.findMemberForLogin(loginCredentialsVo.getUsername(), loginCredentialsVo.getPassword());
-//        log.info("이메일 : "+loginCredentialsVo.getUsername());
-//        AuthTokens tokens = authTokensGenerator.generate(memberForToken);
-//        log.info("토큰 : "+tokens.getAccessToken());
-//    }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginCredentialsVo loginCredentialsVo) {
         try {
