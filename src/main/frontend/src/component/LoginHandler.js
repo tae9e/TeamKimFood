@@ -14,9 +14,15 @@ function LoginHandler() {
                   try {
                       const res = await axios.get('http://localhost:8080/public/auth/kakao/callback', {
                       params: { code } });
-                      if (res.status === 200 && res.data.redirectUrl) {
-                          window.location.href = res.data.redirectUrl; // 백엔드에서 제공하는 URL로 리디렉션
-                      }
+//                      if (res.status === 200 && res.data.redirectUrl) {
+//                          window.location.href = res.data.redirectUrl; // 백엔드에서 제공하는 URL로 리디렉션
+//                      }
+                        if(res.status === 200 && res.data.token){
+                            localStorage.setItem('token',res.data.token);
+                            setIsLoggedIn(true);
+                            setIsAdmin(res.data.isAdmin==='true');
+                            window.location.href = res.data.redirectUrl;
+                        }
                   } catch (error) {
                       console.error('카카오 로그인 에러', error);
                       navigate("/");
